@@ -1,46 +1,40 @@
-# Sprint x Report (Dates from Sprint * to Sprint *)
-## YouTube link of Sprint * Video (Make this video unlisted)
+# Sprint 1 Report 8/18/25-10/5/25
+## YouTube link: 
 ## What's New (User Facing)
-* Feature 1 or Bug Fix 1
-* Feature 2 or Bug Fix 2
-* Feature n or Bug Fix n
+* N/A, we have yet to start development as we were collecting requirements.
+
 ## Work Summary (Developer Facing)
-Provide a one paragraph synposis of what your team accomplished this sprint. Don't
-repeat the "What's New" list of features. Instead, help the instructor understand
-how you went about the work described there, any barriers you overcame, and any
-significant learnings for your team.
+Our team met with the client multiple times to establish an understanding of what they
+want for the intended product. We created documentation, user stories, use case diagrams,
+(etc) to better lay out what we want the project to look like and function. While we
+were unable to create a prototype with code, we had created a prototype in figma that
+showcases how we would want our project to work and what we wanted the navigation to be.
+
 ## Unfinished Work
-If applicable, explain the work you did not finish in this sprint. For issues/user
-stories in the current sprint that have not been closed, (a) any progress toward
-completion of the issues has been clearly tracked (by checking the checkboxes of
-acceptance criteria), (b) a comment has been added to the issue to explain why the
-issue could not be completed (e.g., "we ran out of time" or "we did not anticipate
-it would be so much work"), and (c) the issue is added to a subsequent sprint, so
-that it can be addressed later.
+Since we had faced many issues with finding a suitable development environment that
+would support exporting a project to an iPad, we were unable to start developing
+the features that the client wished for. Due to this, we have not been able to work on
+any of our user stories up to this point.
+
 ## Completed Issues/User Stories
 Here are links to the issues that we completed in this sprint:
-* URL of issue 1
-* URL of issue 2
-* URL of issue n
-Reminders (Remove this section when you save the file):
-* Each issue should be assigned to a milestone
-* Each completed issue should be assigned to a pull request
-* Each completed pull request should include a link to a "Before and After" video
-* All team members who contributed to the issue should be assigned to it on
-GitHub
-* Each issue should be assigned story points using a label
-* Story points contribution of each team member should be indicated in a comment
-## Incomplete Issues/User Stories
+* N/A
+
+## Incomplete User Stories
 Here are links to issues we worked on but did not complete in this sprint:
-* URL of issue 1 <<One sentence explanation of why issue was not completed>>
-* URL of issue 2 <<One sentence explanation of why issue was not completed>>
-* URL of issue n <<One sentence explanation of why issue was not completed>>
-Examples of explanations (Remove this section when you save the file):
-* "We ran into a complication we did not anticipate (explain briefly)."
-* "We decided that the feature did not add sufficient value for us to work on it
-in this sprint (explain briefly)."
-* "We could not reproduce the bug" (explain briefly).
-* "We did not get to this issue because..." (explain briefly)
+* US-01 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-02 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-03 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-04 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-05 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-06 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-07 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-08 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-09 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-10 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-11 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-12 - We ran into issues in starting development because we need XCode and a Mac device.
+
 ## Code Files for Review
 Please review the following code files, which were actively developed during this
 sprint, for quality:
@@ -49,14 +43,13 @@ sprint, for quality:
 * [Name of code file 3](https://github.com/your_repo/file_extension)
 ## Retrospective Summary
 Here's what went well:
-* Item 1
-* Item 2
-* Item x
+* Requirements collection
+* Creation of documentation
+* Evaluation of current process
+* Figma prototype created
 Here's what we'd like to improve:
-* Item 1
-* Item 2
-* Item x
+* User interface integration
+* Backend integration
 Here are changes we plan to implement in the next sprint:
-* Item 1
-* Item 2
-* Item x
+* An interactive user interface
+* Implement a database for testing
