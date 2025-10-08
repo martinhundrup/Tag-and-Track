@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagAndTrack", "TagAndTrack.csproj", "{1F58A497-22AF-0D73-334F-C0A31C1E9CCC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F58A497-22AF-0D73-334F-C0A31C1E9CCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F58A497-22AF-0D73-334F-C0A31C1E9CCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F58A497-22AF-0D73-334F-C0A31C1E9CCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F58A497-22AF-0D73-334F-C0A31C1E9CCC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B89805F4-1441-4B27-93E3-DC90DFF024CD}
+	EndGlobalSection
+EndGlobal
