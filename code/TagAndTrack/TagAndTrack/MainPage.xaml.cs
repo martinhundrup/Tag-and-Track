@@ -15,6 +15,7 @@
             Content = new VerticalStackLayout
             {
                 Padding = 20,
+                Spacing = 15,
                 Children =
                 {
                     new Button // scan item page
