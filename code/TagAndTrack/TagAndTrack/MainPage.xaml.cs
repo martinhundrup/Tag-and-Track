@@ -1,13 +1,17 @@
-namespace TagAndTrack
+﻿namespace TagAndTrack
 {
-    public class MainPage : TagAndTrackPage
+    public partial class MainPage : ContentPage
     {
-        protected new const string titleText = "Tag and Track";
-        public MainPage() { Initialize(); }
 
-        protected override void Initialize()
+        public MainPage()
         {
-            Title = titleText;
+            InitializeComponent();
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            Title = "Tag and Track";
             Content = new VerticalStackLayout
             {
                 Padding = 20,
@@ -55,6 +59,7 @@ namespace TagAndTrack
                     },
                 }
             };
-        }
+        } // end initialize()
     }
+
 }
