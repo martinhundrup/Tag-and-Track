@@ -38,15 +38,14 @@
 	</PropertyGroup>
 
 	<!-- iOS specific properties -->
-	<!--
-	<PropertyGroup>
+	<!-- iOS-only settings -->
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
 		<ApplicationId>com.martinhundrup.tagandtrack</ApplicationId>
 		<CodesignTeamId>6X6F23F69Y</CodesignTeamId>
 		<CodesignProvision>26dc6711-c8f3-4e59-9fbe-d1691b791af4</CodesignProvision>
 		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 	</PropertyGroup>
-	-->
-	
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
