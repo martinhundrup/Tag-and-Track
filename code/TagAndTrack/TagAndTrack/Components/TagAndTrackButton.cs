@@ -1,0 +1,40 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TagAndTrack.Components
+{
+    /// <summary>
+    /// Class for the circular button with text underneath it.
+    /// </summary>
+    public class TagAndTrackButton : VerticalStackLayout
+    {
+        // FUTURE: Make it so an image can be added too, those should be what are needed for making a button like this.
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TagAndTrackButton"/> class with the specified text and command.
+        /// </summary>
+        /// <remarks>This constructor creates a button with a text label and associates it with the
+        /// specified command. The button is centered horizontally and includes spacing between its elements.</remarks>
+        /// <param name="text">The text to display on the button.</param>
+        /// <param name="command">The command to execute when the button is clicked.</param>
+        public TagAndTrackButton(string text, Command command)
+        {
+            Spacing = 6;
+            HorizontalOptions = LayoutOptions.Center;
+            ButtonTemplate button = new ButtonTemplate()
+            { 
+                Command = command
+            };
+            TextTemplate buttonText = new TextTemplate()
+            {
+                Text = text
+            };
+
+
+            Children.Add(button);
+            Children.Add(buttonText);
+        }
+    }
+}
