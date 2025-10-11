@@ -1,4 +1,4 @@
-namespace TagAndTrack
+namespace TagAndTrack.Pages
 {
     public class CheckInLoanPage : TagAndTrackPage
     {

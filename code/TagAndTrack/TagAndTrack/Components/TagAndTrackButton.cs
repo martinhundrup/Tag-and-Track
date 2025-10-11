@@ -27,11 +27,7 @@ namespace TagAndTrack.Components
             { 
                 Command = command
             };
-            TextTemplate buttonText = new TextTemplate()
-            {
-                Text = text
-            };
-
+            TextTemplate buttonText = new TextTemplate(text);
 
             Children.Add(button);
             Children.Add(buttonText);
