@@ -1,3 +1,5 @@
+using TagAndTrack.Components;
+
 namespace TagAndTrack.Pages
 {
     public class ScanItemPage : TagAndTrackPage
@@ -8,6 +10,8 @@ namespace TagAndTrack.Pages
         protected override void Initialize()
         {
             Title = titleText;
+
+            Content = new ScanView();
         }
     }
 }

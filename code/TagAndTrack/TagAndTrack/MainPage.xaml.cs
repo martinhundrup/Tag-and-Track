@@ -1,5 +1,6 @@
 ﻿using TagAndTrack.Pages;
 using TagAndTrack.Components;
+
 namespace TagAndTrack
 {
     public partial class MainPage : ContentPage
@@ -58,5 +59,4 @@ namespace TagAndTrack
             Content = grid;
         } // end initialize()
     }
-
 }

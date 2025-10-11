@@ -18,6 +18,9 @@ Because the team has not yet begun implementation, these are projected requireme
 * Access to test Arctos specimen data (read-only)
 
 ### Add-ons
+* `ZXing.Net.Maui.Controls`
+    * install with `dotnet add package ZXing.Net.Maui.Controls --version 0.4.0`
+
 Planned add-ons include:
 * `qr_flutter` – for generating QR codes
 * `mobile_scanner` – for scanning QR/barcodes with the device camera
