@@ -44,7 +44,7 @@ namespace TagAndTrack.Pages
 
         private void ScanCaptured(object? sender, ScanCapturedEventArgs args)
         {
-            scanResultLabel.Text = args.Text;
+            MainThread.BeginInvokeOnMainThread(() => scanResultLabel.Text = args.Text);
         }
     }
 }
