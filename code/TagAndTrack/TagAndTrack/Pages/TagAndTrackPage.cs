@@ -1,4 +1,4 @@
-namespace TagAndTrack
+namespace TagAndTrack.Pages
 {
     public abstract class TagAndTrackPage : ContentPage
     {
