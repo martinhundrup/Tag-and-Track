@@ -6,7 +6,7 @@ namespace TagAndTrack.Pages
     public class ScanItemPage : TagAndTrackPage
     {
         protected new const string titleText = "Scan Item";
-        private Label scanResultLabel;
+        private Label? scanResultLabel;
 
         public ScanItemPage() { Initialize(); }
 
@@ -16,8 +16,8 @@ namespace TagAndTrack.Pages
 
             var scanView = new ScanView
             {
-                WidthRequest = 300,
-                HeightRequest = 300
+                WidthRequest = 512,
+                HeightRequest = 512
             };
 
             scanResultLabel = new Label
@@ -28,6 +28,15 @@ namespace TagAndTrack.Pages
                 Margin = new Thickness(0, 20)
             };
 
+            var qr = new QrCodeView
+            {
+                Value = "Specimen:3930587",
+                Size = 512,
+                Padding = 4,          // quiet zone in pixels
+                Foreground = Colors.Black
+            };
+
+
             scanView.ScanCaptured += ScanCaptured;
 
             Content = new VerticalStackLayout
@@ -37,7 +46,8 @@ namespace TagAndTrack.Pages
                 Children =
                 {
                     scanView,
-                    scanResultLabel
+                    scanResultLabel,
+                    qr,
                 }
             };
         }
