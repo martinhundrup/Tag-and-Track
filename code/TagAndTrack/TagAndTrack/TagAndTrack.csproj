@@ -40,10 +40,9 @@
 	<!-- iOS specific properties -->
 	<!-- iOS-only settings -->
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+		<!-- Do NOT set <CodesignProvision> to a specific GUID on free accounts -->
 		<ApplicationId>com.martinhundrup.tagandtrack</ApplicationId>
-		<CodesignTeamId>6X6F23F69Y</CodesignTeamId>
-		<CodesignProvision>26dc6711-c8f3-4e59-9fbe-d1691b791af4</CodesignProvision>
-		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+  		<CodesignKey>Apple Development</CodesignKey>
 	</PropertyGroup>
 
 	<ItemGroup>
