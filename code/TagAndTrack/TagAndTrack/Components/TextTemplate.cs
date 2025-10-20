@@ -17,8 +17,16 @@ namespace TagAndTrack.Components
         public TextTemplate() 
         {
             Text = "";
-            TextColor = Colors.AntiqueWhite;
+            TextColor = CurrentTheme.Instance.Theme.Text;
             HorizontalTextAlignment = TextAlignment.Center;
+
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    TextColor = CurrentTheme.Instance.Theme.Text;
+                }
+            };
         }
 
         /// <summary>
@@ -28,8 +36,16 @@ namespace TagAndTrack.Components
         public TextTemplate(string text)
         {
             Text = text;
-            TextColor = Colors.AntiqueWhite;
+            TextColor = CurrentTheme.Instance.Theme.Text;
             HorizontalTextAlignment = TextAlignment.Center;
+
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    TextColor = CurrentTheme.Instance.Theme.Text;
+                }
+            };
         }
     }
 }
