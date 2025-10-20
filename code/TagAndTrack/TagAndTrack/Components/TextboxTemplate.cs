@@ -11,6 +11,8 @@ namespace TagAndTrack.Components
     /// </summary>
     internal class TextboxTemplate : Entry
     {
+        private CurrentTheme theme = new CurrentTheme();
+
         /// <summary>
         /// Creates a new instance of the <see cref="ButtonTemplate"/> class.
         /// </summary>
@@ -18,9 +20,18 @@ namespace TagAndTrack.Components
         {
             WidthRequest = width;
             HeightRequest = 40;
-            BackgroundColor = Colors.Black ;
-            TextColor = Colors.AntiqueWhite;
+            BackgroundColor = CurrentTheme.Instance.Theme.Background;
+            TextColor = CurrentTheme.Instance.Theme.Text;
             ClearButtonVisibility = ClearButtonVisibility.WhileEditing;
+
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                    TextColor = CurrentTheme.Instance.Theme.Text;
+                }
+            };
         }
     }
 }
