@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TagAndTrack.Items
+namespace TagAndTrack.Backend.Items
 {
-    internal class ContainerItem : Item
+    public class ContainerItem : Item
     {
         public ContainerItem() {
             Type = ItemType.Container;

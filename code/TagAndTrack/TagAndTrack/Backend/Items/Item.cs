@@ -1,7 +1,7 @@
-﻿namespace TagAndTrack.Items
+﻿namespace TagAndTrack.Backend.Items
 {
 
-    internal abstract class Item
+    public abstract class Item
     {
         public enum ItemType
         {
