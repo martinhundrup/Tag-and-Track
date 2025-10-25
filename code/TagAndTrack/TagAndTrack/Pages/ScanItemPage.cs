@@ -1,5 +1,4 @@
 using TagAndTrack.Components;
-using Microsoft.Maui.Controls;
 
 namespace TagAndTrack.Pages
 {
@@ -16,26 +15,17 @@ namespace TagAndTrack.Pages
 
             var scanView = new ScanView
             {
-                WidthRequest = 512,
-                HeightRequest = 512
+                WidthRequest = 800,
+                HeightRequest = 800
             };
 
             scanResultLabel = new Label
             {
-                Text = "Scan a QR code...",
+                Text = "Looking for a QR code...",
                 FontSize = 18,
                 HorizontalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0, 20)
             };
-
-            var qr = new QrCodeView
-            {
-                Value = "Specimen:3930587",
-                Size = 512,
-                Padding = 4,          // quiet zone in pixels
-                Foreground = Colors.Black
-            };
-
 
             scanView.ScanCaptured += ScanCaptured;
 
@@ -47,7 +37,6 @@ namespace TagAndTrack.Pages
                 {
                     scanView,
                     scanResultLabel,
-                    qr,
                 }
             };
         }

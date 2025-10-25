@@ -31,7 +31,7 @@ namespace TagAndTrack
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = GridLength.Auto }
+                    new RowDefinition { Height = GridLength.Auto },
                 }
             };
 
