@@ -5,7 +5,6 @@ namespace TagAndTrack
 {
     public partial class MainPage : ContentPage
     {
-
         public MainPage()
         {
             InitializeComponent();
@@ -15,6 +14,14 @@ namespace TagAndTrack
         private void Initialize()
         {
             Title = "Tag and Track";
+            Background = CurrentTheme.Instance.Theme.Background;
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    Background = CurrentTheme.Instance.Theme.Background;
+                }
+            };
             var grid = new Grid
             {
                 Padding = 20,
@@ -44,7 +51,8 @@ namespace TagAndTrack
                 new TagAndTrackButton("All Specimens", new Command(async () => await Navigation.PushAsync(new AllSpecimensPage()))),
                 new TagAndTrackButton("Add Item", new Command(async () => await Navigation.PushAsync(new AddItemPage()))),
                 new TagAndTrackButton("Login", new Command(async () => await Navigation.PushAsync(new LoginPage()))),
-                new TagAndTrackButton("Settings", new Command(async () => await Navigation.PushAsync(new SettingsPage())))
+                new TagAndTrackButton("Settings", new Command(async () => await Navigation.PushAsync(new SettingsPage()))),
+                new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme()))
             };
 
             for (int i = 0; i < buttons.Length; i++)
