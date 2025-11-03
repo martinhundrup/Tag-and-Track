@@ -1,0 +1,94 @@
+﻿using Microsoft.Maui.Graphics.Text;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TagAndTrack.Components
+{
+    /// <summary>
+    /// Template class for data tables.
+    /// </summary>
+    public class DataTableTemplate : Grid
+    {
+        /// <summary>
+        /// Creates a new instance of the <see cref="DataTableTemplate"/> class.
+        /// </summary>
+        /// <param name="headers">The list of headers that there will be.</param>
+        /// <param name="csvString">A csv string of data values (we can change this as we get more data interfacing).</param>
+        public DataTableTemplate(string headerString, string csvString)
+        {
+            RowSpacing = 1;
+            ColumnSpacing = 1;
+            BackgroundColor = CurrentTheme.Instance.Theme.Background;
+
+            string[] headers = headerString.Split(new[] { ',' });
+            string[] rows = csvString.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] data;
+
+
+            int rowCount = rows.Length; // +1 for header row
+            int columnCount = headers.Length;
+
+            // Define rows and columns.
+            for (int i = 0; i < rowCount; i++)
+                RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            for (int j = 0; j < columnCount; j++)
+                ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            for (int j = 0; j < columnCount; j++)
+            {
+                var headerBorder = new Border
+                {
+                    Stroke = CurrentTheme.Instance.Theme.Borders,
+                    BackgroundColor = CurrentTheme.Instance.Theme.Background,
+                    StrokeThickness = 1,
+                    Content = new LabelTemplate(10, headers[j]),
+                };
+
+                this.Add(headerBorder, j, 0);
+
+                // Subscribe to theme changes.
+                CurrentTheme.Instance.PropertyChanged += (s, e) =>
+                {
+                    if (e.PropertyName == nameof(CurrentTheme.Theme))
+                    {
+                        headerBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
+                        headerBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                    }
+                };
+            }
+                
+
+            // Add cells with borders
+            for (int i = 0; i < rowCount; i++)
+            {
+                data = rows[i].Split(new[] { ',' }, StringSplitOptions.None);
+                for (int j = 0; j < columnCount; j++)
+                {
+                    var border = new Border
+                    {
+                        Stroke = CurrentTheme.Instance.Theme.Borders,
+                        BackgroundColor = CurrentTheme.Instance.Theme.Background,
+                        StrokeThickness = 1,
+                        Content = new LabelTemplate(10, data[j]),
+                    };
+
+                    this.Add(border, j, i + 1);
+
+                    // Subscribe to theme changes.
+                    CurrentTheme.Instance.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName == nameof(CurrentTheme.Theme))
+                        {
+                            border.Stroke = CurrentTheme.Instance.Theme.Borders;
+                            border.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                        }
+                    };
+                }
+            }
+        }
+    }
+}
