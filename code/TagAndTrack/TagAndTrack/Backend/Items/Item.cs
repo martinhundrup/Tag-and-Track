@@ -52,6 +52,12 @@
             protected set;
         }
 
+        public bool Status // true for present, false for checked out
+        {
+            get;
+            protected set;
+        }
+
         public string? QRID // qr code ID
         {
             get
