@@ -8,107 +8,1004 @@ namespace TagAndTrack.Backend.Items
 {
     internal static class DebugItems
     {
-        public static string specimensCSV = @"0,ARC-000000,Salmon Specimen,Cleaned bone specimen,true,,
-1,ARC-000001,Lion Claw,Preserved specimen stored in fluid jar,true,
-2,ARC-000002,Bear Femur,Egg sample in container,false,
-3,ARC-000003,Heron Egg,Fluid jar sample with tag,true,
-4,ARC-000004,Toad Sample,Full skeleton display,false,
-5,ARC-000005,Owl Wing,Tissue sample for genetics,true,
-6,ARC-000006,Beaver Skull,Cleaned bone specimen,true,
-7,ARC-000007,Lion Claw,Cleaned bone specimen,true,
-8,ARC-000008,Toad Sample,Loose bone fragment,false,
-9,ARC-000009,Fox Pelt,Cleaned bone specimen,false,
-10,ARC-000010,Eagle Feather,Full skeleton display,true,
-11,ARC-000011,Fox Pelt,Loose bone fragment,true,
-12,ARC-000012,Heron Egg,Taxidermy display specimen,false,
-13,ARC-000013,Salmon Specimen,Cleaned bone specimen,false,
-14,ARC-000014,Lion Claw,Taxidermy display specimen,true,
-15,ARC-000015,Eagle Feather,Loose bone fragment,true,
-16,ARC-000016,Fox Pelt,Egg sample in container,true,
-17,ARC-000017,Beaver Skull,Mounted pelt used for teaching,true,
-18,ARC-000018,Bear Femur,Fluid jar sample with tag,true,
-19,ARC-000019,Eagle Feather,Egg sample in container,false,
-20,ARC-000020,Eagle Feather,Partial remains specimen,false,
-21,ARC-000021,Heron Egg,Loose bone fragment,true,
-22,ARC-000022,Fox Pelt,Egg sample in container,true,
-23,ARC-000023,Salmon Specimen,Partial remains specimen,true,
-24,ARC-000024,Owl Wing,Mounted pelt used for teaching,true,
-25,ARC-000025,Bear Femur,Egg sample in container,true,
-26,ARC-000026,Wolf Skull,Cleaned bone specimen,true,
-27,ARC-000027,Salmon Specimen,Tissue sample for genetics,true,
-28,ARC-000028,Wolf Skull,Loose bone fragment,false,
-29,ARC-000029,Toad Sample,Taxidermy display specimen,true,
-30,ARC-000030,Salmon Specimen,Tissue sample for genetics,true,
-31,ARC-000031,Fox Pelt,Mounted pelt used for teaching,true,
-32,ARC-000032,Lion Claw,Egg sample in container,true,
-33,ARC-000033,Bear Femur,Egg sample in container,true,
-34,ARC-000034,Eagle Feather,Egg sample in container,true,
-35,ARC-000035,Owl Wing,Fluid jar sample with tag,true,
-36,ARC-000036,Toad Sample,Full skeleton display,true,
-37,ARC-000037,Toad Sample,Fluid jar sample with tag,false,
-38,ARC-000038,Beaver Skull,Tissue sample for genetics,true,
-39,ARC-000039,Owl Wing,Fluid jar sample with tag,true,
-40,ARC-000040,Beaver Skull,Full skeleton display,true,
-41,ARC-000041,Bear Femur,Fluid jar sample with tag,false,
-42,ARC-000042,Salmon Specimen,Loose bone fragment,false,
-43,ARC-000043,Salmon Specimen,Loose bone fragment,true,
-44,ARC-000044,Wolf Skull,Cleaned bone specimen,false,
-45,ARC-000045,Bear Femur,Full skeleton display,false,
-46,ARC-000046,Fox Pelt,Preserved specimen stored in fluid jar,true,
-47,ARC-000047,Lion Claw,Mounted pelt used for teaching,true,
-48,ARC-000048,Toad Sample,Full skeleton display,true,
-49,ARC-000049,Heron Egg,Taxidermy display specimen,true,
-50,ARC-000050,Beaver Skull,Full skeleton display,false,
-51,ARC-000051,Toad Sample,Fluid jar sample with tag,true,
-52,ARC-000052,Salmon Specimen,Mounted pelt used for teaching,true,
-53,ARC-000053,Toad Sample,Fluid jar sample with tag,false,
-54,ARC-000054,Lion Claw,Taxidermy display specimen,true,
-55,ARC-000055,Bear Femur,Partial remains specimen,false,
-56,ARC-000056,Heron Egg,Loose bone fragment,true,
-57,ARC-000057,Fox Pelt,Full skeleton display,false,
-58,ARC-000058,Beaver Skull,Taxidermy display specimen,true,
-59,ARC-000059,Toad Sample,Taxidermy display specimen,true,
-60,ARC-000060,Bear Femur,Mounted pelt used for teaching,true,
-61,ARC-000061,Fox Pelt,Tissue sample for genetics,true,
-62,ARC-000062,Beaver Skull,Partial remains specimen,true,
-63,ARC-000063,Bear Femur,Fluid jar sample with tag,false,
-64,ARC-000064,Fox Pelt,Partial remains specimen,true,
-65,ARC-000065,Toad Sample,Tissue sample for genetics,true,
-66,ARC-000066,Lion Claw,Egg sample in container,true,
-67,ARC-000067,Salmon Specimen,Cleaned bone specimen,true,
-68,ARC-000068,Fox Pelt,Loose bone fragment,true,
-69,ARC-000069,Lion Claw,Mounted pelt used for teaching,true,
-70,ARC-000070,Heron Egg,Preserved specimen stored in fluid jar,true,
-71,ARC-000071,Owl Wing,Cleaned bone specimen,true,
-72,ARC-000072,Lion Claw,Tissue sample for genetics,true,
-73,ARC-000073,Beaver Skull,Loose bone fragment,true,
-74,ARC-000074,Fox Pelt,Loose bone fragment,true,
-75,ARC-000075,Eagle Feather,Mounted pelt used for teaching,false,
-76,ARC-000076,Owl Wing,Egg sample in container,false,
-77,ARC-000077,Lion Claw,Cleaned bone specimen,true,
-78,ARC-000078,Wolf Skull,Cleaned bone specimen,true,
-79,ARC-000079,Toad Sample,Mounted pelt used for teaching,false,
-80,ARC-000080,Bear Femur,Preserved specimen stored in fluid jar,false,
-81,ARC-000081,Lion Claw,Cleaned bone specimen,false,
-82,ARC-000082,Toad Sample,Full skeleton display,false,
-83,ARC-000083,Eagle Feather,Taxidermy display specimen,true,
-84,ARC-000084,Salmon Specimen,Mounted pelt used for teaching,false,
-85,ARC-000085,Eagle Feather,Preserved specimen stored in fluid jar,false,
-86,ARC-000086,Lion Claw,Egg sample in container,false,
-87,ARC-000087,Bear Femur,Taxidermy display specimen,true,
-88,ARC-000088,Fox Pelt,Egg sample in container,true,
-89,ARC-000089,Wolf Skull,Fluid jar sample with tag,true,
-90,ARC-000090,Eagle Feather,Full skeleton display,true,
-91,ARC-000091,Lion Claw,Partial remains specimen,true,
-92,ARC-000092,Fox Pelt,Taxidermy display specimen,false,
-93,ARC-000093,Owl Wing,Preserved specimen stored in fluid jar,false,
-94,ARC-000094,Wolf Skull,Taxidermy display specimen,true,
-95,ARC-000095,Toad Sample,Full skeleton display,false,
-96,ARC-000096,Beaver Skull,Loose bone fragment,false,
-97,ARC-000097,Lion Claw,Mounted pelt used for teaching,true,
-98,ARC-000098,Lion Claw,Mounted pelt used for teaching,false,
-99,ARC-000099,Wolf Skull,Tissue sample for genetics,true,
-100,ARC-000100,Beaver Skull,Mounted pelt used for teaching,true,";
+        public static string specimensCSV = @"0,ARC-000000,Salmon Specimen,Cleaned bone specimen,true
+1,ARC-000001,Lion Claw,Preserved specimen stored in fluid jar,true
+2,ARC-000002,Bear Femur,Egg sample in container,false
+3,ARC-000003,Heron Egg,Fluid jar sample with tag,true
+4,ARC-000004,Toad Sample,Full skeleton display,false
+5,ARC-000005,Owl Wing,Tissue sample for genetics,true
+6,ARC-000006,Beaver Skull,Cleaned bone specimen,true
+7,ARC-000007,Lion Claw,Cleaned bone specimen,true
+8,ARC-000008,Toad Sample,Loose bone fragment,false
+9,ARC-000009,Fox Pelt,Cleaned bone specimen,false
+10,ARC-000010,Eagle Feather,Full skeleton display,true
+11,ARC-000011,Fox Pelt,Loose bone fragment,true
+12,ARC-000012,Heron Egg,Taxidermy display specimen,false
+13,ARC-000013,Salmon Specimen,Cleaned bone specimen,false
+14,ARC-000014,Lion Claw,Taxidermy display specimen,true
+15,ARC-000015,Eagle Feather,Loose bone fragment,true
+16,ARC-000016,Fox Pelt,Egg sample in container,true
+17,ARC-000017,Beaver Skull,Mounted pelt used for teaching,true
+18,ARC-000018,Bear Femur,Fluid jar sample with tag,true
+19,ARC-000019,Eagle Feather,Egg sample in container,false
+20,ARC-000020,Eagle Feather,Partial remains specimen,false
+21,ARC-000021,Heron Egg,Loose bone fragment,true
+22,ARC-000022,Fox Pelt,Egg sample in container,true
+23,ARC-000023,Salmon Specimen,Partial remains specimen,true
+24,ARC-000024,Owl Wing,Mounted pelt used for teaching,true
+25,ARC-000025,Bear Femur,Egg sample in container,true
+26,ARC-000026,Wolf Skull,Cleaned bone specimen,true
+27,ARC-000027,Salmon Specimen,Tissue sample for genetics,true
+28,ARC-000028,Wolf Skull,Loose bone fragment,false
+29,ARC-000029,Toad Sample,Taxidermy display specimen,true
+30,ARC-000030,Salmon Specimen,Tissue sample for genetics,true
+31,ARC-000031,Fox Pelt,Mounted pelt used for teaching,true
+32,ARC-000032,Lion Claw,Egg sample in container,true
+33,ARC-000033,Bear Femur,Egg sample in container,true
+34,ARC-000034,Eagle Feather,Egg sample in container,true
+35,ARC-000035,Owl Wing,Fluid jar sample with tag,true
+36,ARC-000036,Toad Sample,Full skeleton display,true
+37,ARC-000037,Toad Sample,Fluid jar sample with tag,false
+38,ARC-000038,Beaver Skull,Tissue sample for genetics,true
+39,ARC-000039,Owl Wing,Fluid jar sample with tag,true
+40,ARC-000040,Beaver Skull,Full skeleton display,true
+41,ARC-000041,Bear Femur,Fluid jar sample with tag,false
+42,ARC-000042,Salmon Specimen,Loose bone fragment,false
+43,ARC-000043,Salmon Specimen,Loose bone fragment,true
+44,ARC-000044,Wolf Skull,Cleaned bone specimen,false
+45,ARC-000045,Bear Femur,Full skeleton display,false
+46,ARC-000046,Fox Pelt,Preserved specimen stored in fluid jar,true
+47,ARC-000047,Lion Claw,Mounted pelt used for teaching,true
+48,ARC-000048,Toad Sample,Full skeleton display,true
+49,ARC-000049,Heron Egg,Taxidermy display specimen,true
+50,ARC-000050,Beaver Skull,Full skeleton display,false
+51,ARC-000051,Toad Sample,Fluid jar sample with tag,true
+52,ARC-000052,Salmon Specimen,Mounted pelt used for teaching,true
+53,ARC-000053,Toad Sample,Fluid jar sample with tag,false
+54,ARC-000054,Lion Claw,Taxidermy display specimen,true
+55,ARC-000055,Bear Femur,Partial remains specimen,false
+56,ARC-000056,Heron Egg,Loose bone fragment,true
+57,ARC-000057,Fox Pelt,Full skeleton display,false
+58,ARC-000058,Beaver Skull,Taxidermy display specimen,true
+59,ARC-000059,Toad Sample,Taxidermy display specimen,true
+60,ARC-000060,Bear Femur,Mounted pelt used for teaching,true
+61,ARC-000061,Fox Pelt,Tissue sample for genetics,true
+62,ARC-000062,Beaver Skull,Partial remains specimen,true
+63,ARC-000063,Bear Femur,Fluid jar sample with tag,false
+64,ARC-000064,Fox Pelt,Partial remains specimen,true
+65,ARC-000065,Toad Sample,Tissue sample for genetics,true
+66,ARC-000066,Lion Claw,Egg sample in container,true
+67,ARC-000067,Salmon Specimen,Cleaned bone specimen,true
+68,ARC-000068,Fox Pelt,Loose bone fragment,true
+69,ARC-000069,Lion Claw,Mounted pelt used for teaching,true
+70,ARC-000070,Heron Egg,Preserved specimen stored in fluid jar,true
+71,ARC-000071,Owl Wing,Cleaned bone specimen,true
+72,ARC-000072,Lion Claw,Tissue sample for genetics,true
+73,ARC-000073,Beaver Skull,Loose bone fragment,true
+74,ARC-000074,Fox Pelt,Loose bone fragment,true
+75,ARC-000075,Eagle Feather,Mounted pelt used for teaching,false
+76,ARC-000076,Owl Wing,Egg sample in container,false
+77,ARC-000077,Lion Claw,Cleaned bone specimen,true
+78,ARC-000078,Wolf Skull,Cleaned bone specimen,true
+79,ARC-000079,Toad Sample,Mounted pelt used for teaching,false
+80,ARC-000080,Bear Femur,Preserved specimen stored in fluid jar,false
+81,ARC-000081,Lion Claw,Cleaned bone specimen,false
+82,ARC-000082,Toad Sample,Full skeleton display,false
+83,ARC-000083,Eagle Feather,Taxidermy display specimen,true
+84,ARC-000084,Salmon Specimen,Mounted pelt used for teaching,false
+85,ARC-000085,Eagle Feather,Preserved specimen stored in fluid jar,false
+86,ARC-000086,Lion Claw,Egg sample in container,false
+87,ARC-000087,Bear Femur,Taxidermy display specimen,true
+88,ARC-000088,Fox Pelt,Egg sample in container,true
+89,ARC-000089,Wolf Skull,Fluid jar sample with tag,true
+90,ARC-000090,Eagle Feather,Full skeleton display,true
+91,ARC-000091,Lion Claw,Partial remains specimen,true
+92,ARC-000092,Fox Pelt,Taxidermy display specimen,false
+93,ARC-000093,Owl Wing,Preserved specimen stored in fluid jar,false
+94,ARC-000094,Wolf Skull,Taxidermy display specimen,true
+95,ARC-000095,Toad Sample,Full skeleton display,false
+96,ARC-000096,Beaver Skull,Loose bone fragment,false
+97,ARC-000097,Lion Claw,Mounted pelt used for teaching,true
+98,ARC-000098,Lion Claw,Mounted pelt used for teaching,false
+99,ARC-000099,Wolf Skull,Tissue sample for genetics,true
+100,ARC-000100,Beaver Skull,Mounted pelt used for teaching,true
+101,ARC-000101,Salmon Specimen,Loose bone fragment,true
+102,ARC-000102,Heron Egg,Taxidermy display specimen,false
+103,ARC-000103,Wolf Skull,Mounted pelt used for teaching,true
+104,ARC-000104,Heron Egg,Tissue sample for genetics,true
+105,ARC-000105,Fox Pelt,Loose bone fragment,true
+106,ARC-000106,Lion Claw,Taxidermy display specimen,true
+107,ARC-000107,Toad Sample,Egg sample in container,true
+108,ARC-000108,Toad Sample,Tissue sample for genetics,true
+109,ARC-000109,Fox Pelt,Fluid jar sample with tag,true
+110,ARC-000110,Eagle Feather,Fluid jar sample with tag,true
+111,ARC-000111,Eagle Feather,Taxidermy display specimen,false
+112,ARC-000112,Fox Pelt,Partial remains specimen,false
+113,ARC-000113,Eagle Feather,Mounted pelt used for teaching,true
+114,ARC-000114,Beaver Skull,Full skeleton display,false
+115,ARC-000115,Salmon Specimen,Tissue sample for genetics,true
+116,ARC-000116,Salmon Specimen,Tissue sample for genetics,true
+117,ARC-000117,Bear Femur,Taxidermy display specimen,true
+118,ARC-000118,Owl Wing,Preserved specimen stored in fluid jar,false
+119,ARC-000119,Bear Femur,Full skeleton display,false
+120,ARC-000120,Bear Femur,Mounted pelt used for teaching,true
+121,ARC-000121,Wolf Skull,Partial remains specimen,true
+122,ARC-000122,Lion Claw,Loose bone fragment,true
+123,ARC-000123,Bear Femur,Tissue sample for genetics,false
+124,ARC-000124,Salmon Specimen,Taxidermy display specimen,true
+125,ARC-000125,Eagle Feather,Tissue sample for genetics,false
+126,ARC-000126,Lion Claw,Loose bone fragment,false
+127,ARC-000127,Heron Egg,Fluid jar sample with tag,true
+128,ARC-000128,Fox Pelt,Partial remains specimen,false
+129,ARC-000129,Salmon Specimen,Cleaned bone specimen,true
+130,ARC-000130,Beaver Skull,Partial remains specimen,true
+131,ARC-000131,Owl Wing,Preserved specimen stored in fluid jar,true
+132,ARC-000132,Toad Sample,Partial remains specimen,true
+133,ARC-000133,Lion Claw,Fluid jar sample with tag,true
+134,ARC-000134,Salmon Specimen,Egg sample in container,true
+135,ARC-000135,Heron Egg,Tissue sample for genetics,true
+136,ARC-000136,Salmon Specimen,Loose bone fragment,true
+137,ARC-000137,Lion Claw,Cleaned bone specimen,true
+138,ARC-000138,Eagle Feather,Preserved specimen stored in fluid jar,true
+139,ARC-000139,Heron Egg,Tissue sample for genetics,true
+140,ARC-000140,Owl Wing,Mounted pelt used for teaching,false
+141,ARC-000141,Eagle Feather,Full skeleton display,false
+142,ARC-000142,Lion Claw,Mounted pelt used for teaching,true
+143,ARC-000143,Salmon Specimen,Fluid jar sample with tag,false
+144,ARC-000144,Wolf Skull,Egg sample in container,true
+145,ARC-000145,Owl Wing,Partial remains specimen,false
+146,ARC-000146,Beaver Skull,Cleaned bone specimen,true
+147,ARC-000147,Owl Wing,Tissue sample for genetics,true
+148,ARC-000148,Lion Claw,Loose bone fragment,false
+149,ARC-000149,Heron Egg,Mounted pelt used for teaching,false
+150,ARC-000150,Owl Wing,Taxidermy display specimen,true
+151,ARC-000151,Bear Femur,Tissue sample for genetics,false
+152,ARC-000152,Salmon Specimen,Cleaned bone specimen,false
+153,ARC-000153,Salmon Specimen,Loose bone fragment,true
+154,ARC-000154,Owl Wing,Fluid jar sample with tag,true
+155,ARC-000155,Beaver Skull,Preserved specimen stored in fluid jar,true
+156,ARC-000156,Heron Egg,Fluid jar sample with tag,true
+157,ARC-000157,Wolf Skull,Full skeleton display,true
+158,ARC-000158,Owl Wing,Partial remains specimen,false
+159,ARC-000159,Eagle Feather,Full skeleton display,false
+160,ARC-000160,Owl Wing,Mounted pelt used for teaching,false
+161,ARC-000161,Heron Egg,Egg sample in container,true
+162,ARC-000162,Fox Pelt,Full skeleton display,true
+163,ARC-000163,Eagle Feather,Partial remains specimen,true
+164,ARC-000164,Bear Femur,Egg sample in container,true
+165,ARC-000165,Wolf Skull,Egg sample in container,false
+166,ARC-000166,Lion Claw,Full skeleton display,true
+167,ARC-000167,Toad Sample,Mounted pelt used for teaching,false
+168,ARC-000168,Wolf Skull,Loose bone fragment,true
+169,ARC-000169,Lion Claw,Full skeleton display,false
+170,ARC-000170,Fox Pelt,Fluid jar sample with tag,true
+171,ARC-000171,Eagle Feather,Preserved specimen stored in fluid jar,true
+172,ARC-000172,Wolf Skull,Preserved specimen stored in fluid jar,true
+173,ARC-000173,Owl Wing,Preserved specimen stored in fluid jar,false
+174,ARC-000174,Bear Femur,Cleaned bone specimen,true
+175,ARC-000175,Beaver Skull,Partial remains specimen,true
+176,ARC-000176,Fox Pelt,Cleaned bone specimen,true
+177,ARC-000177,Lion Claw,Fluid jar sample with tag,false
+178,ARC-000178,Eagle Feather,Preserved specimen stored in fluid jar,true
+179,ARC-000179,Fox Pelt,Full skeleton display,false
+180,ARC-000180,Salmon Specimen,Loose bone fragment,true
+181,ARC-000181,Bear Femur,Mounted pelt used for teaching,true
+182,ARC-000182,Fox Pelt,Full skeleton display,false
+183,ARC-000183,Bear Femur,Tissue sample for genetics,true
+184,ARC-000184,Heron Egg,Taxidermy display specimen,true
+185,ARC-000185,Bear Femur,Fluid jar sample with tag,true
+186,ARC-000186,Eagle Feather,Mounted pelt used for teaching,false
+187,ARC-000187,Bear Femur,Full skeleton display,true
+188,ARC-000188,Beaver Skull,Partial remains specimen,true
+189,ARC-000189,Heron Egg,Tissue sample for genetics,true
+190,ARC-000190,Salmon Specimen,Cleaned bone specimen,true
+191,ARC-000191,Eagle Feather,Loose bone fragment,true
+192,ARC-000192,Eagle Feather,Taxidermy display specimen,true
+193,ARC-000193,Owl Wing,Fluid jar sample with tag,true
+194,ARC-000194,Wolf Skull,Full skeleton display,true
+195,ARC-000195,Heron Egg,Preserved specimen stored in fluid jar,true
+196,ARC-000196,Fox Pelt,Cleaned bone specimen,true
+197,ARC-000197,Bear Femur,Full skeleton display,false
+198,ARC-000198,Owl Wing,Fluid jar sample with tag,true
+199,ARC-000199,Salmon Specimen,Preserved specimen stored in fluid jar,true
+200,ARC-000200,Beaver Skull,Fluid jar sample with tag,true
+201,ARC-000201,Eagle Feather,Tissue sample for genetics,true
+202,ARC-000202,Salmon Specimen,Preserved specimen stored in fluid jar,true
+203,ARC-000203,Toad Sample,Mounted pelt used for teaching,true
+204,ARC-000204,Wolf Skull,Taxidermy display specimen,true
+205,ARC-000205,Heron Egg,Full skeleton display,false
+206,ARC-000206,Bear Femur,Fluid jar sample with tag,true
+207,ARC-000207,Eagle Feather,Tissue sample for genetics,false
+208,ARC-000208,Eagle Feather,Mounted pelt used for teaching,true
+209,ARC-000209,Fox Pelt,Egg sample in container,true
+210,ARC-000210,Beaver Skull,Loose bone fragment,true
+211,ARC-000211,Toad Sample,Loose bone fragment,true
+212,ARC-000212,Salmon Specimen,Taxidermy display specimen,true
+213,ARC-000213,Owl Wing,Loose bone fragment,false
+214,ARC-000214,Salmon Specimen,Taxidermy display specimen,true
+215,ARC-000215,Lion Claw,Full skeleton display,true
+216,ARC-000216,Eagle Feather,Preserved specimen stored in fluid jar,true
+217,ARC-000217,Wolf Skull,Partial remains specimen,true
+218,ARC-000218,Heron Egg,Tissue sample for genetics,false
+219,ARC-000219,Beaver Skull,Egg sample in container,true
+220,ARC-000220,Bear Femur,Fluid jar sample with tag,false
+221,ARC-000221,Beaver Skull,Taxidermy display specimen,true
+222,ARC-000222,Heron Egg,Cleaned bone specimen,true
+223,ARC-000223,Wolf Skull,Full skeleton display,true
+224,ARC-000224,Heron Egg,Loose bone fragment,false
+225,ARC-000225,Salmon Specimen,Full skeleton display,true
+226,ARC-000226,Toad Sample,Tissue sample for genetics,false
+227,ARC-000227,Beaver Skull,Partial remains specimen,true
+228,ARC-000228,Wolf Skull,Partial remains specimen,true
+229,ARC-000229,Eagle Feather,Taxidermy display specimen,false
+230,ARC-000230,Bear Femur,Fluid jar sample with tag,true
+231,ARC-000231,Wolf Skull,Taxidermy display specimen,true
+232,ARC-000232,Lion Claw,Egg sample in container,false
+233,ARC-000233,Heron Egg,Taxidermy display specimen,true
+234,ARC-000234,Lion Claw,Mounted pelt used for teaching,true
+235,ARC-000235,Salmon Specimen,Mounted pelt used for teaching,true
+236,ARC-000236,Salmon Specimen,Loose bone fragment,false
+237,ARC-000237,Eagle Feather,Preserved specimen stored in fluid jar,true
+238,ARC-000238,Bear Femur,Loose bone fragment,true
+239,ARC-000239,Lion Claw,Cleaned bone specimen,true
+240,ARC-000240,Bear Femur,Mounted pelt used for teaching,true
+241,ARC-000241,Lion Claw,Taxidermy display specimen,false
+242,ARC-000242,Wolf Skull,Partial remains specimen,true
+243,ARC-000243,Wolf Skull,Egg sample in container,false
+244,ARC-000244,Wolf Skull,Preserved specimen stored in fluid jar,true
+245,ARC-000245,Lion Claw,Mounted pelt used for teaching,false
+246,ARC-000246,Toad Sample,Preserved specimen stored in fluid jar,false
+247,ARC-000247,Beaver Skull,Tissue sample for genetics,false
+248,ARC-000248,Toad Sample,Egg sample in container,true
+249,ARC-000249,Salmon Specimen,Partial remains specimen,true
+250,ARC-000250,Heron Egg,Full skeleton display,true
+251,ARC-000251,Beaver Skull,Fluid jar sample with tag,true
+252,ARC-000252,Wolf Skull,Full skeleton display,false
+253,ARC-000253,Toad Sample,Loose bone fragment,true
+254,ARC-000254,Fox Pelt,Cleaned bone specimen,true
+255,ARC-000255,Fox Pelt,Full skeleton display,true
+256,ARC-000256,Salmon Specimen,Partial remains specimen,true
+257,ARC-000257,Salmon Specimen,Mounted pelt used for teaching,true
+258,ARC-000258,Lion Claw,Egg sample in container,true
+259,ARC-000259,Toad Sample,Tissue sample for genetics,true
+260,ARC-000260,Owl Wing,Taxidermy display specimen,true
+261,ARC-000261,Beaver Skull,Mounted pelt used for teaching,true
+262,ARC-000262,Eagle Feather,Cleaned bone specimen,true
+263,ARC-000263,Toad Sample,Preserved specimen stored in fluid jar,true
+264,ARC-000264,Lion Claw,Taxidermy display specimen,true
+265,ARC-000265,Salmon Specimen,Tissue sample for genetics,true
+266,ARC-000266,Wolf Skull,Mounted pelt used for teaching,false
+267,ARC-000267,Eagle Feather,Fluid jar sample with tag,false
+268,ARC-000268,Fox Pelt,Fluid jar sample with tag,false
+269,ARC-000269,Fox Pelt,Mounted pelt used for teaching,true
+270,ARC-000270,Owl Wing,Loose bone fragment,true
+271,ARC-000271,Owl Wing,Fluid jar sample with tag,true
+272,ARC-000272,Toad Sample,Full skeleton display,true
+273,ARC-000273,Toad Sample,Loose bone fragment,true
+274,ARC-000274,Salmon Specimen,Taxidermy display specimen,false
+275,ARC-000275,Salmon Specimen,Full skeleton display,true
+276,ARC-000276,Bear Femur,Egg sample in container,true
+277,ARC-000277,Toad Sample,Tissue sample for genetics,true
+278,ARC-000278,Salmon Specimen,Partial remains specimen,false
+279,ARC-000279,Eagle Feather,Egg sample in container,true
+280,ARC-000280,Salmon Specimen,Taxidermy display specimen,true
+281,ARC-000281,Lion Claw,Egg sample in container,false
+282,ARC-000282,Bear Femur,Mounted pelt used for teaching,false
+283,ARC-000283,Bear Femur,Taxidermy display specimen,false
+284,ARC-000284,Owl Wing,Tissue sample for genetics,true
+285,ARC-000285,Eagle Feather,Tissue sample for genetics,true
+286,ARC-000286,Bear Femur,Loose bone fragment,false
+287,ARC-000287,Lion Claw,Tissue sample for genetics,true
+288,ARC-000288,Beaver Skull,Mounted pelt used for teaching,true
+289,ARC-000289,Beaver Skull,Taxidermy display specimen,true
+290,ARC-000290,Owl Wing,Cleaned bone specimen,true
+291,ARC-000291,Salmon Specimen,Partial remains specimen,true
+292,ARC-000292,Wolf Skull,Fluid jar sample with tag,true
+293,ARC-000293,Owl Wing,Taxidermy display specimen,false
+294,ARC-000294,Bear Femur,Cleaned bone specimen,true
+295,ARC-000295,Salmon Specimen,Fluid jar sample with tag,false
+296,ARC-000296,Salmon Specimen,Tissue sample for genetics,true
+297,ARC-000297,Heron Egg,Preserved specimen stored in fluid jar,true
+298,ARC-000298,Wolf Skull,Partial remains specimen,false
+299,ARC-000299,Bear Femur,Cleaned bone specimen,false
+300,ARC-000300,Toad Sample,Mounted pelt used for teaching,true
+301,ARC-000301,Beaver Skull,Loose bone fragment,true
+302,ARC-000302,Heron Egg,Egg sample in container,true
+303,ARC-000303,Heron Egg,Tissue sample for genetics,true
+304,ARC-000304,Lion Claw,Egg sample in container,true
+305,ARC-000305,Owl Wing,Taxidermy display specimen,true
+306,ARC-000306,Wolf Skull,Preserved specimen stored in fluid jar,true
+307,ARC-000307,Heron Egg,Fluid jar sample with tag,true
+308,ARC-000308,Owl Wing,Fluid jar sample with tag,true
+309,ARC-000309,Heron Egg,Full skeleton display,false
+310,ARC-000310,Wolf Skull,Preserved specimen stored in fluid jar,true
+311,ARC-000311,Owl Wing,Full skeleton display,true
+312,ARC-000312,Toad Sample,Tissue sample for genetics,false
+313,ARC-000313,Wolf Skull,Cleaned bone specimen,false
+314,ARC-000314,Lion Claw,Partial remains specimen,false
+315,ARC-000315,Owl Wing,Cleaned bone specimen,true
+316,ARC-000316,Owl Wing,Fluid jar sample with tag,true
+317,ARC-000317,Lion Claw,Tissue sample for genetics,false
+318,ARC-000318,Bear Femur,Egg sample in container,true
+319,ARC-000319,Fox Pelt,Cleaned bone specimen,false
+320,ARC-000320,Eagle Feather,Full skeleton display,true
+321,ARC-000321,Salmon Specimen,Egg sample in container,true
+322,ARC-000322,Fox Pelt,Taxidermy display specimen,true
+323,ARC-000323,Eagle Feather,Tissue sample for genetics,false
+324,ARC-000324,Lion Claw,Tissue sample for genetics,true
+325,ARC-000325,Heron Egg,Mounted pelt used for teaching,false
+326,ARC-000326,Salmon Specimen,Cleaned bone specimen,true
+327,ARC-000327,Wolf Skull,Preserved specimen stored in fluid jar,true
+328,ARC-000328,Fox Pelt,Cleaned bone specimen,true
+329,ARC-000329,Lion Claw,Partial remains specimen,true
+330,ARC-000330,Eagle Feather,Cleaned bone specimen,false
+331,ARC-000331,Lion Claw,Loose bone fragment,true
+332,ARC-000332,Bear Femur,Taxidermy display specimen,true
+333,ARC-000333,Lion Claw,Taxidermy display specimen,true
+334,ARC-000334,Lion Claw,Taxidermy display specimen,false
+335,ARC-000335,Wolf Skull,Cleaned bone specimen,true
+336,ARC-000336,Salmon Specimen,Preserved specimen stored in fluid jar,false
+337,ARC-000337,Beaver Skull,Preserved specimen stored in fluid jar,true
+338,ARC-000338,Toad Sample,Tissue sample for genetics,true
+339,ARC-000339,Salmon Specimen,Fluid jar sample with tag,false
+340,ARC-000340,Lion Claw,Cleaned bone specimen,true
+341,ARC-000341,Lion Claw,Mounted pelt used for teaching,true
+342,ARC-000342,Toad Sample,Tissue sample for genetics,true
+343,ARC-000343,Wolf Skull,Full skeleton display,false
+344,ARC-000344,Eagle Feather,Fluid jar sample with tag,false
+345,ARC-000345,Beaver Skull,Tissue sample for genetics,true
+346,ARC-000346,Owl Wing,Mounted pelt used for teaching,false
+347,ARC-000347,Toad Sample,Egg sample in container,false
+348,ARC-000348,Bear Femur,Egg sample in container,true
+349,ARC-000349,Owl Wing,Full skeleton display,true
+350,ARC-000350,Wolf Skull,Preserved specimen stored in fluid jar,true
+351,ARC-000351,Owl Wing,Taxidermy display specimen,true
+352,ARC-000352,Fox Pelt,Egg sample in container,false
+353,ARC-000353,Eagle Feather,Mounted pelt used for teaching,true
+354,ARC-000354,Wolf Skull,Tissue sample for genetics,false
+355,ARC-000355,Owl Wing,Loose bone fragment,true
+356,ARC-000356,Lion Claw,Preserved specimen stored in fluid jar,true
+357,ARC-000357,Eagle Feather,Preserved specimen stored in fluid jar,true
+358,ARC-000358,Eagle Feather,Taxidermy display specimen,false
+359,ARC-000359,Bear Femur,Egg sample in container,true
+360,ARC-000360,Owl Wing,Full skeleton display,false
+361,ARC-000361,Fox Pelt,Full skeleton display,false
+362,ARC-000362,Fox Pelt,Mounted pelt used for teaching,true
+363,ARC-000363,Heron Egg,Loose bone fragment,true
+364,ARC-000364,Heron Egg,Partial remains specimen,false
+365,ARC-000365,Lion Claw,Preserved specimen stored in fluid jar,true
+366,ARC-000366,Beaver Skull,Tissue sample for genetics,true
+367,ARC-000367,Bear Femur,Mounted pelt used for teaching,true
+368,ARC-000368,Toad Sample,Mounted pelt used for teaching,true
+369,ARC-000369,Beaver Skull,Partial remains specimen,false
+370,ARC-000370,Wolf Skull,Preserved specimen stored in fluid jar,true
+371,ARC-000371,Owl Wing,Preserved specimen stored in fluid jar,true
+372,ARC-000372,Heron Egg,Loose bone fragment,true
+373,ARC-000373,Eagle Feather,Loose bone fragment,true
+374,ARC-000374,Fox Pelt,Tissue sample for genetics,false
+375,ARC-000375,Heron Egg,Tissue sample for genetics,true
+376,ARC-000376,Wolf Skull,Full skeleton display,false
+377,ARC-000377,Toad Sample,Taxidermy display specimen,true
+378,ARC-000378,Bear Femur,Preserved specimen stored in fluid jar,false
+379,ARC-000379,Toad Sample,Mounted pelt used for teaching,true
+380,ARC-000380,Owl Wing,Egg sample in container,false
+381,ARC-000381,Wolf Skull,Egg sample in container,false
+382,ARC-000382,Bear Femur,Tissue sample for genetics,false
+383,ARC-000383,Eagle Feather,Partial remains specimen,true
+384,ARC-000384,Owl Wing,Egg sample in container,true
+385,ARC-000385,Toad Sample,Mounted pelt used for teaching,false
+386,ARC-000386,Lion Claw,Partial remains specimen,true
+387,ARC-000387,Bear Femur,Partial remains specimen,true
+388,ARC-000388,Salmon Specimen,Loose bone fragment,true
+389,ARC-000389,Heron Egg,Cleaned bone specimen,true
+390,ARC-000390,Eagle Feather,Taxidermy display specimen,true
+391,ARC-000391,Heron Egg,Loose bone fragment,true
+392,ARC-000392,Eagle Feather,Partial remains specimen,true
+393,ARC-000393,Bear Femur,Preserved specimen stored in fluid jar,false
+394,ARC-000394,Owl Wing,Full skeleton display,true
+395,ARC-000395,Beaver Skull,Preserved specimen stored in fluid jar,true
+396,ARC-000396,Wolf Skull,Full skeleton display,true
+397,ARC-000397,Fox Pelt,Mounted pelt used for teaching,true
+398,ARC-000398,Beaver Skull,Taxidermy display specimen,false
+399,ARC-000399,Toad Sample,Taxidermy display specimen,true
+400,ARC-000400,Heron Egg,Taxidermy display specimen,true
+401,ARC-000401,Wolf Skull,Taxidermy display specimen,false
+402,ARC-000402,Heron Egg,Fluid jar sample with tag,true
+403,ARC-000403,Wolf Skull,Full skeleton display,true
+404,ARC-000404,Eagle Feather,Loose bone fragment,true
+405,ARC-000405,Lion Claw,Partial remains specimen,false
+406,ARC-000406,Eagle Feather,Fluid jar sample with tag,true
+407,ARC-000407,Salmon Specimen,Mounted pelt used for teaching,false
+408,ARC-000408,Owl Wing,Preserved specimen stored in fluid jar,true
+409,ARC-000409,Lion Claw,Tissue sample for genetics,true
+410,ARC-000410,Toad Sample,Loose bone fragment,true
+411,ARC-000411,Owl Wing,Taxidermy display specimen,true
+412,ARC-000412,Toad Sample,Tissue sample for genetics,false
+413,ARC-000413,Owl Wing,Taxidermy display specimen,false
+414,ARC-000414,Eagle Feather,Taxidermy display specimen,true
+415,ARC-000415,Owl Wing,Preserved specimen stored in fluid jar,true
+416,ARC-000416,Lion Claw,Egg sample in container,true
+417,ARC-000417,Heron Egg,Mounted pelt used for teaching,true
+418,ARC-000418,Bear Femur,Taxidermy display specimen,true
+419,ARC-000419,Eagle Feather,Cleaned bone specimen,true
+420,ARC-000420,Wolf Skull,Taxidermy display specimen,true
+421,ARC-000421,Heron Egg,Cleaned bone specimen,false
+422,ARC-000422,Owl Wing,Partial remains specimen,true
+423,ARC-000423,Bear Femur,Tissue sample for genetics,false
+424,ARC-000424,Eagle Feather,Taxidermy display specimen,true
+425,ARC-000425,Salmon Specimen,Full skeleton display,false
+426,ARC-000426,Heron Egg,Cleaned bone specimen,true
+427,ARC-000427,Fox Pelt,Full skeleton display,true
+428,ARC-000428,Heron Egg,Preserved specimen stored in fluid jar,true
+429,ARC-000429,Wolf Skull,Taxidermy display specimen,true
+430,ARC-000430,Eagle Feather,Egg sample in container,true
+431,ARC-000431,Salmon Specimen,Mounted pelt used for teaching,false
+432,ARC-000432,Owl Wing,Egg sample in container,false
+433,ARC-000433,Bear Femur,Egg sample in container,true
+434,ARC-000434,Beaver Skull,Loose bone fragment,true
+435,ARC-000435,Wolf Skull,Taxidermy display specimen,false
+436,ARC-000436,Salmon Specimen,Preserved specimen stored in fluid jar,false
+437,ARC-000437,Fox Pelt,Taxidermy display specimen,true
+438,ARC-000438,Heron Egg,Loose bone fragment,true
+439,ARC-000439,Wolf Skull,Loose bone fragment,false
+440,ARC-000440,Heron Egg,Fluid jar sample with tag,true
+441,ARC-000441,Beaver Skull,Tissue sample for genetics,true
+442,ARC-000442,Bear Femur,Preserved specimen stored in fluid jar,false
+443,ARC-000443,Eagle Feather,Loose bone fragment,true
+444,ARC-000444,Bear Femur,Taxidermy display specimen,true
+445,ARC-000445,Fox Pelt,Full skeleton display,true
+446,ARC-000446,Owl Wing,Egg sample in container,true
+447,ARC-000447,Eagle Feather,Tissue sample for genetics,true
+448,ARC-000448,Lion Claw,Loose bone fragment,false
+449,ARC-000449,Salmon Specimen,Egg sample in container,false
+450,ARC-000450,Lion Claw,Egg sample in container,true
+451,ARC-000451,Wolf Skull,Preserved specimen stored in fluid jar,true
+452,ARC-000452,Beaver Skull,Fluid jar sample with tag,true
+453,ARC-000453,Heron Egg,Cleaned bone specimen,false
+454,ARC-000454,Wolf Skull,Tissue sample for genetics,true
+455,ARC-000455,Lion Claw,Egg sample in container,true
+456,ARC-000456,Fox Pelt,Taxidermy display specimen,false
+457,ARC-000457,Eagle Feather,Fluid jar sample with tag,false
+458,ARC-000458,Owl Wing,Tissue sample for genetics,false
+459,ARC-000459,Fox Pelt,Tissue sample for genetics,false
+460,ARC-000460,Salmon Specimen,Mounted pelt used for teaching,true
+461,ARC-000461,Owl Wing,Taxidermy display specimen,true
+462,ARC-000462,Bear Femur,Fluid jar sample with tag,true
+463,ARC-000463,Owl Wing,Cleaned bone specimen,true
+464,ARC-000464,Bear Femur,Mounted pelt used for teaching,true
+465,ARC-000465,Bear Femur,Partial remains specimen,true
+466,ARC-000466,Toad Sample,Fluid jar sample with tag,false
+467,ARC-000467,Lion Claw,Fluid jar sample with tag,true
+468,ARC-000468,Salmon Specimen,Fluid jar sample with tag,true
+469,ARC-000469,Bear Femur,Fluid jar sample with tag,false
+470,ARC-000470,Beaver Skull,Cleaned bone specimen,true
+471,ARC-000471,Heron Egg,Cleaned bone specimen,true
+472,ARC-000472,Bear Femur,Preserved specimen stored in fluid jar,false
+473,ARC-000473,Toad Sample,Cleaned bone specimen,false
+474,ARC-000474,Salmon Specimen,Mounted pelt used for teaching,true
+475,ARC-000475,Beaver Skull,Tissue sample for genetics,true
+476,ARC-000476,Wolf Skull,Full skeleton display,true
+477,ARC-000477,Eagle Feather,Cleaned bone specimen,true
+478,ARC-000478,Owl Wing,Tissue sample for genetics,true
+479,ARC-000479,Heron Egg,Tissue sample for genetics,true
+480,ARC-000480,Wolf Skull,Cleaned bone specimen,false
+481,ARC-000481,Wolf Skull,Egg sample in container,true
+482,ARC-000482,Wolf Skull,Taxidermy display specimen,false
+483,ARC-000483,Bear Femur,Loose bone fragment,false
+484,ARC-000484,Wolf Skull,Preserved specimen stored in fluid jar,true
+485,ARC-000485,Eagle Feather,Partial remains specimen,true
+486,ARC-000486,Toad Sample,Cleaned bone specimen,true
+487,ARC-000487,Eagle Feather,Taxidermy display specimen,true
+488,ARC-000488,Beaver Skull,Loose bone fragment,true
+489,ARC-000489,Heron Egg,Mounted pelt used for teaching,true
+490,ARC-000490,Bear Femur,Full skeleton display,true
+491,ARC-000491,Fox Pelt,Taxidermy display specimen,false
+492,ARC-000492,Lion Claw,Preserved specimen stored in fluid jar,true
+493,ARC-000493,Bear Femur,Cleaned bone specimen,true
+494,ARC-000494,Fox Pelt,Loose bone fragment,false
+495,ARC-000495,Toad Sample,Taxidermy display specimen,false
+496,ARC-000496,Salmon Specimen,Full skeleton display,false
+497,ARC-000497,Lion Claw,Fluid jar sample with tag,false
+498,ARC-000498,Heron Egg,Preserved specimen stored in fluid jar,true
+499,ARC-000499,Salmon Specimen,Preserved specimen stored in fluid jar,false
+500,ARC-000500,Toad Sample,Fluid jar sample with tag,true
+501,ARC-000501,Beaver Skull,Partial remains specimen,false
+502,ARC-000502,Lion Claw,Mounted pelt used for teaching,false
+503,ARC-000503,Salmon Specimen,Taxidermy display specimen,true
+504,ARC-000504,Eagle Feather,Fluid jar sample with tag,false
+505,ARC-000505,Toad Sample,Preserved specimen stored in fluid jar,true
+506,ARC-000506,Fox Pelt,Preserved specimen stored in fluid jar,true
+507,ARC-000507,Toad Sample,Partial remains specimen,true
+508,ARC-000508,Bear Femur,Mounted pelt used for teaching,true
+509,ARC-000509,Fox Pelt,Mounted pelt used for teaching,true
+510,ARC-000510,Lion Claw,Mounted pelt used for teaching,false
+511,ARC-000511,Toad Sample,Tissue sample for genetics,true
+512,ARC-000512,Fox Pelt,Loose bone fragment,true
+513,ARC-000513,Beaver Skull,Preserved specimen stored in fluid jar,true
+514,ARC-000514,Wolf Skull,Taxidermy display specimen,true
+515,ARC-000515,Fox Pelt,Tissue sample for genetics,false
+516,ARC-000516,Lion Claw,Mounted pelt used for teaching,false
+517,ARC-000517,Toad Sample,Preserved specimen stored in fluid jar,true
+518,ARC-000518,Wolf Skull,Cleaned bone specimen,true
+519,ARC-000519,Lion Claw,Fluid jar sample with tag,false
+520,ARC-000520,Bear Femur,Preserved specimen stored in fluid jar,false
+521,ARC-000521,Salmon Specimen,Full skeleton display,false
+522,ARC-000522,Lion Claw,Fluid jar sample with tag,true
+523,ARC-000523,Heron Egg,Egg sample in container,true
+524,ARC-000524,Lion Claw,Egg sample in container,false
+525,ARC-000525,Toad Sample,Loose bone fragment,false
+526,ARC-000526,Beaver Skull,Fluid jar sample with tag,true
+527,ARC-000527,Salmon Specimen,Loose bone fragment,true
+528,ARC-000528,Owl Wing,Fluid jar sample with tag,true
+529,ARC-000529,Owl Wing,Egg sample in container,true
+530,ARC-000530,Beaver Skull,Loose bone fragment,true
+531,ARC-000531,Eagle Feather,Loose bone fragment,true
+532,ARC-000532,Heron Egg,Full skeleton display,false
+533,ARC-000533,Beaver Skull,Egg sample in container,false
+534,ARC-000534,Bear Femur,Taxidermy display specimen,true
+535,ARC-000535,Bear Femur,Mounted pelt used for teaching,false
+536,ARC-000536,Bear Femur,Mounted pelt used for teaching,true
+537,ARC-000537,Beaver Skull,Full skeleton display,false
+538,ARC-000538,Salmon Specimen,Tissue sample for genetics,true
+539,ARC-000539,Toad Sample,Mounted pelt used for teaching,true
+540,ARC-000540,Lion Claw,Full skeleton display,true
+541,ARC-000541,Toad Sample,Mounted pelt used for teaching,true
+542,ARC-000542,Fox Pelt,Partial remains specimen,true
+543,ARC-000543,Owl Wing,Cleaned bone specimen,true
+544,ARC-000544,Bear Femur,Partial remains specimen,true
+545,ARC-000545,Toad Sample,Partial remains specimen,true
+546,ARC-000546,Wolf Skull,Partial remains specimen,false
+547,ARC-000547,Wolf Skull,Egg sample in container,true
+548,ARC-000548,Salmon Specimen,Taxidermy display specimen,true
+549,ARC-000549,Heron Egg,Taxidermy display specimen,true
+550,ARC-000550,Eagle Feather,Egg sample in container,true
+551,ARC-000551,Fox Pelt,Cleaned bone specimen,true
+552,ARC-000552,Wolf Skull,Full skeleton display,true
+553,ARC-000553,Owl Wing,Partial remains specimen,false
+554,ARC-000554,Heron Egg,Mounted pelt used for teaching,false
+555,ARC-000555,Owl Wing,Partial remains specimen,true
+556,ARC-000556,Beaver Skull,Partial remains specimen,true
+557,ARC-000557,Wolf Skull,Egg sample in container,true
+558,ARC-000558,Wolf Skull,Preserved specimen stored in fluid jar,true
+559,ARC-000559,Wolf Skull,Full skeleton display,true
+560,ARC-000560,Salmon Specimen,Taxidermy display specimen,false
+561,ARC-000561,Eagle Feather,Loose bone fragment,true
+562,ARC-000562,Fox Pelt,Egg sample in container,false
+563,ARC-000563,Wolf Skull,Mounted pelt used for teaching,true
+564,ARC-000564,Heron Egg,Partial remains specimen,true
+565,ARC-000565,Lion Claw,Egg sample in container,true
+566,ARC-000566,Wolf Skull,Cleaned bone specimen,true
+567,ARC-000567,Wolf Skull,Cleaned bone specimen,true
+568,ARC-000568,Toad Sample,Partial remains specimen,true
+569,ARC-000569,Bear Femur,Tissue sample for genetics,true
+570,ARC-000570,Fox Pelt,Loose bone fragment,true
+571,ARC-000571,Salmon Specimen,Egg sample in container,false
+572,ARC-000572,Lion Claw,Fluid jar sample with tag,false
+573,ARC-000573,Toad Sample,Egg sample in container,true
+574,ARC-000574,Toad Sample,Cleaned bone specimen,true
+575,ARC-000575,Toad Sample,Cleaned bone specimen,true
+576,ARC-000576,Bear Femur,Full skeleton display,true
+577,ARC-000577,Eagle Feather,Fluid jar sample with tag,true
+578,ARC-000578,Eagle Feather,Loose bone fragment,false
+579,ARC-000579,Eagle Feather,Tissue sample for genetics,false
+580,ARC-000580,Salmon Specimen,Fluid jar sample with tag,true
+581,ARC-000581,Bear Femur,Tissue sample for genetics,true
+582,ARC-000582,Salmon Specimen,Egg sample in container,true
+583,ARC-000583,Eagle Feather,Partial remains specimen,true
+584,ARC-000584,Salmon Specimen,Preserved specimen stored in fluid jar,false
+585,ARC-000585,Lion Claw,Loose bone fragment,true
+586,ARC-000586,Salmon Specimen,Tissue sample for genetics,true
+587,ARC-000587,Owl Wing,Loose bone fragment,false
+588,ARC-000588,Wolf Skull,Taxidermy display specimen,true
+589,ARC-000589,Fox Pelt,Partial remains specimen,false
+590,ARC-000590,Lion Claw,Taxidermy display specimen,true
+591,ARC-000591,Wolf Skull,Taxidermy display specimen,true
+592,ARC-000592,Lion Claw,Loose bone fragment,true
+593,ARC-000593,Wolf Skull,Taxidermy display specimen,false
+594,ARC-000594,Heron Egg,Egg sample in container,true
+595,ARC-000595,Owl Wing,Taxidermy display specimen,true
+596,ARC-000596,Bear Femur,Egg sample in container,true
+597,ARC-000597,Fox Pelt,Partial remains specimen,false
+598,ARC-000598,Fox Pelt,Fluid jar sample with tag,true
+599,ARC-000599,Fox Pelt,Fluid jar sample with tag,true
+600,ARC-000600,Fox Pelt,Mounted pelt used for teaching,false
+601,ARC-000601,Beaver Skull,Cleaned bone specimen,true
+602,ARC-000602,Salmon Specimen,Loose bone fragment,false
+603,ARC-000603,Fox Pelt,Loose bone fragment,false
+604,ARC-000604,Salmon Specimen,Tissue sample for genetics,true
+605,ARC-000605,Salmon Specimen,Loose bone fragment,false
+606,ARC-000606,Salmon Specimen,Mounted pelt used for teaching,true
+607,ARC-000607,Eagle Feather,Fluid jar sample with tag,true
+608,ARC-000608,Salmon Specimen,Preserved specimen stored in fluid jar,true
+609,ARC-000609,Beaver Skull,Fluid jar sample with tag,false
+610,ARC-000610,Salmon Specimen,Fluid jar sample with tag,false
+611,ARC-000611,Bear Femur,Mounted pelt used for teaching,true
+612,ARC-000612,Owl Wing,Partial remains specimen,true
+613,ARC-000613,Salmon Specimen,Cleaned bone specimen,true
+614,ARC-000614,Owl Wing,Mounted pelt used for teaching,true
+615,ARC-000615,Beaver Skull,Cleaned bone specimen,true
+616,ARC-000616,Wolf Skull,Partial remains specimen,true
+617,ARC-000617,Toad Sample,Mounted pelt used for teaching,false
+618,ARC-000618,Salmon Specimen,Cleaned bone specimen,false
+619,ARC-000619,Salmon Specimen,Preserved specimen stored in fluid jar,true
+620,ARC-000620,Bear Femur,Mounted pelt used for teaching,true
+621,ARC-000621,Toad Sample,Mounted pelt used for teaching,true
+622,ARC-000622,Salmon Specimen,Taxidermy display specimen,true
+623,ARC-000623,Owl Wing,Cleaned bone specimen,true
+624,ARC-000624,Salmon Specimen,Egg sample in container,true
+625,ARC-000625,Heron Egg,Taxidermy display specimen,true
+626,ARC-000626,Owl Wing,Taxidermy display specimen,true
+627,ARC-000627,Fox Pelt,Mounted pelt used for teaching,true
+628,ARC-000628,Heron Egg,Taxidermy display specimen,true
+629,ARC-000629,Wolf Skull,Taxidermy display specimen,true
+630,ARC-000630,Owl Wing,Egg sample in container,true
+631,ARC-000631,Toad Sample,Loose bone fragment,true
+632,ARC-000632,Owl Wing,Tissue sample for genetics,true
+633,ARC-000633,Owl Wing,Partial remains specimen,true
+634,ARC-000634,Salmon Specimen,Egg sample in container,false
+635,ARC-000635,Fox Pelt,Tissue sample for genetics,true
+636,ARC-000636,Salmon Specimen,Taxidermy display specimen,true
+637,ARC-000637,Bear Femur,Egg sample in container,true
+638,ARC-000638,Eagle Feather,Preserved specimen stored in fluid jar,true
+639,ARC-000639,Wolf Skull,Taxidermy display specimen,true
+640,ARC-000640,Toad Sample,Preserved specimen stored in fluid jar,true
+641,ARC-000641,Heron Egg,Partial remains specimen,true
+642,ARC-000642,Lion Claw,Preserved specimen stored in fluid jar,true
+643,ARC-000643,Fox Pelt,Mounted pelt used for teaching,true
+644,ARC-000644,Beaver Skull,Full skeleton display,true
+645,ARC-000645,Bear Femur,Cleaned bone specimen,true
+646,ARC-000646,Eagle Feather,Fluid jar sample with tag,true
+647,ARC-000647,Heron Egg,Cleaned bone specimen,true
+648,ARC-000648,Salmon Specimen,Full skeleton display,true
+649,ARC-000649,Lion Claw,Tissue sample for genetics,true
+650,ARC-000650,Fox Pelt,Partial remains specimen,true
+651,ARC-000651,Heron Egg,Tissue sample for genetics,true
+652,ARC-000652,Beaver Skull,Mounted pelt used for teaching,true
+653,ARC-000653,Heron Egg,Loose bone fragment,true
+654,ARC-000654,Salmon Specimen,Fluid jar sample with tag,true
+655,ARC-000655,Owl Wing,Partial remains specimen,true
+656,ARC-000656,Salmon Specimen,Loose bone fragment,false
+657,ARC-000657,Lion Claw,Tissue sample for genetics,true
+658,ARC-000658,Salmon Specimen,Preserved specimen stored in fluid jar,true
+659,ARC-000659,Heron Egg,Preserved specimen stored in fluid jar,true
+660,ARC-000660,Bear Femur,Tissue sample for genetics,true
+661,ARC-000661,Fox Pelt,Full skeleton display,true
+662,ARC-000662,Salmon Specimen,Loose bone fragment,false
+663,ARC-000663,Wolf Skull,Tissue sample for genetics,true
+664,ARC-000664,Salmon Specimen,Egg sample in container,true
+665,ARC-000665,Wolf Skull,Mounted pelt used for teaching,true
+666,ARC-000666,Heron Egg,Egg sample in container,true
+667,ARC-000667,Toad Sample,Taxidermy display specimen,true
+668,ARC-000668,Eagle Feather,Tissue sample for genetics,true
+669,ARC-000669,Fox Pelt,Fluid jar sample with tag,false
+670,ARC-000670,Fox Pelt,Egg sample in container,true
+671,ARC-000671,Toad Sample,Egg sample in container,false
+672,ARC-000672,Toad Sample,Cleaned bone specimen,true
+673,ARC-000673,Lion Claw,Partial remains specimen,true
+674,ARC-000674,Beaver Skull,Preserved specimen stored in fluid jar,true
+675,ARC-000675,Eagle Feather,Taxidermy display specimen,false
+676,ARC-000676,Eagle Feather,Loose bone fragment,true
+677,ARC-000677,Beaver Skull,Loose bone fragment,true
+678,ARC-000678,Owl Wing,Mounted pelt used for teaching,true
+679,ARC-000679,Bear Femur,Full skeleton display,false
+680,ARC-000680,Lion Claw,Mounted pelt used for teaching,false
+681,ARC-000681,Toad Sample,Egg sample in container,true
+682,ARC-000682,Fox Pelt,Fluid jar sample with tag,true
+683,ARC-000683,Salmon Specimen,Fluid jar sample with tag,false
+684,ARC-000684,Heron Egg,Mounted pelt used for teaching,true
+685,ARC-000685,Toad Sample,Loose bone fragment,false
+686,ARC-000686,Wolf Skull,Full skeleton display,false
+687,ARC-000687,Beaver Skull,Loose bone fragment,false
+688,ARC-000688,Owl Wing,Taxidermy display specimen,false
+689,ARC-000689,Wolf Skull,Egg sample in container,true
+690,ARC-000690,Beaver Skull,Loose bone fragment,true
+691,ARC-000691,Fox Pelt,Mounted pelt used for teaching,false
+692,ARC-000692,Fox Pelt,Preserved specimen stored in fluid jar,true
+693,ARC-000693,Bear Femur,Egg sample in container,true
+694,ARC-000694,Eagle Feather,Full skeleton display,true
+695,ARC-000695,Owl Wing,Egg sample in container,true
+696,ARC-000696,Bear Femur,Egg sample in container,true
+697,ARC-000697,Owl Wing,Partial remains specimen,false
+698,ARC-000698,Eagle Feather,Loose bone fragment,false
+699,ARC-000699,Salmon Specimen,Cleaned bone specimen,false
+700,ARC-000700,Lion Claw,Tissue sample for genetics,true
+701,ARC-000701,Toad Sample,Egg sample in container,false
+702,ARC-000702,Toad Sample,Egg sample in container,true
+703,ARC-000703,Lion Claw,Egg sample in container,false
+704,ARC-000704,Lion Claw,Preserved specimen stored in fluid jar,false
+705,ARC-000705,Beaver Skull,Loose bone fragment,false
+706,ARC-000706,Fox Pelt,Mounted pelt used for teaching,false
+707,ARC-000707,Bear Femur,Fluid jar sample with tag,false
+708,ARC-000708,Bear Femur,Egg sample in container,true
+709,ARC-000709,Beaver Skull,Cleaned bone specimen,true
+710,ARC-000710,Wolf Skull,Tissue sample for genetics,true
+711,ARC-000711,Wolf Skull,Full skeleton display,true
+712,ARC-000712,Beaver Skull,Taxidermy display specimen,true
+713,ARC-000713,Lion Claw,Taxidermy display specimen,false
+714,ARC-000714,Toad Sample,Fluid jar sample with tag,true
+715,ARC-000715,Wolf Skull,Cleaned bone specimen,true
+716,ARC-000716,Wolf Skull,Tissue sample for genetics,true
+717,ARC-000717,Bear Femur,Preserved specimen stored in fluid jar,false
+718,ARC-000718,Lion Claw,Partial remains specimen,true
+719,ARC-000719,Heron Egg,Preserved specimen stored in fluid jar,true
+720,ARC-000720,Wolf Skull,Egg sample in container,false
+721,ARC-000721,Beaver Skull,Partial remains specimen,false
+722,ARC-000722,Eagle Feather,Taxidermy display specimen,false
+723,ARC-000723,Lion Claw,Loose bone fragment,true
+724,ARC-000724,Lion Claw,Preserved specimen stored in fluid jar,true
+725,ARC-000725,Lion Claw,Cleaned bone specimen,true
+726,ARC-000726,Wolf Skull,Full skeleton display,true
+727,ARC-000727,Heron Egg,Preserved specimen stored in fluid jar,true
+728,ARC-000728,Lion Claw,Cleaned bone specimen,true
+729,ARC-000729,Owl Wing,Egg sample in container,false
+730,ARC-000730,Beaver Skull,Cleaned bone specimen,false
+731,ARC-000731,Wolf Skull,Preserved specimen stored in fluid jar,false
+732,ARC-000732,Beaver Skull,Taxidermy display specimen,true
+733,ARC-000733,Fox Pelt,Preserved specimen stored in fluid jar,true
+734,ARC-000734,Bear Femur,Fluid jar sample with tag,true
+735,ARC-000735,Toad Sample,Taxidermy display specimen,false
+736,ARC-000736,Beaver Skull,Preserved specimen stored in fluid jar,false
+737,ARC-000737,Wolf Skull,Cleaned bone specimen,true
+738,ARC-000738,Heron Egg,Fluid jar sample with tag,true
+739,ARC-000739,Heron Egg,Cleaned bone specimen,true
+740,ARC-000740,Toad Sample,Partial remains specimen,false
+741,ARC-000741,Beaver Skull,Mounted pelt used for teaching,true
+742,ARC-000742,Eagle Feather,Tissue sample for genetics,true
+743,ARC-000743,Lion Claw,Taxidermy display specimen,true
+744,ARC-000744,Bear Femur,Cleaned bone specimen,true
+745,ARC-000745,Salmon Specimen,Fluid jar sample with tag,true
+746,ARC-000746,Owl Wing,Fluid jar sample with tag,true
+747,ARC-000747,Bear Femur,Egg sample in container,false
+748,ARC-000748,Beaver Skull,Tissue sample for genetics,false
+749,ARC-000749,Heron Egg,Full skeleton display,true
+750,ARC-000750,Eagle Feather,Cleaned bone specimen,false
+751,ARC-000751,Salmon Specimen,Egg sample in container,true
+752,ARC-000752,Bear Femur,Egg sample in container,true
+753,ARC-000753,Lion Claw,Egg sample in container,false
+754,ARC-000754,Lion Claw,Mounted pelt used for teaching,false
+755,ARC-000755,Beaver Skull,Loose bone fragment,false
+756,ARC-000756,Bear Femur,Partial remains specimen,true
+757,ARC-000757,Bear Femur,Mounted pelt used for teaching,true
+758,ARC-000758,Salmon Specimen,Taxidermy display specimen,true
+759,ARC-000759,Lion Claw,Preserved specimen stored in fluid jar,true
+760,ARC-000760,Eagle Feather,Partial remains specimen,false
+761,ARC-000761,Eagle Feather,Egg sample in container,false
+762,ARC-000762,Wolf Skull,Taxidermy display specimen,true
+763,ARC-000763,Fox Pelt,Cleaned bone specimen,true
+764,ARC-000764,Wolf Skull,Partial remains specimen,true
+765,ARC-000765,Toad Sample,Full skeleton display,true
+766,ARC-000766,Wolf Skull,Partial remains specimen,true
+767,ARC-000767,Toad Sample,Mounted pelt used for teaching,true
+768,ARC-000768,Wolf Skull,Loose bone fragment,true
+769,ARC-000769,Lion Claw,Partial remains specimen,false
+770,ARC-000770,Salmon Specimen,Partial remains specimen,false
+771,ARC-000771,Bear Femur,Partial remains specimen,false
+772,ARC-000772,Toad Sample,Tissue sample for genetics,true
+773,ARC-000773,Beaver Skull,Tissue sample for genetics,true
+774,ARC-000774,Owl Wing,Mounted pelt used for teaching,true
+775,ARC-000775,Fox Pelt,Preserved specimen stored in fluid jar,true
+776,ARC-000776,Fox Pelt,Taxidermy display specimen,false
+777,ARC-000777,Fox Pelt,Egg sample in container,true
+778,ARC-000778,Salmon Specimen,Cleaned bone specimen,false
+779,ARC-000779,Salmon Specimen,Tissue sample for genetics,true
+780,ARC-000780,Lion Claw,Cleaned bone specimen,true
+781,ARC-000781,Owl Wing,Full skeleton display,true
+782,ARC-000782,Fox Pelt,Taxidermy display specimen,true
+783,ARC-000783,Heron Egg,Taxidermy display specimen,true
+784,ARC-000784,Wolf Skull,Tissue sample for genetics,false
+785,ARC-000785,Beaver Skull,Fluid jar sample with tag,true
+786,ARC-000786,Salmon Specimen,Fluid jar sample with tag,true
+787,ARC-000787,Toad Sample,Partial remains specimen,false
+788,ARC-000788,Wolf Skull,Full skeleton display,true
+789,ARC-000789,Toad Sample,Tissue sample for genetics,false
+790,ARC-000790,Wolf Skull,Partial remains specimen,true
+791,ARC-000791,Salmon Specimen,Fluid jar sample with tag,false
+792,ARC-000792,Owl Wing,Taxidermy display specimen,false
+793,ARC-000793,Wolf Skull,Taxidermy display specimen,false
+794,ARC-000794,Bear Femur,Egg sample in container,true
+795,ARC-000795,Bear Femur,Partial remains specimen,true
+796,ARC-000796,Toad Sample,Cleaned bone specimen,true
+797,ARC-000797,Eagle Feather,Loose bone fragment,false
+798,ARC-000798,Bear Femur,Tissue sample for genetics,true
+799,ARC-000799,Heron Egg,Full skeleton display,true
+800,ARC-000800,Wolf Skull,Full skeleton display,true
+801,ARC-000801,Owl Wing,Loose bone fragment,true
+802,ARC-000802,Salmon Specimen,Egg sample in container,true
+803,ARC-000803,Fox Pelt,Taxidermy display specimen,true
+804,ARC-000804,Toad Sample,Loose bone fragment,true
+805,ARC-000805,Heron Egg,Cleaned bone specimen,false
+806,ARC-000806,Bear Femur,Fluid jar sample with tag,false
+807,ARC-000807,Lion Claw,Preserved specimen stored in fluid jar,true
+808,ARC-000808,Wolf Skull,Fluid jar sample with tag,true
+809,ARC-000809,Salmon Specimen,Partial remains specimen,true
+810,ARC-000810,Salmon Specimen,Tissue sample for genetics,true
+811,ARC-000811,Salmon Specimen,Mounted pelt used for teaching,true
+812,ARC-000812,Eagle Feather,Preserved specimen stored in fluid jar,true
+813,ARC-000813,Toad Sample,Mounted pelt used for teaching,false
+814,ARC-000814,Bear Femur,Preserved specimen stored in fluid jar,false
+815,ARC-000815,Toad Sample,Taxidermy display specimen,false
+816,ARC-000816,Heron Egg,Taxidermy display specimen,true
+817,ARC-000817,Wolf Skull,Partial remains specimen,true
+818,ARC-000818,Salmon Specimen,Fluid jar sample with tag,false
+819,ARC-000819,Eagle Feather,Preserved specimen stored in fluid jar,true
+820,ARC-000820,Lion Claw,Fluid jar sample with tag,false
+821,ARC-000821,Salmon Specimen,Egg sample in container,true
+822,ARC-000822,Toad Sample,Mounted pelt used for teaching,false
+823,ARC-000823,Beaver Skull,Tissue sample for genetics,true
+824,ARC-000824,Fox Pelt,Fluid jar sample with tag,true
+825,ARC-000825,Toad Sample,Egg sample in container,true
+826,ARC-000826,Fox Pelt,Preserved specimen stored in fluid jar,true
+827,ARC-000827,Bear Femur,Fluid jar sample with tag,true
+828,ARC-000828,Salmon Specimen,Preserved specimen stored in fluid jar,true
+829,ARC-000829,Toad Sample,Egg sample in container,true
+830,ARC-000830,Fox Pelt,Loose bone fragment,false
+831,ARC-000831,Salmon Specimen,Mounted pelt used for teaching,false
+832,ARC-000832,Fox Pelt,Preserved specimen stored in fluid jar,false
+833,ARC-000833,Heron Egg,Tissue sample for genetics,false
+834,ARC-000834,Wolf Skull,Partial remains specimen,true
+835,ARC-000835,Salmon Specimen,Full skeleton display,true
+836,ARC-000836,Salmon Specimen,Egg sample in container,true
+837,ARC-000837,Owl Wing,Full skeleton display,false
+838,ARC-000838,Fox Pelt,Egg sample in container,true
+839,ARC-000839,Toad Sample,Tissue sample for genetics,true
+840,ARC-000840,Heron Egg,Partial remains specimen,false
+841,ARC-000841,Heron Egg,Partial remains specimen,false
+842,ARC-000842,Fox Pelt,Preserved specimen stored in fluid jar,true
+843,ARC-000843,Wolf Skull,Partial remains specimen,true
+844,ARC-000844,Lion Claw,Taxidermy display specimen,true
+845,ARC-000845,Bear Femur,Mounted pelt used for teaching,true
+846,ARC-000846,Eagle Feather,Tissue sample for genetics,true
+847,ARC-000847,Toad Sample,Cleaned bone specimen,true
+848,ARC-000848,Wolf Skull,Full skeleton display,true
+849,ARC-000849,Wolf Skull,Mounted pelt used for teaching,false
+850,ARC-000850,Wolf Skull,Partial remains specimen,false
+851,ARC-000851,Wolf Skull,Full skeleton display,true
+852,ARC-000852,Eagle Feather,Cleaned bone specimen,true
+853,ARC-000853,Fox Pelt,Tissue sample for genetics,true
+854,ARC-000854,Heron Egg,Loose bone fragment,false
+855,ARC-000855,Lion Claw,Mounted pelt used for teaching,true
+856,ARC-000856,Owl Wing,Fluid jar sample with tag,true
+857,ARC-000857,Salmon Specimen,Tissue sample for genetics,false
+858,ARC-000858,Beaver Skull,Egg sample in container,true
+859,ARC-000859,Salmon Specimen,Fluid jar sample with tag,false
+860,ARC-000860,Salmon Specimen,Preserved specimen stored in fluid jar,true
+861,ARC-000861,Wolf Skull,Partial remains specimen,false
+862,ARC-000862,Owl Wing,Mounted pelt used for teaching,true
+863,ARC-000863,Eagle Feather,Partial remains specimen,true
+864,ARC-000864,Lion Claw,Tissue sample for genetics,true
+865,ARC-000865,Wolf Skull,Mounted pelt used for teaching,true
+866,ARC-000866,Wolf Skull,Taxidermy display specimen,true
+867,ARC-000867,Heron Egg,Taxidermy display specimen,true
+868,ARC-000868,Lion Claw,Cleaned bone specimen,false
+869,ARC-000869,Bear Femur,Taxidermy display specimen,false
+870,ARC-000870,Heron Egg,Fluid jar sample with tag,true
+871,ARC-000871,Bear Femur,Full skeleton display,true
+872,ARC-000872,Heron Egg,Loose bone fragment,true
+873,ARC-000873,Eagle Feather,Taxidermy display specimen,true
+874,ARC-000874,Lion Claw,Mounted pelt used for teaching,false
+875,ARC-000875,Toad Sample,Partial remains specimen,false
+876,ARC-000876,Wolf Skull,Egg sample in container,true
+877,ARC-000877,Beaver Skull,Loose bone fragment,false
+878,ARC-000878,Wolf Skull,Taxidermy display specimen,true
+879,ARC-000879,Beaver Skull,Fluid jar sample with tag,true
+880,ARC-000880,Fox Pelt,Fluid jar sample with tag,true
+881,ARC-000881,Heron Egg,Full skeleton display,true
+882,ARC-000882,Fox Pelt,Egg sample in container,true
+883,ARC-000883,Bear Femur,Partial remains specimen,true
+884,ARC-000884,Salmon Specimen,Tissue sample for genetics,true
+885,ARC-000885,Toad Sample,Mounted pelt used for teaching,true
+886,ARC-000886,Bear Femur,Partial remains specimen,false
+887,ARC-000887,Bear Femur,Fluid jar sample with tag,true
+888,ARC-000888,Salmon Specimen,Tissue sample for genetics,true
+889,ARC-000889,Lion Claw,Fluid jar sample with tag,true
+890,ARC-000890,Wolf Skull,Preserved specimen stored in fluid jar,true
+891,ARC-000891,Salmon Specimen,Tissue sample for genetics,false
+892,ARC-000892,Owl Wing,Loose bone fragment,false
+893,ARC-000893,Toad Sample,Preserved specimen stored in fluid jar,true
+894,ARC-000894,Beaver Skull,Egg sample in container,true
+895,ARC-000895,Toad Sample,Tissue sample for genetics,true
+896,ARC-000896,Wolf Skull,Partial remains specimen,true
+897,ARC-000897,Heron Egg,Full skeleton display,true
+898,ARC-000898,Toad Sample,Cleaned bone specimen,true
+899,ARC-000899,Lion Claw,Preserved specimen stored in fluid jar,false
+900,ARC-000900,Heron Egg,Fluid jar sample with tag,true
+901,ARC-000901,Beaver Skull,Preserved specimen stored in fluid jar,true
+902,ARC-000902,Lion Claw,Partial remains specimen,true
+903,ARC-000903,Toad Sample,Loose bone fragment,true
+904,ARC-000904,Salmon Specimen,Mounted pelt used for teaching,false
+905,ARC-000905,Wolf Skull,Full skeleton display,true
+906,ARC-000906,Owl Wing,Partial remains specimen,true
+907,ARC-000907,Toad Sample,Mounted pelt used for teaching,true
+908,ARC-000908,Heron Egg,Mounted pelt used for teaching,true
+909,ARC-000909,Bear Femur,Egg sample in container,true
+910,ARC-000910,Salmon Specimen,Full skeleton display,true
+911,ARC-000911,Lion Claw,Partial remains specimen,true
+912,ARC-000912,Owl Wing,Preserved specimen stored in fluid jar,true
+913,ARC-000913,Fox Pelt,Cleaned bone specimen,true
+914,ARC-000914,Owl Wing,Tissue sample for genetics,false
+915,ARC-000915,Lion Claw,Loose bone fragment,true
+916,ARC-000916,Heron Egg,Taxidermy display specimen,true
+917,ARC-000917,Beaver Skull,Partial remains specimen,true
+918,ARC-000918,Salmon Specimen,Taxidermy display specimen,false
+919,ARC-000919,Toad Sample,Loose bone fragment,true
+920,ARC-000920,Heron Egg,Mounted pelt used for teaching,false
+921,ARC-000921,Beaver Skull,Preserved specimen stored in fluid jar,true
+922,ARC-000922,Fox Pelt,Loose bone fragment,true
+923,ARC-000923,Lion Claw,Tissue sample for genetics,true
+924,ARC-000924,Fox Pelt,Mounted pelt used for teaching,false
+925,ARC-000925,Beaver Skull,Mounted pelt used for teaching,true
+926,ARC-000926,Fox Pelt,Preserved specimen stored in fluid jar,true
+927,ARC-000927,Bear Femur,Partial remains specimen,true
+928,ARC-000928,Wolf Skull,Partial remains specimen,false
+929,ARC-000929,Beaver Skull,Egg sample in container,false
+930,ARC-000930,Bear Femur,Loose bone fragment,true
+931,ARC-000931,Wolf Skull,Mounted pelt used for teaching,true
+932,ARC-000932,Bear Femur,Fluid jar sample with tag,true
+933,ARC-000933,Lion Claw,Cleaned bone specimen,false
+934,ARC-000934,Wolf Skull,Cleaned bone specimen,false
+935,ARC-000935,Bear Femur,Mounted pelt used for teaching,false
+936,ARC-000936,Wolf Skull,Mounted pelt used for teaching,true
+937,ARC-000937,Heron Egg,Full skeleton display,false
+938,ARC-000938,Beaver Skull,Tissue sample for genetics,true
+939,ARC-000939,Heron Egg,Preserved specimen stored in fluid jar,true
+940,ARC-000940,Owl Wing,Cleaned bone specimen,true
+941,ARC-000941,Wolf Skull,Tissue sample for genetics,false
+942,ARC-000942,Lion Claw,Tissue sample for genetics,true
+943,ARC-000943,Bear Femur,Partial remains specimen,false
+944,ARC-000944,Lion Claw,Full skeleton display,true
+945,ARC-000945,Lion Claw,Partial remains specimen,true
+946,ARC-000946,Wolf Skull,Loose bone fragment,true
+947,ARC-000947,Beaver Skull,Taxidermy display specimen,true
+948,ARC-000948,Lion Claw,Egg sample in container,true
+949,ARC-000949,Salmon Specimen,Partial remains specimen,false
+950,ARC-000950,Eagle Feather,Mounted pelt used for teaching,true
+951,ARC-000951,Lion Claw,Full skeleton display,false
+952,ARC-000952,Beaver Skull,Tissue sample for genetics,false
+953,ARC-000953,Owl Wing,Mounted pelt used for teaching,true
+954,ARC-000954,Fox Pelt,Partial remains specimen,false
+955,ARC-000955,Beaver Skull,Preserved specimen stored in fluid jar,false
+956,ARC-000956,Toad Sample,Egg sample in container,true
+957,ARC-000957,Eagle Feather,Mounted pelt used for teaching,true
+958,ARC-000958,Wolf Skull,Fluid jar sample with tag,true
+959,ARC-000959,Eagle Feather,Taxidermy display specimen,true
+960,ARC-000960,Lion Claw,Egg sample in container,true
+961,ARC-000961,Bear Femur,Partial remains specimen,true
+962,ARC-000962,Heron Egg,Fluid jar sample with tag,true
+963,ARC-000963,Heron Egg,Preserved specimen stored in fluid jar,true
+964,ARC-000964,Fox Pelt,Egg sample in container,true
+965,ARC-000965,Bear Femur,Partial remains specimen,false
+966,ARC-000966,Toad Sample,Preserved specimen stored in fluid jar,false
+967,ARC-000967,Fox Pelt,Mounted pelt used for teaching,true
+968,ARC-000968,Beaver Skull,Egg sample in container,true
+969,ARC-000969,Owl Wing,Partial remains specimen,true
+970,ARC-000970,Bear Femur,Preserved specimen stored in fluid jar,true
+971,ARC-000971,Eagle Feather,Partial remains specimen,true
+972,ARC-000972,Wolf Skull,Tissue sample for genetics,true
+973,ARC-000973,Eagle Feather,Loose bone fragment,false
+974,ARC-000974,Fox Pelt,Fluid jar sample with tag,true
+975,ARC-000975,Eagle Feather,Preserved specimen stored in fluid jar,false
+976,ARC-000976,Wolf Skull,Cleaned bone specimen,false
+977,ARC-000977,Heron Egg,Cleaned bone specimen,false
+978,ARC-000978,Toad Sample,Loose bone fragment,false
+979,ARC-000979,Eagle Feather,Egg sample in container,true
+980,ARC-000980,Bear Femur,Tissue sample for genetics,false
+981,ARC-000981,Eagle Feather,Preserved specimen stored in fluid jar,true
+982,ARC-000982,Lion Claw,Egg sample in container,false
+983,ARC-000983,Bear Femur,Mounted pelt used for teaching,true
+984,ARC-000984,Lion Claw,Mounted pelt used for teaching,false
+985,ARC-000985,Fox Pelt,Taxidermy display specimen,false
+986,ARC-000986,Bear Femur,Partial remains specimen,true
+987,ARC-000987,Fox Pelt,Cleaned bone specimen,false
+988,ARC-000988,Fox Pelt,Full skeleton display,true
+989,ARC-000989,Heron Egg,Egg sample in container,false
+990,ARC-000990,Eagle Feather,Taxidermy display specimen,false
+991,ARC-000991,Toad Sample,Tissue sample for genetics,true
+992,ARC-000992,Salmon Specimen,Preserved specimen stored in fluid jar,false
+993,ARC-000993,Toad Sample,Fluid jar sample with tag,false
+994,ARC-000994,Eagle Feather,Egg sample in container,false
+995,ARC-000995,Bear Femur,Egg sample in container,true
+996,ARC-000996,Bear Femur,Tissue sample for genetics,false
+997,ARC-000997,Salmon Specimen,Cleaned bone specimen,true";
 
     }
 }
