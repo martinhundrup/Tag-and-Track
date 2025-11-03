@@ -1,0 +1,54 @@
+# Sprint 1 Report 8/18/25-10/5/25
+## YouTube link: 
+## What's New (User Facing)
+* N/A, we have yet to start development as we were collecting requirements.
+
+## Work Summary (Developer Facing)
+Our team met with the client multiple times to establish an understanding of what they
+want for the intended product. We created documentation, user stories, use case diagrams,
+(etc) to better lay out what we want the project to look like and function. While we
+were unable to create a prototype with code, we had created a prototype in figma that
+showcases how we would want our project to work and what we wanted the navigation to be.
+
+## Unfinished Work
+Since we had faced many issues with finding a suitable development environment that
+would support exporting a project to an iPad, we were unable to start developing
+the features that the client wished for. Due to this, we have not been able to work on
+any of our user stories up to this point.
+
+## Completed Issues/User Stories
+Here are links to the issues that we completed in this sprint:
+* N/A
+
+## Incomplete User Stories
+Here are links to issues we worked on but did not complete in this sprint:
+* US-01 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-02 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-03 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-04 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-05 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-06 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-07 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-08 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-09 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-10 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-11 - We ran into issues in starting development because we need XCode and a Mac device.
+* US-12 - We ran into issues in starting development because we need XCode and a Mac device.
+
+## Code Files for Review
+Please review the following code files, which were actively developed during this
+sprint, for quality:
+* N/A
+
+## Retrospective Summary
+Here's what went well:
+* Requirements collection
+* Creation of documentation
+* Evaluation of current process
+* Figma prototype created
+Here's what we'd like to improve:
+* User interface integration
+* Backend integration
+Here are changes we plan to implement in the next sprint:
+* An interactive user interface
+* Implement a database for testing
