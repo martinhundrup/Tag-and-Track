@@ -11,48 +11,43 @@ Tag & Track modernizes the museum’s paper-based specimen loan system. The app 
 ## Installation
 
 ### Prerequisites
-Because the team has not yet begun implementation, these are projected requirements:
-* Flutter SDK (latest stable version)
-* Android Studio or Visual Studio Code with Flutter extension
+Development Requirements:
+* Visual Studio Community with .NET Maui installed
 * Git
 * Access to test Arctos specimen data (read-only)
 
 ### Add-ons
 * `ZXing.Net.Maui.Controls`
     * install with `dotnet add package ZXing.Net.Maui.Controls --version 0.4.0`
-
-Planned add-ons include:
-* `qr_flutter` – for generating QR codes
 * `mobile_scanner` – for scanning QR/barcodes with the device camera
 * `sqflite` – for managing the local offline database
 * `emailer` – for sending automated email receipts
 * `http` – for interfacing with the Arctos API
 
 ### Installation Steps
-Implementation has not yet started, but installation will likely follow these steps once development begins:
 
 ```
 git clone https://github.com/martinhundrup/Tag-and-Track.git
-cd Tag-and-Track
-flutter pub get
-flutter run
+cd Tag-and-Track/code/Tag-And-Track
+dotnet restore
+dotnet build
 ```
 
 ## Functionality
-The first sprint focuses on design, requirements gathering, and planning. No functional code exists yet, but the initial version of the app will eventually support:
-* Scanning QR codes to view or update specimen status
-* Generating new QR labels for untagged specimens
-* Checking specimens in and out and logging all transactions
-* Sending automatic email receipts and saving digital loan sheets
-* Operating offline and syncing data once connected
-* Exporting transaction logs to CSV for upload to Arctos
+The current version of the app supports:
+* Scanning QR codes
+* Viewing specimens or other data
+    * This data is part of a test dataset
+* Navigating to other pages from the main page
 
 ## Known Problems
-As of Sprint 1, no code has been written, but the team has identified potential challenges:
+The team has identified the following challenges:
 * Ensuring iPadOS deployment without App Store distribution
 * Handling limited Wi-Fi connectivity in specimen storage rooms
 * Designing a clean and intuitive interface for non-technical users
 * Ensuring proper database synchronization between offline and online modes
+* Loading of large amounts of data in an efficient amount of time
+    * To replicate: try to load up a 1000 lines of data into a DataTable
 
 ## Contributing
 1. Fork it!
