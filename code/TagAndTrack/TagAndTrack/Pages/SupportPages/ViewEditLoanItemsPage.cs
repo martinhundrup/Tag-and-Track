@@ -2,10 +2,10 @@ using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class CheckInLoanPage : TagAndTrackPage
+    public class ViewEditLoanItemsPage : TagAndTrackPage
     {
-        protected new const string titleText = "Check in a Loan";
-        public CheckInLoanPage() { Initialize(); }
+        protected new const string titleText = "Add Item";
+        public ViewEditLoanItemsPage() { Initialize(); }
 
         protected override void Initialize()
         {

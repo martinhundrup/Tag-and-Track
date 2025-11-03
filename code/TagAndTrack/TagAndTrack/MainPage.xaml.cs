@@ -1,10 +1,13 @@
 ﻿using TagAndTrack.Pages;
 using TagAndTrack.Components;
+using TagAndTrack.Backend;
+using TagAndTrack.Backend.Items;
 
 namespace TagAndTrack
 {
     public partial class MainPage : ContentPage
     {
+
         public MainPage()
         {
             InitializeComponent();
@@ -15,6 +18,12 @@ namespace TagAndTrack
         {
             Title = "Tag and Track";
             Background = CurrentTheme.Instance.Theme.Background;
+            DebugLogger.Init();
+            DebugLogger.Log(DebugLogger.GetLogFilePath());
+            DebugLogger.Log("App started");
+            //System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath()));
+
+            ItemManager.LoadAllDebugItems();
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
@@ -38,9 +47,11 @@ namespace TagAndTrack
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = GridLength.Auto }
+                    new RowDefinition { Height = GridLength.Auto },
                 }
             };
+
+            
 
             var buttons = new[]
             {

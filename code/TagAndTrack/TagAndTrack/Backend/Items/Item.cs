@@ -1,7 +1,7 @@
-﻿namespace TagAndTrack.Items
+﻿namespace TagAndTrack.Backend.Items
 {
 
-    internal abstract class Item
+    public abstract class Item
     {
         public enum ItemType
         {
@@ -47,6 +47,12 @@
         }
 
         public string? Description // brief description of the item
+        {
+            get;
+            protected set;
+        }
+
+        public bool Status // true for present, false for checked out
         {
             get;
             protected set;

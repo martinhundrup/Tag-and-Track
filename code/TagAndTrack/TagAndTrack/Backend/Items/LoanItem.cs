@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TagAndTrack.Items
+﻿namespace TagAndTrack.Backend.Items
 {
-    internal class LoanItem : Item
+    public class LoanItem : Item
     {
         public LoanItem()
         {

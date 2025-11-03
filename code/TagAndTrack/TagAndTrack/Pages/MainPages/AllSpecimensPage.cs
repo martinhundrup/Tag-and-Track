@@ -1,3 +1,5 @@
+using TagAndTrack.Backend;
+using TagAndTrack.Backend.Items;
 using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
@@ -18,6 +20,17 @@ namespace TagAndTrack.Pages
                 }
             };
             Title = titleText;
+
+            string dtHeader = "ID,Arctos ID,Name,Description,Status";
+            var dt = new DataTableTemplate(dtHeader, ItemManager.GetItemsOfType(Item.ItemType.Specimen));
+
+
+            // Wrap the data table in a ScrollView so content is vertically scrollable
+            Content = new ScrollView
+            {
+                Orientation = ScrollOrientation.Vertical,
+                Content = dt
+            };
         }
     }
 }

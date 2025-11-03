@@ -1,14 +1,12 @@
 using TagAndTrack.Components;
-using Microsoft.Maui.Controls;
 
 namespace TagAndTrack.Pages
 {
-    public class ScanItemPage : TagAndTrackPage
+    public class CheckInLoanPage : TagAndTrackPage
     {
-        protected new const string titleText = "Scan Item";
+        protected new const string titleText = "Check in a Loan";
         private Label? scanResultLabel;
-
-        public ScanItemPage() { Initialize(); }
+        public CheckInLoanPage() { Initialize(); }
 
         protected override void Initialize()
         {
@@ -24,40 +22,19 @@ namespace TagAndTrack.Pages
 
             var scanView = new ScanView
             {
-                WidthRequest = 512,
-                HeightRequest = 512
+                WidthRequest = 800,
+                HeightRequest = 800
             };
 
             scanResultLabel = new Label
             {
-                Text = "Scan a QR code...",
+                Text = "Looking for a QR code...",
                 FontSize = 18,
                 HorizontalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0, 20)
             };
 
-            var qr = new QrCodeView
-            {
-                Value = "Specimen:3930587",
-                Size = 512,
-                Padding = 4,          // quiet zone in pixels
-                Foreground = Colors.Black
-            };
-
-
             scanView.ScanCaptured += ScanCaptured;
-
-            Content = new VerticalStackLayout
-            {
-                Padding = 20,
-                Spacing = 20,
-                Children =
-                {
-                    scanView,
-                    scanResultLabel,
-                    qr,
-                }
-            };
         }
 
         private void ScanCaptured(object? sender, ScanCapturedEventArgs args)

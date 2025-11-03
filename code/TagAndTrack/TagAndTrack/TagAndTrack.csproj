@@ -26,6 +26,7 @@
 		<!-- App Identifier -->
 		<ApplicationId>com.companyname.tagandtrack</ApplicationId>
 
+
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
@@ -43,6 +44,7 @@
 		<!-- Do NOT set <CodesignProvision> to a specific GUID on free accounts -->
 		<ApplicationId>com.martinhundrup.tagandtrack</ApplicationId>
   		<CodesignKey>Apple Development</CodesignKey>
+		<CodesignProvision>Automatic</CodesignProvision>
 	</PropertyGroup>
 
 	<ItemGroup>

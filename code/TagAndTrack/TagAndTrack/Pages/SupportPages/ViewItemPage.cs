@@ -2,10 +2,10 @@ using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class StartLoanPage : TagAndTrackPage
+    public class ViewItemPage : TagAndTrackPage
     {
-        new protected const string titleText = "Start Loan";
-        public StartLoanPage() { Initialize(); }
+        protected new const string titleText = "Add Item";
+        public ViewItemPage() { Initialize(); }
 
         protected override void Initialize()
         {
@@ -19,5 +19,5 @@ namespace TagAndTrack.Pages
             };
             Title = titleText;
         }
-    }    
+    }
 }
