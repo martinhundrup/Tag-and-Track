@@ -1,5 +1,6 @@
 ﻿using TagAndTrack.Pages;
 using TagAndTrack.Components;
+using TagAndTrack.Backend;
 using TagAndTrack.Backend.Items;
 
 namespace TagAndTrack
@@ -17,6 +18,11 @@ namespace TagAndTrack
         {
             Title = "Tag and Track";
             Background = CurrentTheme.Instance.Theme.Background;
+            DebugLogger.Init();
+            DebugLogger.Log(DebugLogger.GetLogFilePath());
+            DebugLogger.Log("App started");
+            //System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath()));
+
             ItemManager.LoadAllDebugItems();
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
