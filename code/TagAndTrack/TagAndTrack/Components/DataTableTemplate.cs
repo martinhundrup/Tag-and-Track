@@ -17,21 +17,19 @@ namespace TagAndTrack.Components
         /// </summary>
         /// <param name="headers">The list of headers that there will be.</param>
         /// <param name="csvString">A csv string of data values (we can change this as we get more data interfacing).</param>
-        /// TODO: Add the headers and refine how it looks cause it'sugly rn.
-        public DataTableTemplate(double height, double width, List<string> headers, string csvString)
+        public DataTableTemplate(string headerString, string csvString)
         {
             RowSpacing = 1;
             ColumnSpacing = 1;
             BackgroundColor = CurrentTheme.Instance.Theme.Background;
-            WidthRequest = width;
-            HeightRequest = height;
 
-            int columnCount = headers.Count;
+            string[] headers = headerString.Split(new[] { ',' });
             string[] rows = csvString.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             string[] data;
 
 
             int rowCount = rows.Length; // +1 for header row
+            int columnCount = headers.Length;
 
             // Define rows and columns.
             for (int i = 0; i < rowCount; i++)
