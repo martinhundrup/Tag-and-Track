@@ -1,10 +1,12 @@
 ﻿using TagAndTrack.Pages;
 using TagAndTrack.Components;
+using TagAndTrack.Backend.Items;
 
 namespace TagAndTrack
 {
     public partial class MainPage : ContentPage
     {
+
         public MainPage()
         {
             InitializeComponent();
@@ -15,6 +17,7 @@ namespace TagAndTrack
         {
             Title = "Tag and Track";
             Background = CurrentTheme.Instance.Theme.Background;
+            ItemManager.LoadAllDebugItems();
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
@@ -41,6 +44,8 @@ namespace TagAndTrack
                     new RowDefinition { Height = GridLength.Auto },
                 }
             };
+
+            
 
             var buttons = new[]
             {

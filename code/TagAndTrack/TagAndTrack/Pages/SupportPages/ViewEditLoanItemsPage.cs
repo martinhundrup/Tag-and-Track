@@ -2,10 +2,10 @@ using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class AllSpecimensPage : TagAndTrackPage
+    public class ViewEditLoanItemsPage : TagAndTrackPage
     {
-        protected new const string titleText = "View All Specimens";
-        public AllSpecimensPage() { Initialize(); }
+        protected new const string titleText = "Add Item";
+        public ViewEditLoanItemsPage() { Initialize(); }
 
         protected override void Initialize()
         {
