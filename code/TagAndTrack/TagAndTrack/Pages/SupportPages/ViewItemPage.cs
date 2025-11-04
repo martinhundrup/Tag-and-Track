@@ -67,16 +67,28 @@ namespace TagAndTrack.Pages
             AddInfoRow(info, 4, "Status", specimen.Status ? "Present" : "Checked out");
             AddInfoRow(info, 5, "Description", specimen.Description ?? "");
 
+            var qr = new QrCodeView
+            {
+                Value = specimen.QRID,
+                Size = 220,
+                Padding = 4,
+            };
+
+
             var root = new VerticalStackLayout
             {
                 Spacing = 16,
                 Padding = new Thickness(16),
-                Children = { header, info }
+                Children = { header, info, qr }
             };
             ApplyThemeToLayout(root);
 
             // simple page that scrolls if needed
-            Content = new ScrollView { Content = root };
+            Content = new ScrollView
+            {
+                Orientation = ScrollOrientation.Vertical,
+                Content = root
+            };
         }
 
         protected void LoanView(LoanItem loan)
@@ -103,6 +115,13 @@ namespace TagAndTrack.Pages
             AddInfoRow(info, 5, "Checked out", loan.DateCheckedOut == default ? "Unknown" : loan.DateCheckedOut.ToString("yyyy-MM-dd"));
             AddInfoRow(info, 6, "Due", loan.DateDue == default ? "Unknown" : loan.DateDue.ToString("yyyy-MM-dd"));
             AddInfoRow(info, 7, "Specimens", $"{loan.Specimens.Count}");
+
+            var qr = new QrCodeView
+            {
+                Value = loan.QRID,
+                Size = 220,
+                Padding = 4,
+            };
 
             var listLabel = new Label
             {
@@ -191,9 +210,14 @@ namespace TagAndTrack.Pages
             };
             root.Children.Add(listContainer);
             Grid.SetRow(listContainer, 2);
-
+            root.Children.Add(qr);
             ApplyThemeToLayout(root);
-            Content = root; // no outer ScrollView to preserve virtualization
+
+            Content = new ScrollView
+            {
+                Orientation = ScrollOrientation.Vertical,
+                Content = root
+            };
         }
 
         private Grid BuildInfoGrid()

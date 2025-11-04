@@ -1,3 +1,4 @@
+using TagAndTrack.Backend;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Components;
 
@@ -52,10 +53,12 @@ namespace TagAndTrack.Pages
 
         private async void ScanCaptured(object? sender, ScanCapturedEventArgs args)
         {
+            DebugLogger.Log("scan captured!");
             ScannedQRItem.lastScannedItem = args.Text;
 
             if (ItemManager.GetItemByQRID(args.Text) != null)
             {
+                DebugLogger.Log($"viewing page for item {args.Text}");
                 await Navigation.PushAsync(new ViewItemPage());
             }
             else
