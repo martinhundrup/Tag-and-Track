@@ -1,3 +1,4 @@
+using TagAndTrack.Backend.Items;
 using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
@@ -49,9 +50,18 @@ namespace TagAndTrack.Pages
             };
         }
 
-        private void ScanCaptured(object? sender, ScanCapturedEventArgs args)
+        private async void ScanCaptured(object? sender, ScanCapturedEventArgs args)
         {
-            MainThread.BeginInvokeOnMainThread(() => scanResultLabel.Text = args.Text);
+            ScannedQRItem.lastScannedItem = args.Text;
+
+            if (ItemManager.GetItemByQRID(args.Text) != null)
+            {
+                await Navigation.PushAsync(new ViewItemPage());
+            }
+            else
+            {
+                MainThread.BeginInvokeOnMainThread(() => scanResultLabel.Text = $"Value {args.Text} not recognized!");
+            }
         }
     }
 }

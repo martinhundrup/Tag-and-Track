@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace TagAndTrack.Backend.Items
 {
@@ -23,6 +25,8 @@ namespace TagAndTrack.Backend.Items
         {
             DebugLogger.Log("loading all debug items");
             items.AddRange(LoadDebugSpecimens());
+            DebugLogger.Log("loading all debug loans");
+            items.AddRange(LoadDebugLoans());
             DebugLogger.Log($"loaded {items.Count} items");
         }
 
@@ -87,7 +91,85 @@ namespace TagAndTrack.Backend.Items
 
             return result;
         }
+        // load loans from CSV (one line per loan)
+        public static List<LoanItem> LoadDebugLoans()
+        {
+            var result = new List<LoanItem>(16);
+            using var reader = new StringReader(DebugItems.loanCSV);
 
+            // skip optional header if present
+            string? line = reader.ReadLine();
+            if (line == null) return result;
+            result.Add(ParseLoanLine(line));
+
+            // remaining lines
+            while ((line = reader.ReadLine()) != null)
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                result.Add(ParseLoanLine(line));
+            }
+
+            return result;
+        }
+
+        private static LoanItem ParseLoanLine(string line)
+        {
+            // split 9 fields: ID, ArctosID, Name, Description, Borrower, Email, DateOut, DateDue, Items
+            // Name/Description may not contain commas in your generated data; if that changes, use a CSV parser.
+            var parts = line.Split(',', 9, StringSplitOptions.None);
+            if (parts.Length < 9) throw new FormatException($"Malformed loan line: {line}");
+
+            // parse fixed fields
+            int id = int.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
+
+            string arctos = parts[1].Trim();
+            string? arctosId = string.Equals(arctos, "NULL", StringComparison.OrdinalIgnoreCase) || arctos.Length == 0
+                ? null
+                : arctos;
+
+            string name = parts[2].Trim();
+            string description = parts[3].Trim();
+            string borrower = parts[4].Trim();
+            string email = parts[5].Trim();
+
+            DateTime dateOut = DateTime.Parse(parts[6].Trim(), CultureInfo.InvariantCulture);
+            DateTime dateDue = DateTime.Parse(parts[7].Trim(), CultureInfo.InvariantCulture);
+
+            string itemsField = parts[8].Trim();
+
+
+            // create loan
+            var loan = new LoanItem(name, description);
+            IdProp?.SetValue(loan, id);
+            ArctosIdProp?.SetValue(loan, arctosId);
+
+            // mark loans present in system
+            StatusProp?.SetValue(loan, true);
+            loan.SetBorrower(borrower);
+            loan.SetEmail(email);
+            loan.SetDates(dateOut, dateDue);
+
+
+            // parse items list: {1,2,3}
+            if (!(itemsField.StartsWith("{") && itemsField.EndsWith("}")))
+                throw new FormatException($"Items field missing braces: {itemsField}");
+
+
+            var inner = itemsField.Substring(1, itemsField.Length - 2);
+            if (!string.IsNullOrWhiteSpace(inner))
+            {
+                var ids = inner.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var s in ids)
+                {
+                    int sid = int.Parse(s.Trim(), CultureInfo.InvariantCulture);
+                    var specimen = GetItemByQRID($"{Item.ItemType.Specimen.ToString()}:{sid}");
+                    if (specimen == null) throw new KeyNotFoundException($"Specimen ID {sid} not found for loan {id}");
+                    loan.AddSpecimen(specimen as SpecimenItem);
+                }
+            }
+
+            return loan;
+        }
         private static int EstimateLineCount(string s)
         {
             int count = 1;
@@ -100,8 +182,11 @@ namespace TagAndTrack.Backend.Items
 
         public static void AddItem(Item item)
         {
-            if (items.Any(i => i.ID == item.ID))
-                throw new ArgumentException($"Item with ID {item.ID} already exists.");
+            if (items.Any(i => i.QRID == item.QRID))
+            {
+                DebugLogger.Log($"Item with QRID {item.ID} already exists.");
+                throw new ArgumentException($"Item with QRID {item.ID} already exists.");
+            }
             items.Add(item);
         }
 
@@ -119,6 +204,43 @@ namespace TagAndTrack.Backend.Items
                   .Append(item.Name).Append(',')
                   .Append(item.Description).Append(',')
                   .Append(item.Status).Append('\n');
+            }
+
+            return sb.ToString();
+        }
+
+        private static StringBuilder LoanItemsString(IReadOnlyList<Item> items)
+        {
+            var sb = new System.Text.StringBuilder(items.Count * 8);
+
+            foreach (var item in items)
+            {
+                sb.Append(item.ID.ToString()).Append(".");
+            }
+
+            return sb;
+        }
+
+
+        public static string GetLoansCSV()
+        {
+            var filtered = items.Where(item => item.Type == Item.ItemType.Loan).ToList();
+            // Rough capacity estimate: ~64 chars per row
+            var sb = new System.Text.StringBuilder(filtered.Count * 64);
+
+            foreach (var item in filtered)
+            {
+                var loan = item as LoanItem;
+                if (loan == null) continue;
+                sb.Append(loan.ID).Append(',')
+                  .Append(loan.Name).Append(',')
+                  .Append(loan.Description).Append(',')
+                  .Append(loan.Borrower).Append(',')
+                  .Append(loan.Email).Append(',')
+                  .Append(loan.DateCheckedOut).Append(',')
+                  .Append(loan.DateDue).Append(',')
+                  .Append(LoanItemsString(loan.Specimens).Append(',')
+                  .Append(loan.Status).Append('\n'));
             }
 
             return sb.ToString();
