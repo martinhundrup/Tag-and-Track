@@ -21,7 +21,7 @@ namespace TagAndTrack
             DebugLogger.Init();
             DebugLogger.Log(DebugLogger.GetLogFilePath());
             DebugLogger.Log("App started");
-            //System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath()));
+            //System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath())); // uncoomment to open log file location windows ONLY
 
             ItemManager.LoadAllDebugItems();
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
@@ -63,7 +63,10 @@ namespace TagAndTrack
                 new TagAndTrackButton("Add Item", new Command(async () => await Navigation.PushAsync(new AddItemPage()))),
                 new TagAndTrackButton("Login", new Command(async () => await Navigation.PushAsync(new LoginPage()))),
                 new TagAndTrackButton("Settings", new Command(async () => await Navigation.PushAsync(new SettingsPage()))),
-                new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme()))
+                new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme())),
+                new TagAndTrackButton("Specimen:1", new Command(async () => foo())),
+                new TagAndTrackButton("Loan:1", new Command(async () => bar())),
+
             };
 
             for (int i = 0; i < buttons.Length; i++)
@@ -77,5 +80,16 @@ namespace TagAndTrack
 
             Content = grid;
         } // end initialize()
+
+        private async void foo()
+        {
+            ScannedQRItem.lastScannedItem = "Specimen:1";
+            await Navigation.PushAsync(new ViewItemPage());
+        }
+        private async void bar()
+        {
+            ScannedQRItem.lastScannedItem = "Loan:1";
+            await Navigation.PushAsync(new ViewItemPage());
+        }
     }
 }

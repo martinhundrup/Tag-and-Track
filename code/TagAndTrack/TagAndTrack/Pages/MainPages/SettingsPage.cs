@@ -18,6 +18,41 @@ namespace TagAndTrack.Pages
                 }
             };
             Title = titleText;
+
+            var qr = new QrCodeView[]
+                { new QrCodeView {
+                    Value = "Specimen:1",
+                    Size = 220,
+                    Padding = 4,          // quiet zone in pixels
+                    Foreground = Colors.Black
+                },
+                new QrCodeView {
+                    Value = "Specimen:2",
+                    Size = 220,
+                    Padding = 4,          // quiet zone in pixels
+                    Foreground = Colors.Black
+                },
+                new QrCodeView {
+                    Value = "Loan:1",
+                    Size = 220,
+                    Padding = 4,          // quiet zone in pixels
+                    Foreground = Colors.Black
+                },
+                new QrCodeView {
+                    Value = "Loan:2",
+                    Size = 220,
+                    Padding = 4,          // quiet zone in pixels
+                    Foreground = Colors.Black
+                },
+            };
+
+            Content = new HorizontalStackLayout()
+            {
+                qr[0],
+                qr[1],
+                qr[2],
+                qr[3],
+            };
         }
     }
 }

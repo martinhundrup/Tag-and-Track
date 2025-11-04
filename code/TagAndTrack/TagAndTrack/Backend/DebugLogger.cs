@@ -6,8 +6,9 @@ namespace TagAndTrack.Backend
     internal static class DebugLogger
     {
         private static readonly string logFilePath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
             "TagAndTrack_DebugLog.txt");
+
 
         public static void Init()
         {
