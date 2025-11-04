@@ -20,7 +20,7 @@ Development Requirements:
 * `ZXing.Net.Maui.Controls`
     * install with `dotnet add package ZXing.Net.Maui.Controls --version 0.4.0`
 * `mobile_scanner` – for scanning QR/barcodes with the device camera
-* `sqflite` – for managing the local offline database
+* `SQLite` – for managing the local offline database
 * `emailer` – for sending automated email receipts
 * `http` – for interfacing with the Arctos API
 
