@@ -18,17 +18,25 @@ namespace TagAndTrack.Pages
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
-            Title = titleText;
 
             string dtHeader = "ID,Name,Description,Borrower,Email,Date Checked Out,Date Due,Specimens,Status";
             var dt = new DataTableTemplate(dtHeader, ItemManager.GetLoansCSV());
+
+            var header = new HeaderTemplate(titleText);
 
 
             // Wrap the data table in a ScrollView so content is vertically scrollable
             Content = new ScrollView
             {
                 Orientation = ScrollOrientation.Vertical,
-                Content = dt
+                Content = new VerticalStackLayout()
+                {
+                    Children =
+                    {
+                        header,
+                        dt
+                    }
+                }
             };
         }
     }

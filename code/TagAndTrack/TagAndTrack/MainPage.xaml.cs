@@ -16,7 +16,7 @@ namespace TagAndTrack
 
         private void Initialize()
         {
-            Title = "Tag and Track";
+            Title = null;
             Background = CurrentTheme.Instance.Theme.Background;
             DebugLogger.Init();
             DebugLogger.Log(DebugLogger.GetLogFilePath());
@@ -51,7 +51,7 @@ namespace TagAndTrack
                 }
             };
 
-            
+
 
             var buttons = new[]
             {
@@ -78,7 +78,12 @@ namespace TagAndTrack
                 Grid.SetColumn(buttons[i], col);
             }
 
-            Content = grid;
+            Content = new StackLayout()
+            {
+                Children = { new HeaderTemplate("Home", true), grid }
+            };
+            
+
         } // end initialize()
 
         private async void foo()

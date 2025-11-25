@@ -18,7 +18,8 @@ namespace TagAndTrack.Pages
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
-            Title = titleText;
+
+            var header = new HeaderTemplate(titleText);
 
             var scanView = new ScanView
             {
@@ -35,6 +36,16 @@ namespace TagAndTrack.Pages
             };
 
             scanView.ScanCaptured += ScanCaptured;
+
+            Content = new StackLayout
+            {
+                Children =
+                {
+                    header,
+                    scanView,
+                    scanResultLabel
+                }
+            };
         }
 
         private void ScanCaptured(object? sender, ScanCapturedEventArgs args)
