@@ -47,5 +47,20 @@ namespace TagAndTrack.Components
                 }
             };
         }
+
+        public TextTemplate(string text, TextAlignment alignment, double textSize)
+        {
+            Text = text;
+            TextColor = CurrentTheme.Instance.Theme.Text;
+            HorizontalTextAlignment = alignment;
+            FontSize = textSize;
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    TextColor = CurrentTheme.Instance.Theme.Text;
+                }
+            };
+        }
     }
 }

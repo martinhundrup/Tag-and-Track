@@ -19,7 +19,8 @@ namespace TagAndTrack.Pages
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
-            Title = titleText;
+
+            var header = new HeaderTemplate(titleText);
 
             var scanView = new ScanView
             {
@@ -54,6 +55,7 @@ namespace TagAndTrack.Pages
                 Spacing = 20,
                 Children =
                 {
+                    header,
                     scanView,
                     scanResultLabel,
                     buttonLayout,

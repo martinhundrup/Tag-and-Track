@@ -19,17 +19,22 @@ namespace TagAndTrack.Pages
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
-            Title = titleText;
 
             string dtHeader = "ID,Arctos ID,Name,Description,Status";
             var dt = new DataTableTemplate(dtHeader, ItemManager.GetItemsOfType(Item.ItemType.Specimen));
 
-
-            // Wrap the data table in a ScrollView so content is vertically scrollable
+            var header = new HeaderTemplate(titleText);
             Content = new ScrollView
             {
                 Orientation = ScrollOrientation.Vertical,
-                Content = dt
+                Content = new VerticalStackLayout
+                {
+                    Children =
+                    {
+                        header,
+                        dt
+                    }
+                }
             };
         }
     }

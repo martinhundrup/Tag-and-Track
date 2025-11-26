@@ -17,7 +17,7 @@ namespace TagAndTrack.Pages
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
-            Title = titleText;
+            var header = new HeaderTemplate(titleText);
 
             var qr = new QrCodeView[]
                 { new QrCodeView {
@@ -46,12 +46,19 @@ namespace TagAndTrack.Pages
                 },
             };
 
-            Content = new HorizontalStackLayout()
+            Content = new VerticalStackLayout()
             {
-                qr[0],
-                qr[1],
-                qr[2],
-                qr[3],
+                Children =
+                {
+                    header,
+                    new HorizontalStackLayout()
+                    {
+                        qr[0],
+                        qr[1],
+                        qr[2],
+                        qr[3],
+                    }
+                }
             };
         }
     }

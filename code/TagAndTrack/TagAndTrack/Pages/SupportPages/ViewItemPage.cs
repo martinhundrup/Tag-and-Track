@@ -20,7 +20,7 @@ namespace TagAndTrack.Pages
                     if (Content is Layout root) ApplyThemeToLayout(root);
                 }
             };
-            Title = titleText;
+            var header = new HeaderTemplate(titleText);
 
             if (ScannedQRItem.lastScannedItem == null)
             {

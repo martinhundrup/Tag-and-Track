@@ -27,8 +27,6 @@ namespace TagAndTrack.Pages
                     Background = CurrentTheme.Instance.Theme.Background;
             };
 
-            Title = titleText;
-
             scanView = new ScanView
             {
                 WidthRequest = 800,
@@ -43,12 +41,15 @@ namespace TagAndTrack.Pages
                 Margin = new Thickness(0, 20)
             };
 
+            var header = new HeaderTemplate(titleText);
+
             Content = new VerticalStackLayout
             {
                 Padding = 20,
                 Spacing = 20,
                 Children =
                 {
+                    header,
                     scanView,
                     scanResultLabel
                 }

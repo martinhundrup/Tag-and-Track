@@ -4,7 +4,6 @@ namespace TagAndTrack.Pages
 {
     public class LoginPage : TagAndTrackPage
     {
-        protected new const string titleText = "Login";
         public LoginPage() { Initialize(); }
 
         protected override void Initialize()
@@ -17,7 +16,15 @@ namespace TagAndTrack.Pages
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
-            Title = titleText;
+
+            var header = new HeaderTemplate("Login");
+            Content = new StackLayout
+            {
+                Children =
+                {
+                    header
+                }
+            };
         }
     }
 }

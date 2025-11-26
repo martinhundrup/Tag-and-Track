@@ -18,7 +18,15 @@ namespace TagAndTrack.Pages
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
-            Title = titleText;
+
+            var header = new HeaderTemplate(titleText);
+            Content = new StackLayout
+            {
+                Children =
+                {
+                    header
+                }
+            };
         }
     }
 }
