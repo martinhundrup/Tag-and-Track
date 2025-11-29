@@ -22,6 +22,7 @@ namespace TagAndTrack.Components
             RowSpacing = 1;
             ColumnSpacing = 1;
             BackgroundColor = CurrentTheme.Instance.Theme.Background;
+            HorizontalOptions = LayoutOptions.Center;
 
             string[] headers = headerString.Split(new[] { ',' });
             string[] rows = csvString.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
