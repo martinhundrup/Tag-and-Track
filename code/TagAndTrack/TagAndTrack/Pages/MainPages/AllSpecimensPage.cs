@@ -24,6 +24,7 @@ namespace TagAndTrack.Pages
             var dt = new DataTableTemplate(dtHeader, ItemManager.GetItemsOfType(Item.ItemType.Specimen));
 
             var header = new HeaderTemplate(titleText);
+            var searchbar = new EntryTemplate(300, "Search");
             Content = new ScrollView
             {
                 Orientation = ScrollOrientation.Vertical,
@@ -32,6 +33,7 @@ namespace TagAndTrack.Pages
                     Children =
                     {
                         header,
+                        searchbar,
                         dt
                     }
                 }

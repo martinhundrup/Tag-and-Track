@@ -24,6 +24,7 @@ namespace TagAndTrack.Pages
 
             var header = new HeaderTemplate(titleText);
 
+            var searchbar = new EntryTemplate(300, "Search");
 
             // Wrap the data table in a ScrollView so content is vertically scrollable
             Content = new ScrollView
@@ -34,7 +35,13 @@ namespace TagAndTrack.Pages
                     Children =
                     {
                         header,
-                        dt
+                        searchbar,
+                        new ScrollView
+                        {
+                            Orientation = ScrollOrientation.Horizontal,
+                            HorizontalScrollBarVisibility = ScrollBarVisibility.Always,
+                            Content = dt
+                        }
                     }
                 }
             };

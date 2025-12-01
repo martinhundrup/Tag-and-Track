@@ -21,7 +21,7 @@ namespace TagAndTrack.Components
         /// <param name="command">The command to execute when the button is clicked.</param>
         public TagAndTrackButton(string text, Command command)
         {
-            Spacing = 6;
+            Spacing = 5;
             HorizontalOptions = LayoutOptions.Center;
             ButtonTemplate button = new ButtonTemplate()
             { 
