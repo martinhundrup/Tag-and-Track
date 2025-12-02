@@ -52,13 +52,8 @@ namespace TagAndTrack.Pages
                 return;
             }
 
-            var header = new Label
-            {
-                Text = specimen.Name ?? "Specimen",
-                FontSize = 20,
-                TextColor = CurrentTheme.Instance.Theme.Text
-            };
-
+            var header = new HeaderTemplate(specimen.Name ?? "Specimen");
+            /*
             var info = BuildInfoGrid();
             AddInfoRow(info, 0, "Type", specimen.Type.ToString());
             AddInfoRow(info, 1, "ID", specimen.ID.ToString());
@@ -66,6 +61,11 @@ namespace TagAndTrack.Pages
             AddInfoRow(info, 3, "QR", specimen.QRID ?? "");
             AddInfoRow(info, 4, "Status", specimen.Status ? "Present" : "Checked out");
             AddInfoRow(info, 5, "Description", specimen.Description ?? "");
+            */
+            string status = specimen.Status ? "Present" : "Checked out";
+
+            var data = new DataTableTemplate(string.Empty, $"Type,{specimen.Type.ToString()}\nID,{specimen.ID.ToString()}\nArctos ID,{specimen.ArctosID ?? "None"}\nQR,{specimen.QRID ?? ""}" +
+                $"\nStatus,{status}\nDescription,{specimen.Description ?? ""}");
 
             var qr = new QrCodeView
             {
@@ -75,11 +75,34 @@ namespace TagAndTrack.Pages
             };
 
 
+
+            var pageData = new HorizontalStackLayout
+            {
+                Spacing = 32,
+                Children = { data, qr }
+            };
+
+            var pageDataBorder = new Border
+            {
+                Stroke = CurrentTheme.Instance.Theme.Borders,
+                BackgroundColor = CurrentTheme.Instance.Theme.Background,
+                StrokeThickness = 1,
+                Content = pageData
+            };
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    pageDataBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
+                    pageDataBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                }
+            };
+
             var root = new VerticalStackLayout
             {
                 Spacing = 16,
                 Padding = new Thickness(16),
-                Children = { header, info, qr }
+                Children = { header, pageDataBorder }
             };
             ApplyThemeToLayout(root);
 
@@ -99,13 +122,9 @@ namespace TagAndTrack.Pages
                 return;
             }
 
-            var header = new Label
-            {
-                Text = loan.Name ?? "Loan",
-                FontSize = 20,
-                TextColor = CurrentTheme.Instance.Theme.Text
-            };
+            var header = new HeaderTemplate($"Loan {loan.ID}");
 
+            /*
             var info = BuildInfoGrid();
             AddInfoRow(info, 0, "Type", loan.Type.ToString());
             AddInfoRow(info, 1, "ID", loan.ID.ToString());
@@ -114,13 +133,42 @@ namespace TagAndTrack.Pages
             AddInfoRow(info, 4, "Email", loan.Email ?? "None");
             AddInfoRow(info, 5, "Checked out", loan.DateCheckedOut == default ? "Unknown" : loan.DateCheckedOut.ToString("yyyy-MM-dd"));
             AddInfoRow(info, 6, "Due", loan.DateDue == default ? "Unknown" : loan.DateDue.ToString("yyyy-MM-dd"));
-            AddInfoRow(info, 7, "Specimens", $"{loan.Specimens.Count}");
+            AddInfoRow(info, 7, "Specimens", $"{loan.Specimens.Count}");*/
+
+            string checkedOut = loan.DateCheckedOut == default ? "Unknown" : loan.DateCheckedOut.ToString("yyyy-MM-dd");
+            string due = loan.DateDue == default ? "Unknown" : loan.DateDue.ToString("yyyy-MM-dd");
+
+            var data = new DataTableTemplate(string.Empty, $"Type,{loan.Type.ToString()}\nID,{loan.ID.ToString()}\nArctos ID,{loan.ArctosID ?? "None"}\nBorrower,{loan.Borrower ?? "None"}" +
+               $"\nEmail,{loan.Email ?? "None"}\nChecked out,{checkedOut}\nDue,{due}\nSpecimens,{loan.Specimens.Count.ToString()}");
+
 
             var qr = new QrCodeView
             {
                 Value = loan.QRID,
                 Size = 220,
                 Padding = 4,
+            };
+
+            var pageData = new HorizontalStackLayout
+            {
+                Spacing = 32,
+                Children = { data, qr }
+            };
+
+            var pageDataBorder = new Border
+            {
+                Stroke = CurrentTheme.Instance.Theme.Borders,
+                BackgroundColor = CurrentTheme.Instance.Theme.Background,
+                StrokeThickness = 1,
+                Content = pageData
+            };
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    pageDataBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
+                    pageDataBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                }
             };
 
             var listLabel = new Label
@@ -130,6 +178,7 @@ namespace TagAndTrack.Pages
                 TextColor = CurrentTheme.Instance.Theme.Text
             };
 
+            /*
             // Virtualized list. Do not wrap this CollectionView in another ScrollView.
             var itemsView = new CollectionView
             {
@@ -186,6 +235,7 @@ namespace TagAndTrack.Pages
                     return new ContentView { Padding = new Thickness(8, 4), Content = row };
                 })
             };
+            */
 
             // Page layout: info at top, list below. Let the CollectionView own scrolling.
             var root = new Grid
@@ -200,17 +250,20 @@ namespace TagAndTrack.Pages
             root.Children.Add(header);
             Grid.SetRow(header, 0);
 
-            root.Children.Add(info);
-            Grid.SetRow(info, 1);
+            root.Children.Add(pageDataBorder);
+            Grid.SetRow(pageDataBorder, 1);
+
+            var dataView = new DataTableTemplate(loan.Specimens);
 
             var listContainer = new VerticalStackLayout
             {
                 Spacing = 8,
-                Children = { listLabel, itemsView }
+                Children = { listLabel, dataView }
             };
             root.Children.Add(listContainer);
             Grid.SetRow(listContainer, 2);
-            root.Children.Add(qr);
+            //root.Children.Add(qr);
+            
             ApplyThemeToLayout(root);
 
             Content = new ScrollView
