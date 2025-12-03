@@ -11,41 +11,40 @@ namespace TagAndTrack.Backend.Utils
         {
             try
             {
-                // Set up the email details
-                string fromEmail = "EncryptionDoNotReply@gmail.com"; // Sender email address
-                string toEmail = email; // Recipient email address
-                string subject = "Test Email";
- 
-                string body = $"Hello, your code is {pin}"; // ** TODO **
+                const string fromEmail = "TagAndTrackWSU@gmail.com"; // must match the Gmail account the app password is for
+                const string appPassword = "";        // 16-char app password, no spaces
 
-                string smtpServer = "smtp.gmail.com"; // Gmail SMTP server
-                int smtpPort = 587; // Gmail uses port 587 for TLS
-                string? emailPassword = Environment.GetEnvironmentVariable(""); // ** TODO **
-
-                // Create the email message
-                MailMessage mail = new MailMessage();
-                mail.From = new MailAddress(fromEmail);
-                mail.To.Add(toEmail);
-                mail.Subject = subject;
-                mail.Body = body;
-
-                // Set up the SMTP client
-                SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort)
+                using (var mail = new MailMessage())
                 {
-                    Credentials = new NetworkCredential(fromEmail, emailPassword),
-                    EnableSsl = true // Enable SSL for secure connection
-                };
+                    mail.From = new MailAddress(fromEmail);
+                    mail.To.Add(email);
+                    mail.Subject = "Test Email";
+                    mail.Body = "Hello world!";
 
-                // Send the email
-                smtpClient.Send(mail);
+                    using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
+                    {
+                        smtpClient.EnableSsl = true;
+                        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                        // critical bits for Gmail auth
+                        smtpClient.UseDefaultCredentials = false;
+                        smtpClient.Credentials = new NetworkCredential(fromEmail, appPassword);
+
+                        smtpClient.Send(mail);
+                    }
+                }
+
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error sending email: " + ex.Message);
+                DebugLogger.Log("Error sending email: " + ex.Message);
+                if (ex.InnerException != null)
+                {
+                    DebugLogger.Log("Inner exception: " + ex.InnerException.Message);
+                }
                 return false;
             }
         }
-        
     }
 }
