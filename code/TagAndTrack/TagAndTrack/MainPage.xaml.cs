@@ -2,6 +2,7 @@
 using TagAndTrack.Components;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Items;
+using TagAndTrack.Backend.Utils;
 
 namespace TagAndTrack
 {
@@ -48,6 +49,7 @@ namespace TagAndTrack
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto },
                 }
             };
 
@@ -66,6 +68,8 @@ namespace TagAndTrack
                 new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme())),
                 new TagAndTrackButton("Specimen:1", new Command(async () => foo())),
                 new TagAndTrackButton("Loan:1", new Command(async () => bar())),
+                new TagAndTrackButton("Send Email", new Command(async () => TestEmail())),
+                new TagAndTrackButton("Debug Logs", new Command(async () => OpenDebugLogs())),
 
             };
 
@@ -95,6 +99,18 @@ namespace TagAndTrack
         {
             ScannedQRItem.lastScannedItem = "Loan:1";
             await Navigation.PushAsync(new ViewItemPage());
+        }
+        
+        private void TestEmail()
+        {
+            DebugLogger.Log("attempting to send email to hundrupm@gmail.com");
+            var response = Emailer.Email("hundrupm@gmail.com");
+            DebugLogger.Log($"email response: {response}");
+        }
+
+        private void OpenDebugLogs()
+        {
+            System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath())); // uncoomment to open log file location windows ONLY
         }
     }
 }

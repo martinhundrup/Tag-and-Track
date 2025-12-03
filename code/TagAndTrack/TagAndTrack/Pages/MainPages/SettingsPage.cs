@@ -4,7 +4,7 @@ namespace TagAndTrack.Pages
 {
     public class SettingsPage : TagAndTrackPage
     {
-        protected new const string titleText = "Settings";
+        protected const string titleText = "Settings";
         public SettingsPage() { Initialize(); }
 
         protected override void Initialize()

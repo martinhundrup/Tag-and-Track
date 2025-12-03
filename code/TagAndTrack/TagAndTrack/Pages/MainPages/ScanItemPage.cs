@@ -7,7 +7,7 @@ namespace TagAndTrack.Pages
 {
     public class ScanItemPage : TagAndTrackPage
     {
-        protected new const string titleText = "Scan Item";
+        protected const string titleText = "Scan Item";
         private Label? scanResultLabel;
         private ScanView? scanView;
         private bool _listening;

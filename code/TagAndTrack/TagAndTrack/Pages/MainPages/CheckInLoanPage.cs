@@ -4,7 +4,7 @@ namespace TagAndTrack.Pages
 {
     public class CheckInLoanPage : TagAndTrackPage
     {
-        protected new const string titleText = "Check in a Loan";
+        protected const string titleText = "Check in a Loan";
         private Label? scanResultLabel;
         public CheckInLoanPage() { Initialize(); }
 

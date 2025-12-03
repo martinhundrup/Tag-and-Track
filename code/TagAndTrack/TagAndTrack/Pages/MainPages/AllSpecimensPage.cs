@@ -6,7 +6,7 @@ namespace TagAndTrack.Pages
 {
     public class AllSpecimensPage : TagAndTrackPage
     {
-        protected new const string titleText = "View All Specimens";
+        protected const string titleText = "View All Specimens";
         public AllSpecimensPage() { Initialize(); }
 
         protected override void Initialize()
@@ -24,7 +24,7 @@ namespace TagAndTrack.Pages
             var dt = new DataTableTemplate(dtHeader, ItemManager.GetItemsOfType(Item.ItemType.Specimen));
 
             var header = new HeaderTemplate(titleText);
-            var searchbar = new EntryTemplate(300, "Search");
+            //var searchbar = new EntryTemplate(300, "Search");
             Content = new ScrollView
             {
                 Orientation = ScrollOrientation.Vertical,
@@ -33,7 +33,7 @@ namespace TagAndTrack.Pages
                     Children =
                     {
                         header,
-                        searchbar,
+                        //searchbar,
                         dt
                     }
                 }
