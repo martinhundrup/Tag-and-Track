@@ -1,8 +1,9 @@
-﻿using TagAndTrack.Pages;
-using TagAndTrack.Components;
+﻿using System.Diagnostics;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Backend.Utils;
+using TagAndTrack.Components;
+using TagAndTrack.Pages;
 
 namespace TagAndTrack
 {
@@ -69,7 +70,7 @@ namespace TagAndTrack
                 new TagAndTrackButton("Specimen:1", new Command(async () => foo())),
                 new TagAndTrackButton("Loan:1", new Command(async () => bar())),
                 new TagAndTrackButton("Send Email", new Command(async () => TestEmail())),
-                new TagAndTrackButton("Debug Logs", new Command(async () => OpenDebugLogs())),
+                new TagAndTrackButton("Open Debug Logs", new Command(async () => OpenDebugLogs())),
 
             };
 
@@ -86,7 +87,7 @@ namespace TagAndTrack
             {
                 Children = { new HeaderTemplate("Home", true), grid }
             };
-            
+
 
         } // end initialize()
 
@@ -100,17 +101,21 @@ namespace TagAndTrack
             ScannedQRItem.lastScannedItem = "Loan:1";
             await Navigation.PushAsync(new ViewItemPage());
         }
-        
+
         private void TestEmail()
         {
             DebugLogger.Log("attempting to send email to hundrupm@gmail.com");
-            var response = Emailer.Email("hundrupm@gmail.com");
+            var response = Emailer.Email("hundrupm@gmail.com", "test", "hello world!");
             DebugLogger.Log($"email response: {response}");
         }
 
         private void OpenDebugLogs()
         {
-            System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath())); // uncoomment to open log file location windows ONLY
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = DebugLogger.GetLogFilePath(),
+                UseShellExecute = true
+            });
         }
     }
 }

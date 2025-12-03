@@ -13,6 +13,7 @@
 
         public Item()
         {
+            ID = UniqueIdGenerator.NewId();
             Type = Item.ItemType.None;
         }
 
@@ -28,7 +29,7 @@
             protected set;
         }
 
-        public int ID // internal ID to tag and track
+        public ulong ID // internal ID to tag and track
         {
             get;
             protected set;
@@ -64,6 +65,16 @@
             {
                 return $"{Type.ToString()}:{ID}"; // ex: "Specimen:4920382"
             }
+        }
+
+        public void Checkout()
+        {
+            Status = false;
+        }
+
+        public void Checkin()
+        {
+            Status = true;
         }
     }
 }

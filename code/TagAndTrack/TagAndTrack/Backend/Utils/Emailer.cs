@@ -7,7 +7,7 @@ namespace TagAndTrack.Backend.Utils
     public static class Emailer
     {
 
-        public static bool Email(string email)
+        public static bool Email(string email, string subject, string body)
         {
             try
             {
@@ -18,8 +18,8 @@ namespace TagAndTrack.Backend.Utils
                 {
                     mail.From = new MailAddress(fromEmail);
                     mail.To.Add(email);
-                    mail.Subject = "Test Email";
-                    mail.Body = "Hello world!";
+                    mail.Subject = subject;
+                    mail.Body = body;
 
                     using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
                     {

@@ -1,5 +1,7 @@
 using TagAndTrack.Backend.Items;
+using TagAndTrack.Backend.Utils;
 using TagAndTrack.Components;
+using TagAndTrack.Pages.SupportPages;
 
 namespace TagAndTrack.Pages
 {
@@ -7,6 +9,8 @@ namespace TagAndTrack.Pages
     {
         protected const string titleText = "Start Loan";
         private Label? scanResultLabel;
+        private bool _navigating;
+
         public StartLoanPage() { Initialize(); }
 
         protected override void Initialize()
@@ -30,7 +34,7 @@ namespace TagAndTrack.Pages
 
             scanResultLabel = new Label
             {
-                Text = "Looking for a QR code...",
+                Text = "Scan a specimen",
                 FontSize = 18,
                 HorizontalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0, 20)
@@ -52,7 +56,7 @@ namespace TagAndTrack.Pages
             Content = new VerticalStackLayout
             {
                 Padding = 20,
-                Spacing = 20,
+                //Spacing = 20,
                 Children =
                 {
                     header,
@@ -61,16 +65,47 @@ namespace TagAndTrack.Pages
                     buttonLayout,
                 }
             };
+
+            LoanCreator.ClearLoan();
         }
-        private void ScanCaptured(object? sender, ScanCapturedEventArgs args)
+        private async void ScanCaptured(object? sender, ScanCapturedEventArgs args)
         {
-            MainThread.BeginInvokeOnMainThread(() => scanResultLabel.Text = args.Text);
+            if (_navigating) return;
+            _navigating = true;
+
+            var qr = args.Text?.Trim();
+            var item = ItemManager.GetItemByQRID(qr);
+
+            if (item == null)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Value {qr} not recognized!", "OK");
+                _navigating = false;
+                return;
+            }
+
+            if (item is not SpecimenItem)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Value {qr} not a specimen - only specimens can be added to loans!", "OK");
+                _navigating = false;
+                return;
+            }
+
+            ScannedQRItem.lastScannedItem = qr;
+
+            var response = LoanCreator.AddItem(item as SpecimenItem);
+            if (response != null) 
+            {
+                await Shell.Current.DisplayAlert("Error", response, "OK");
+                _navigating = false;
+                return;
+            }
+
+            // success
+            scanResultLabel.Text = $"Item {item.Name} added to loan!";
         }
 
         private async Task CancelLoan()
         {
-            // Run any cancellation logic here (stop scan, clear fields, etc.)
-            // For now show a confirmation alert on the UI thread.
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 if (Shell.Current != null)
@@ -78,31 +113,20 @@ namespace TagAndTrack.Pages
                     await Shell.Current.DisplayAlert("Cancelled", "Loan cancelled.", "OK");
                 }
             });
+
+            LoanCreator.ClearLoan();
         }
 
         private async Task ViewItems()
         {
-            // TEMPORARY
             await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
-                if (Shell.Current != null)
-                {
-                    await Shell.Current.DisplayAlert("Cancelled", "Loan cancelled.", "OK");
-                }
-            });
+                await Navigation.PushAsync(new ViewEditLoanItemsPage()));
         }
 
         private async Task FinalizeLoan()
         {
-            // Run any cancellation logic here (stop scan, clear fields, etc.)
-            // For now show a confirmation alert on the UI thread.
             await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
-                if (Shell.Current != null)
-                {
-                    await Shell.Current.DisplayAlert("Cancelled", "Loan cancelled.", "OK");
-                }
-            });
+                await Navigation.PushAsync(new FinalizeLoanPage()));
         }
     }
 }
