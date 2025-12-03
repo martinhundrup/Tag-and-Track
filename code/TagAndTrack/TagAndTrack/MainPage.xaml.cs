@@ -14,16 +14,17 @@ namespace TagAndTrack
             Initialize();
         }
 
-        private void Initialize()
+        private async void Initialize()
         {
             Title = null;
             Background = CurrentTheme.Instance.Theme.Background;
             DebugLogger.Init();
             DebugLogger.Log(DebugLogger.GetLogFilePath());
             DebugLogger.Log("App started");
-            //System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath())); // uncoomment to open log file location windows ONLY
+            //System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath())); // uncomment to open log file location windows ONLY
 
             ItemManager.LoadAllDebugItems();
+            await Databases.Database.Instance.InitAsync(); //initializes the database
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
