@@ -20,7 +20,7 @@ namespace TagAndTrack.Components
         {
             Text = text;
             TextColor = CurrentTheme.Instance.Theme.Text;
-            HorizontalOptions = LayoutOptions.Center;
+            HorizontalOptions = LayoutOptions.Start;
             VerticalOptions = LayoutOptions.Center;
             Padding = padding;
 

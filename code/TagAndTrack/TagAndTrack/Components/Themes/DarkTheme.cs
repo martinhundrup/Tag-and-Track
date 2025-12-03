@@ -18,7 +18,7 @@ namespace TagAndTrack.Components
         {
             Background = Colors.Black;
             Text = Colors.AntiqueWhite;
-            Borders = Colors.Gray;
+            Borders = Colors.White;
         }
     }
 }
