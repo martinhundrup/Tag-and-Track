@@ -14,10 +14,10 @@
         }
 
         // loan metadata
-        public string? Borrower { get; private set; }
-        public string? Email { get; private set; }
-        public DateTime DateCheckedOut { get; private set; }
-        public DateTime DateDue { get; private set; }
+        public string? Borrower { get; set; }
+        public string? Email { get; set; }
+        public DateTime DateCheckedOut { get; set; }
+        public DateTime DateDue { get; set; }
 
         // linked specimens
         public IReadOnlyList<SpecimenItem> Specimens => specimens;

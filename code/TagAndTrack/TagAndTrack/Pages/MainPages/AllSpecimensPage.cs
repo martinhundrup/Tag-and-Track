@@ -1,3 +1,4 @@
+using System.Text;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Components;
@@ -21,7 +22,13 @@ namespace TagAndTrack.Pages
             };
 
             string dtHeader = "ID,Arctos ID,Name,Description,Status";
-            var dt = new DataTableTemplate(dtHeader, ItemManager.GetItemsOfType(Item.ItemType.Specimen));
+            var items = ItemManager.GetItemsOfType(Item.ItemType.Specimen);
+            var sb = new StringBuilder();
+            foreach (var item in items)
+            {
+                sb.Append(ItemToCSVEntry(item));
+            }
+            var dt = new DataTableTemplate(dtHeader, sb.ToString());
 
             var header = new HeaderTemplate(titleText);
             //var searchbar = new EntryTemplate(300, "Search");
@@ -38,6 +45,17 @@ namespace TagAndTrack.Pages
                     }
                 }
             };
+        }
+
+        private static string ItemToCSVEntry(Item item)
+        {
+            var sb = new StringBuilder();
+                sb.Append(item.ID).Append(',')
+                  .Append(item.ArctosID).Append(',')
+                  .Append(item.Name).Append(',')
+                  .Append(item.Description).Append(',')
+                  .Append(item.Status).AppendLine();
+            return sb.ToString();
         }
     }
 }

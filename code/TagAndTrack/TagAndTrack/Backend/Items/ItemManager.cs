@@ -47,7 +47,7 @@ namespace TagAndTrack.Backend.Items
                     // id
                     int p = s.IndexOf(',');
                     if (p < 0) throw new FormatException("Missing field 0");
-                    int id = int.Parse(s[..p].Trim());
+                    ulong id = ulong.Parse(s[..p].Trim());
                     s = s[(p + 1)..];
 
                     // arctosId
@@ -97,6 +97,8 @@ namespace TagAndTrack.Backend.Items
             var result = new List<LoanItem>(16);
             using var reader = new StringReader(DebugItems.loanCSV);
 
+            
+
             // skip optional header if present
             string? line = reader.ReadLine();
             if (line == null) return result;
@@ -120,7 +122,7 @@ namespace TagAndTrack.Backend.Items
             if (parts.Length < 9) throw new FormatException($"Malformed loan line: {line}");
 
             // parse fixed fields
-            int id = int.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
+            ulong id = ulong.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
 
             string arctos = parts[1].Trim();
             string? arctosId = string.Equals(arctos, "NULL", StringComparison.OrdinalIgnoreCase) || arctos.Length == 0
@@ -191,22 +193,9 @@ namespace TagAndTrack.Backend.Items
         }
 
         // If you must keep returning CSV, at least avoid per-item logs and pre-size the builder
-        public static string GetItemsOfType(Item.ItemType itemType)
+        public static List<Item> GetItemsOfType(Item.ItemType itemType)
         {
-            var filtered = items.Where(item => item.Type == itemType).ToList();
-            // Rough capacity estimate: ~64 chars per row
-            var sb = new System.Text.StringBuilder(filtered.Count * 64);
-
-            foreach (var item in filtered)
-            {
-                sb.Append(item.ID).Append(',')
-                  .Append(item.ArctosID).Append(',')
-                  .Append(item.Name).Append(',')
-                  .Append(item.Description).Append(',')
-                  .Append(item.Status).Append('\n');
-            }
-
-            return sb.ToString();
+           return items.Where(item => item.Type == itemType).ToList();
         }
 
         private static StringBuilder LoanItemsString(IReadOnlyList<Item> items)

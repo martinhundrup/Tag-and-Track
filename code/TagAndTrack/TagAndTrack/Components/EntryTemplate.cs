@@ -43,5 +43,10 @@ namespace TagAndTrack.Components
             this.Add(textbox, 0, 0);
             this.Add(button, 1, 0);
         }
+
+        public string Text
+        {
+            get => textbox.textbox.Text;
+        }
     }
 }
