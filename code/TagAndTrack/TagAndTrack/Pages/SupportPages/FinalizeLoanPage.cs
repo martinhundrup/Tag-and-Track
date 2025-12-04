@@ -53,7 +53,9 @@ namespace TagAndTrack.Pages.SupportPages
             var confirmButton = new TagAndTrackButton("Confirm Loan", new Command(async () => await ConfirmLoan()));
 
 
-            var dt = CreateDT();
+            //var dt = CreateDT();
+
+            var dt = new DataTableTemplate(LoanCreator.LoanItems, true);
 
             Content = new ScrollView
             {
