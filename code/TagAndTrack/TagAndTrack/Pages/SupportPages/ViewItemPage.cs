@@ -8,6 +8,7 @@ namespace TagAndTrack.Pages
     {
         protected new const string titleText = "View Item";
         public ViewItemPage() { Initialize(); }
+        private LoanItem loanItem;
 
         protected override void Initialize()
         {
@@ -122,6 +123,7 @@ namespace TagAndTrack.Pages
                 return;
             }
 
+            loanItem = loan;
             var header = new HeaderTemplate($"Loan {loan.ID}");
 
             /*
@@ -149,11 +151,18 @@ namespace TagAndTrack.Pages
                 Padding = 4,
             };
 
+            var checkinButton = new TagAndTrackButton("Check In", new Command(async () => await CheckInLoan()));
+
             var pageData = new HorizontalStackLayout
             {
                 Spacing = 32,
                 Children = { data, qr }
             };
+
+            if (!loan.Status) // if checked out, add check in button
+            {
+                pageData.Children.Add(checkinButton);
+            }
 
             var pageDataBorder = new Border
             {
@@ -177,65 +186,6 @@ namespace TagAndTrack.Pages
                 FontSize = 14,
                 TextColor = CurrentTheme.Instance.Theme.Text
             };
-
-            /*
-            // Virtualized list. Do not wrap this CollectionView in another ScrollView.
-            var itemsView = new CollectionView
-            {
-                ItemsSource = loan.Specimens,
-                SelectionMode = SelectionMode.None,
-                ItemSizingStrategy = ItemSizingStrategy.MeasureFirstItem,
-                ItemsLayout = new LinearItemsLayout(ItemsLayoutOrientation.Vertical) { ItemSpacing = 4 },
-                ItemTemplate = new DataTemplate(() =>
-                {
-                    var idLbl = new Label
-                    {
-                        FontSize = 12,
-                        TextColor = CurrentTheme.Instance.Theme.Text
-                    };
-                    idLbl.SetBinding(Label.TextProperty, nameof(Item.ID));
-
-                    var nameLbl = new Label
-                    {
-                        FontSize = 12,
-                        LineBreakMode = LineBreakMode.TailTruncation,
-                        TextColor = CurrentTheme.Instance.Theme.Text
-                    };
-                    nameLbl.SetBinding(Label.TextProperty, nameof(Item.Name));
-
-                    var openBtn = new Button
-                    {
-                        Text = "Open",
-                        FontSize = 12,
-                        Padding = new Thickness(10, 4)
-                    };
-                    openBtn.Clicked += async (s, e) =>
-                    {
-                        if ((s as Button)?.BindingContext is SpecimenItem sItem)
-                        {
-                            ScannedQRItem.lastScannedItem = sItem.QRID;
-                            await Navigation.PushAsync(new ViewItemPage());
-                        }
-                    };
-
-                    var row = new Grid { ColumnSpacing = 12, RowSpacing = 0 };
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
-                    row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-
-                    row.Children.Add(idLbl);
-                    Grid.SetColumn(idLbl, 0);
-
-                    row.Children.Add(nameLbl);
-                    Grid.SetColumn(nameLbl, 1);
-
-                    row.Children.Add(openBtn);
-                    Grid.SetColumn(openBtn, 2);
-
-                    return new ContentView { Padding = new Thickness(8, 4), Content = row };
-                })
-            };
-            */
 
             // Page layout: info at top, list below. Let the CollectionView own scrolling.
             var root = new Grid
@@ -271,6 +221,20 @@ namespace TagAndTrack.Pages
                 Orientation = ScrollOrientation.Vertical,
                 Content = root
             };
+        }
+
+        private async Task CheckInLoan()
+        {
+            if (loanItem == null) return;
+            loanItem.Checkin();
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await Shell.Current.DisplayAlert("Loan Checked In", $"The loan and all its items have been checked in!", "OK");
+            });
+
+                Initialize();
+
         }
 
         private Grid BuildInfoGrid()

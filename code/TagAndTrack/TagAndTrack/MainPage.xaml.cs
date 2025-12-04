@@ -61,7 +61,7 @@ namespace TagAndTrack
             {
                 new TagAndTrackButton("Scan Item", new Command(async () => await Navigation.PushAsync(new ScanItemPage()))),
                 new TagAndTrackButton("Start Loan", new Command(async () => await Navigation.PushAsync(new StartLoanPage()))),
-                new TagAndTrackButton("Check-in Loan", new Command(async () => await Navigation.PushAsync(new CheckInLoanPage()))),
+                //new TagAndTrackButton("Check-in Loan", new Command(async () => await Navigation.PushAsync(new CheckInLoanPage()))),
                 new TagAndTrackButton("Loan History", new Command(async () => await Navigation.PushAsync(new LoanHistoryPage()))),
                 new TagAndTrackButton("All Specimens", new Command(async () => await Navigation.PushAsync(new AllSpecimensPage()))),
                 new TagAndTrackButton("Add Item", new Command(async () => await Navigation.PushAsync(new AddItemPage()))),

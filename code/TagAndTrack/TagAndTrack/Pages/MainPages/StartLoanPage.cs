@@ -77,8 +77,6 @@ namespace TagAndTrack.Pages
                 Margin = new Thickness(0, 20)
             };
 
-            scanView.ScanCaptured += ScanCaptured;
-
             var buttonLayout = new HorizontalStackLayout
             {
                 Spacing = 10,

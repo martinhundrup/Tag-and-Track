@@ -32,5 +32,15 @@
             DateDue = dueDate;
         }
         internal void AddSpecimen(SpecimenItem s) => specimens.Add(s);
+
+        public override void Checkin()
+        {
+            base.Checkin();
+
+            foreach (var item in Specimens)
+            {
+                item.Checkin();
+            }
+        }
     }
 }

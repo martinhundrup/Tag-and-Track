@@ -78,8 +78,6 @@ namespace TagAndTrack.Pages.SupportPages
         {
             string dtHeader = "ID,Arctos ID,Name,Description,Remove item";
 
-            
-
             return new DataTableTemplate(dtHeader, CreateDTCSV());
         }
 
