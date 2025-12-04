@@ -19,9 +19,17 @@ namespace TagAndTrack.Pages
                 }
             };
 
-            string dtHeader = "ID,Name,Description,Borrower,Email,Date Checked Out,Date Due,Specimens,Status";
-            var dt = new DataTableTemplate(dtHeader, ItemManager.GetLoansCSV());
+            //string dtHeader = "ID,Name,Description,Borrower,Email,Date Checked Out,Date Due,Specimens,Status";
+            //var dt = new DataTableTemplate(dtHeader, ItemManager.GetLoansCSV());
 
+            var allLoans = ItemManager.GetItemsOfType(Item.ItemType.Loan);
+            List<LoanItem> loans = new List<LoanItem>();
+            foreach( var item in allLoans )
+            {
+                loans.Add((LoanItem)item);
+            }
+
+            var dt = new DataTableTemplate(loans);
             var header = new HeaderTemplate(titleText);
 
             var searchbar = new EntryTemplate(300, "Search");

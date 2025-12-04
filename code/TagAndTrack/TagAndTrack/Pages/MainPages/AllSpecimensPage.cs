@@ -24,11 +24,13 @@ namespace TagAndTrack.Pages
             string dtHeader = "ID,Arctos ID,Name,Description,Status";
             var items = ItemManager.GetItemsOfType(Item.ItemType.Specimen);
             var sb = new StringBuilder();
+            List<SpecimenItem> list = new List<SpecimenItem>();
             foreach (var item in items)
             {
-                sb.Append(ItemToCSVEntry(item));
+                list.Add((SpecimenItem)item);
             }
             var dt = new DataTableTemplate(dtHeader, sb.ToString());
+            dt = new DataTableTemplate(list, false);
 
             var header = new HeaderTemplate(titleText);
             //var searchbar = new EntryTemplate(300, "Search");
