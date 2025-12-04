@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using TagAndTrack.Backend;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Backend.Utils;
 using TagAndTrack.Components;
@@ -9,12 +11,47 @@ namespace TagAndTrack.Pages
     {
         protected const string titleText = "Start Loan";
         private Label? scanResultLabel;
+        private ScanView? scanView;
+        private bool _listening;
         private bool _navigating;
 
         public StartLoanPage() { Initialize(); }
 
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // subscribe/start scanning when visible
+            if (scanView != null && !_listening)
+            {
+                scanView.ScanCaptured += ScanCaptured;
+                // if your ScanView supports control flags:
+                // scanView.IsScanning = true;
+                _listening = true;
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            // unsubscribe/stop scanning when hidden
+            if (scanView != null && _listening)
+            {
+                scanView.ScanCaptured -= ScanCaptured;
+                // if supported:
+                // scanView.IsScanning = false;
+                _listening = false;
+            }
+        }
+
         protected override void Initialize()
         {
+            Shell.SetBackButtonBehavior(this, new BackButtonBehavior
+                {
+                    IsVisible = false
+                });           
             Background = CurrentTheme.Instance.Theme.Background;
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
@@ -28,8 +65,8 @@ namespace TagAndTrack.Pages
 
             var scanView = new ScanView
             {
-                WidthRequest = 800,
-                HeightRequest = 800
+                WidthRequest = 600,
+                HeightRequest = 600
             };
 
             scanResultLabel = new Label
@@ -56,7 +93,7 @@ namespace TagAndTrack.Pages
             Content = new VerticalStackLayout
             {
                 Padding = 20,
-                //Spacing = 20,
+                Spacing = 20,
                 Children =
                 {
                     header,
@@ -70,38 +107,52 @@ namespace TagAndTrack.Pages
         }
         private async void ScanCaptured(object? sender, ScanCapturedEventArgs args)
         {
-            if (_navigating) return;
-            _navigating = true;
-
-            var qr = args.Text?.Trim();
-            var item = ItemManager.GetItemByQRID(qr);
-
-            if (item == null)
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await Shell.Current.DisplayAlert("Error", $"Value {qr} not recognized!", "OK");
-                _navigating = false;
-                return;
-            }
+                if (_navigating) return;
+                _navigating = true;
 
-            if (item is not SpecimenItem)
-            {
-                await Shell.Current.DisplayAlert("Error", $"Value {qr} not a specimen - only specimens can be added to loans!", "OK");
-                _navigating = false;
-                return;
-            }
+                try
+                {
+                    var qr = args.Text?.Trim();
+                    var item = ItemManager.GetItemByQRID(qr);
 
-            ScannedQRItem.lastScannedItem = qr;
+                    if (item == null)
+                    {
+                        await Shell.Current.DisplayAlert("Error", $"Value {qr} not recognized!", "OK");
+                        return;
+                    }
 
-            var response = LoanCreator.AddItem(item as SpecimenItem);
-            if (response != null) 
-            {
-                await Shell.Current.DisplayAlert("Error", response, "OK");
-                _navigating = false;
-                return;
-            }
+                    if (item is not SpecimenItem specimen)
+                    {
+                        await Shell.Current.DisplayAlert(
+                            "Error",
+                            $"Value {item.Name} not a specimen - only specimens can be added to loans!",
+                            "OK");
+                        return;
+                    }
 
-            // success
-            scanResultLabel.Text = $"Item {item.Name} added to loan!";
+                    ScannedQRItem.lastScannedItem = qr;
+
+                    var response = LoanCreator.AddItem(specimen);
+                    if (response != null)
+                    {
+                        await Shell.Current.DisplayAlert("Error", response, "OK");
+                        return;
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Sucess!", $"Item {item.Name} added to loan!", "OK");
+                    }
+
+                    if (scanResultLabel != null)
+                        scanResultLabel.Text = $"Item {item.Name} added to loan!";
+                }
+                finally
+                {
+                    _navigating = false;
+                }
+            });
         }
 
         private async Task CancelLoan()
@@ -115,6 +166,7 @@ namespace TagAndTrack.Pages
             });
 
             LoanCreator.ClearLoan();
+            await Shell.Current.Navigation.PopAsync();
         }
 
         private async Task ViewItems()
