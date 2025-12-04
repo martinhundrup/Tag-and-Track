@@ -142,6 +142,7 @@ namespace TagAndTrack.Pages
                     }
                     else
                     {
+                        DebugLogger.Log($"added {item.ID} to loan");
                         await Shell.Current.DisplayAlert("Sucess!", $"Item {item.Name} added to loan!", "OK");
                     }
 
@@ -166,6 +167,7 @@ namespace TagAndTrack.Pages
             });
 
             LoanCreator.ClearLoan();
+            DebugLogger.Log($"loan cleared and cancelled");
             await Shell.Current.Navigation.PopAsync();
         }
 
