@@ -6,7 +6,38 @@ namespace TagAndTrack.Pages
     {
         protected const string titleText = "Check in a Loan";
         private Label? scanResultLabel;
+        private ScanView? scanView;
+        private bool _listening;
+        private bool _navigating;
         public CheckInLoanPage() { Initialize(); }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            // subscribe/start scanning when visible
+            if (scanView != null && !_listening)
+            {
+                scanView.ScanCaptured += ScanCaptured;
+                // if your ScanView supports control flags:
+                // scanView.IsScanning = true;
+                _listening = true;
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            // unsubscribe/stop scanning when hidden
+            if (scanView != null && _listening)
+            {
+                scanView.ScanCaptured -= ScanCaptured;
+                // if supported:
+                // scanView.IsScanning = false;
+                _listening = false;
+            }
+        }
 
         protected override void Initialize()
         {
@@ -35,8 +66,6 @@ namespace TagAndTrack.Pages
                 Margin = new Thickness(0, 20)
             };
 
-            scanView.ScanCaptured += ScanCaptured;
-
             Content = new StackLayout
             {
                 Children =
@@ -48,9 +77,12 @@ namespace TagAndTrack.Pages
             };
         }
 
-        private void ScanCaptured(object? sender, ScanCapturedEventArgs args)
+        private async void ScanCaptured(object? sender, ScanCapturedEventArgs args)
         {
-            MainThread.BeginInvokeOnMainThread(() => scanResultLabel.Text = args.Text);
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+
+            });
         }
     }
 }

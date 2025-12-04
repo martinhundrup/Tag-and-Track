@@ -72,7 +72,7 @@
             Status = false;
         }
 
-        public void Checkin()
+        public virtual void Checkin()
         {
             Status = true;
         }

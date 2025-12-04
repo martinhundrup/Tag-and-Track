@@ -517,7 +517,7 @@ namespace TagAndTrack.Components
                 row++;
             }
         }
-        
+
         /// <summary>
         /// Makes a data table for loans
         /// </summary>
@@ -529,10 +529,13 @@ namespace TagAndTrack.Components
             BackgroundColor = CurrentTheme.Instance.Theme.Background;
 
             // Create columns for ID, name, description, borrower, date checked out, date due, specimens, status, and the view button
-            for(int i = 0; i < 9; i++)
+            for (int i = 0; i < 9; i++)
             {
                 ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             }
+
+            // Add a row definition for the header row
+            RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             string[] headers = { "ID", "Name", "Description", "Borrower", "Date checked Out", "Due Date", "Specimens", "Status", "View" };
             // Make a row with the headers
@@ -545,8 +548,9 @@ namespace TagAndTrack.Components
                     StrokeThickness = 1,
                     Content = new LabelTemplate(10, headers[j]),
                 };
+                // row 0 is reserved for headers
                 this.Add(headerBorder, j, 0);
-                // Subscribe to theme changes.
+
                 CurrentTheme.Instance.PropertyChanged += (s, e) =>
                 {
                     if (e.PropertyName == nameof(CurrentTheme.Theme))
@@ -556,11 +560,14 @@ namespace TagAndTrack.Components
                     }
                 };
             }
-            int row = 0;
-            foreach(LoanItem loan in loanItems)
+
+            // Start data rows at 1 (since 0 is header)
+            int row = 1;
+
+            foreach (LoanItem loan in loanItems)
             {
                 RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                // Make  border containing label for ID
+
                 var idborder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -569,7 +576,6 @@ namespace TagAndTrack.Components
                     Content = new LabelTemplate(10, loan.ID.ToString()),
                 };
 
-                // Border for name
                 var nameBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -578,7 +584,6 @@ namespace TagAndTrack.Components
                     Content = new LabelTemplate(10, loan.Name),
                 };
 
-                // Border for description
                 var descriptionBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -587,7 +592,6 @@ namespace TagAndTrack.Components
                     Content = new LabelTemplate(10, loan.Description),
                 };
 
-                // Border for borrower
                 var borrowerBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -596,7 +600,6 @@ namespace TagAndTrack.Components
                     Content = new LabelTemplate(10, loan.Borrower),
                 };
 
-                // Border for date checked out
                 var checkedOutDateBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -605,7 +608,6 @@ namespace TagAndTrack.Components
                     Content = new LabelTemplate(10, loan.DateCheckedOut.ToString()),
                 };
 
-                // Border for date due
                 var dueDateBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -615,13 +617,11 @@ namespace TagAndTrack.Components
                 };
 
                 string specimenIDs = "";
-                // format the specimens
-                foreach(SpecimenItem specimen in loan.Specimens)
+                foreach (SpecimenItem specimen in loan.Specimens)
                 {
                     specimenIDs += specimen.ID.ToString() + ".";
                 }
 
-                // Border for specimens
                 var specimensBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -630,7 +630,6 @@ namespace TagAndTrack.Components
                     Content = new LabelTemplate(10, specimenIDs),
                 };
 
-                // Border for status
                 var statusBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -639,7 +638,6 @@ namespace TagAndTrack.Components
                     Content = new LabelTemplate(10, loan.Status.ToString()),
                 };
 
-                // Button
                 var viewBtn = new Button
                 {
                     Text = "View",
@@ -656,6 +654,7 @@ namespace TagAndTrack.Components
                         await Navigation.PushAsync(new Pages.ViewItemPage());
                     }
                 };
+
                 var buttonBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -664,7 +663,6 @@ namespace TagAndTrack.Components
                     Content = viewBtn,
                 };
 
-                // Subscribe to all theme changes
                 CurrentTheme.Instance.PropertyChanged += (s, e) =>
                 {
                     if (e.PropertyName == nameof(CurrentTheme.Theme))
@@ -690,7 +688,6 @@ namespace TagAndTrack.Components
                     }
                 };
 
-                // Add all rows.
                 this.Add(idborder, 0, row);
                 this.Add(nameBorder, 1, row);
                 this.Add(descriptionBorder, 2, row);
@@ -704,6 +701,7 @@ namespace TagAndTrack.Components
                 row++;
             }
         }
+
     }
 
 }

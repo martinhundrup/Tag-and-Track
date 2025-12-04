@@ -97,8 +97,6 @@ namespace TagAndTrack.Backend.Items
             var result = new List<LoanItem>(16);
             using var reader = new StringReader(DebugItems.loanCSV);
 
-            
-
             // skip optional header if present
             string? line = reader.ReadLine();
             if (line == null) return result;
@@ -145,8 +143,8 @@ namespace TagAndTrack.Backend.Items
             IdProp?.SetValue(loan, id);
             ArctosIdProp?.SetValue(loan, arctosId);
 
-            // mark loans present in system
-            StatusProp?.SetValue(loan, true);
+            // mark loans not present in system
+            StatusProp?.SetValue(loan, false);
             loan.SetBorrower(borrower);
             loan.SetEmail(email);
             loan.SetDates(dateOut, dateDue);
