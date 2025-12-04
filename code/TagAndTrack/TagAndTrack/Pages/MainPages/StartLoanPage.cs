@@ -97,8 +97,8 @@ namespace TagAndTrack.Pages
                 Children =
                 {
                     header,
-                    scanView,
-                    scanResultLabel,
+                    //scanView,
+                    //scanResultLabel,
                     buttonLayout,
                 }
             };

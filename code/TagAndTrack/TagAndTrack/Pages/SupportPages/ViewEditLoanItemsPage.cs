@@ -21,7 +21,7 @@ namespace TagAndTrack.Pages
                 }
             };
 
-            string dtHeader = "ID,Arctos ID,Name,Description,Remove item";
+           /* string dtHeader = "ID,Arctos ID,Name,Description,Remove item";
 
             var sb = new StringBuilder(); // entries
             foreach (var entry in LoanCreator.LoanItems)
@@ -29,7 +29,9 @@ namespace TagAndTrack.Pages
                 sb.Append(ItemToCSVEntry(entry));
             }
 
-            var dt = new DataTableTemplate(dtHeader, sb.ToString());
+            var dt = new DataTableTemplate(dtHeader, sb.ToString());*/
+
+            var dt = new DataTableTemplate(LoanCreator.LoanItems, true, false);
 
             var header = new HeaderTemplate(titleText);
             Content = new ScrollView
