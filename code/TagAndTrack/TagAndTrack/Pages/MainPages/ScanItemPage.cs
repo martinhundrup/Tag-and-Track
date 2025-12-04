@@ -102,14 +102,7 @@ namespace TagAndTrack.Pages
                 _navigating = false;
                 return;
             }
-
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                Shell.Current.DisplayAlert("Success", $"Value {qr} scanned!", "OK");
-            });
             
-
-
             // stop scanning before navigation
             OnDisappearing();
 

@@ -26,6 +26,7 @@ namespace TagAndTrack.Pages
             if (scanView != null && !_listening)
             {
                 scanView.ScanCaptured += ScanCaptured;
+
                 // if your ScanView supports control flags:
                 // scanView.IsScanning = true;
                 _listening = true;
@@ -40,6 +41,7 @@ namespace TagAndTrack.Pages
             if (scanView != null && _listening)
             {
                 scanView.ScanCaptured -= ScanCaptured;
+
                 // if supported:
                 // scanView.IsScanning = false;
                 _listening = false;
@@ -49,9 +51,9 @@ namespace TagAndTrack.Pages
         protected override void Initialize()
         {
             Shell.SetBackButtonBehavior(this, new BackButtonBehavior
-                {
-                    IsVisible = false
-                });           
+            {
+                IsVisible = false
+            });           
             Background = CurrentTheme.Instance.Theme.Background;
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
@@ -76,6 +78,9 @@ namespace TagAndTrack.Pages
                 HorizontalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0, 20)
             };
+
+            scanView.ScanCaptured += ScanCaptured;
+
 
             var buttonLayout = new HorizontalStackLayout
             {
