@@ -1,236 +1,73 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Reflection;
-using System.Text;
+using TagAndTrack.Backend.Data;
 
 namespace TagAndTrack.Backend.Items
 {
+    /// <summary>
+    /// Simplified ItemManager that delegates to DbService.
+    /// Kept for backwards compatibility with existing code that uses GetItemByQRID.
+    /// </summary>
     public static class ItemManager
     {
-        private static readonly List<Item> items = new();
-
-        // Cache reflection once instead of doing it N times
-        private static readonly PropertyInfo? IdProp =
-            typeof(Item).GetProperty("ID", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        private static readonly PropertyInfo? ArctosIdProp =
-            typeof(Item).GetProperty("ArctosID", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        private static readonly PropertyInfo? StatusProp =
-            typeof(Item).GetProperty("Status", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        public static void LoadAllDebugItems()
+        /// <summary>
+        /// Gets an item by its QR ID string (e.g., "Specimen:1", "Loan:2", "Container:3").
+        /// </summary>
+        public static Item? GetItemByQRID(string? qrid)
         {
-            DebugLogger.Log("loading all debug items");
-            items.AddRange(LoadDebugSpecimens());
-            DebugLogger.Log("loading all debug loans");
-            items.AddRange(LoadDebugLoans());
-            DebugLogger.Log($"loaded {items.Count} items");
-        }
+            if (string.IsNullOrEmpty(qrid)) return null;
 
-        public static List<Item> LoadDebugSpecimens()
-        {
-            var result = new List<Item>(EstimateLineCount(DebugItems.specimensCSV));
+            var parts = qrid.Split(':');
+            if (parts.Length != 2) return null;
 
-            using var reader = new StringReader(DebugItems.specimensCSV);
-            string? line;
-            while ((line = reader.ReadLine()) != null)
+            var type = parts[0];
+            if (!int.TryParse(parts[1], out int id)) return null;
+
+            // Synchronously get from database (not ideal but keeps API compatible)
+            return type switch
             {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-
-                try
-                {
-                    ReadOnlySpan<char> s = line.AsSpan();
-
-                    // id
-                    int p = s.IndexOf(',');
-                    if (p < 0) throw new FormatException("Missing field 0");
-                    ulong id = ulong.Parse(s[..p].Trim());
-                    s = s[(p + 1)..];
-
-                    // arctosId
-                    p = s.IndexOf(',');
-                    if (p < 0) throw new FormatException("Missing field 1");
-                    string arctosId = s[..p].Trim().ToString();
-                    s = s[(p + 1)..];
-
-                    // name
-                    p = s.IndexOf(',');
-                    if (p < 0) throw new FormatException("Missing field 2");
-                    string name = s[..p].Trim().ToString();
-                    s = s[(p + 1)..];
-
-                    // description
-                    p = s.IndexOf(',');
-                    if (p < 0) throw new FormatException("Missing field 3");
-                    string description = s[..p].Trim().ToString();
-                    s = s[(p + 1)..];
-
-                    // status
-                    // Allow trailing commas/extra fields
-                    p = s.IndexOf(',');
-                    ReadOnlySpan<char> statusSpan = p >= 0 ? s[..p] : s;
-                    bool status = bool.Parse(statusSpan.Trim());
-
-                    var specimen = new SpecimenItem(name, description);
-
-                    // Use cached PropertyInfos (no BaseType hopping, no per-iteration lookup)
-                    IdProp?.SetValue(specimen, id);
-                    ArctosIdProp?.SetValue(specimen, arctosId);
-                    StatusProp?.SetValue(specimen, status);
-
-                    result.Add(specimen);
-                }
-                catch (Exception ex)
-                {
-                    DebugLogger.Log($"Error parsing line: {line}\n{ex.Message}");
-                }
-            }
-
-            return result;
-        }
-        // load loans from CSV (one line per loan)
-        public static List<LoanItem> LoadDebugLoans()
-        {
-            var result = new List<LoanItem>(16);
-            using var reader = new StringReader(DebugItems.loanCSV);
-
-            // skip optional header if present
-            string? line = reader.ReadLine();
-            if (line == null) return result;
-            result.Add(ParseLoanLine(line));
-
-            // remaining lines
-            while ((line = reader.ReadLine()) != null)
-            {
-                if (string.IsNullOrWhiteSpace(line)) continue;
-                result.Add(ParseLoanLine(line));
-            }
-
-            return result;
+                "Specimen" => Task.Run(async () => await DbService.GetSpecimenByIdAsync(id)).Result,
+                "Loan" => Task.Run(async () => await DbService.GetLoanByIdAsync(id)).Result,
+                "Container" => Task.Run(async () => await DbService.GetContainerByIdAsync(id)).Result,
+                _ => null
+            };
         }
 
-        private static LoanItem ParseLoanLine(string line)
-        {
-            // split 9 fields: ID, ArctosID, Name, Description, Borrower, Email, DateOut, DateDue, Items
-            // Name/Description may not contain commas in your generated data; if that changes, use a CSV parser.
-            var parts = line.Split(',', 9, StringSplitOptions.None);
-            if (parts.Length < 9) throw new FormatException($"Malformed loan line: {line}");
-
-            // parse fixed fields
-            ulong id = ulong.Parse(parts[0].Trim(), CultureInfo.InvariantCulture);
-
-            string arctos = parts[1].Trim();
-            string? arctosId = string.Equals(arctos, "NULL", StringComparison.OrdinalIgnoreCase) || arctos.Length == 0
-                ? null
-                : arctos;
-
-            string name = parts[2].Trim();
-            string description = parts[3].Trim();
-            string borrower = parts[4].Trim();
-            string email = parts[5].Trim();
-
-            DateTime dateOut = DateTime.Parse(parts[6].Trim(), CultureInfo.InvariantCulture);
-            DateTime dateDue = DateTime.Parse(parts[7].Trim(), CultureInfo.InvariantCulture);
-
-            string itemsField = parts[8].Trim();
-
-
-            // create loan
-            var loan = new LoanItem(name, description);
-            IdProp?.SetValue(loan, id);
-            ArctosIdProp?.SetValue(loan, arctosId);
-
-            // mark loans not present in system
-            StatusProp?.SetValue(loan, false);
-            loan.SetBorrower(borrower);
-            loan.SetEmail(email);
-            loan.SetDates(dateOut, dateDue);
-
-
-            // parse items list: {1,2,3}
-            if (!(itemsField.StartsWith("{") && itemsField.EndsWith("}")))
-                throw new FormatException($"Items field missing braces: {itemsField}");
-
-
-            var inner = itemsField.Substring(1, itemsField.Length - 2);
-            if (!string.IsNullOrWhiteSpace(inner))
-            {
-                var ids = inner.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                foreach (var s in ids)
-                {
-                    int sid = int.Parse(s.Trim(), CultureInfo.InvariantCulture);
-                    var specimen = GetItemByQRID($"{Item.ItemType.Specimen.ToString()}:{sid}");
-                    if (specimen == null) throw new KeyNotFoundException($"Specimen ID {sid} not found for loan {id}");
-                    loan.AddSpecimen(specimen as SpecimenItem);
-                }
-            }
-
-            return loan;
-        }
-        private static int EstimateLineCount(string s)
-        {
-            int count = 1;
-            foreach (char c in s) if (c == '\n') count++;
-            return count;
-        }
-
-        public static Item? GetItemByQRID(string QRID) =>
-            items.FirstOrDefault(i => i.QRID == QRID);
-
-        public static void AddItem(Item item)
-        {
-            if (items.Any(i => i.QRID == item.QRID))
-            {
-                DebugLogger.Log($"Item with QRID {item.ID} already exists.");
-                throw new ArgumentException($"Item with QRID {item.ID} already exists.");
-            }
-            items.Add(item);
-        }
-
-        // If you must keep returning CSV, at least avoid per-item logs and pre-size the builder
+        /// <summary>
+        /// Gets all items of a specific type.
+        /// </summary>
         public static List<Item> GetItemsOfType(Item.ItemType itemType)
         {
-           return items.Where(item => item.Type == itemType).ToList();
+            return itemType switch
+            {
+                Item.ItemType.Specimen => Task.Run(async () => 
+                    (await DbService.GetAllSpecimensAsync()).Cast<Item>().ToList()).Result,
+                Item.ItemType.Loan => Task.Run(async () => 
+                    (await DbService.GetAllLoansAsync()).Cast<Item>().ToList()).Result,
+                Item.ItemType.Container => Task.Run(async () => 
+                    (await DbService.GetAllContainersAsync()).Cast<Item>().ToList()).Result,
+                _ => new List<Item>()
+            };
         }
 
-        private static StringBuilder LoanItemsString(IReadOnlyList<Item> items)
+        /// <summary>
+        /// Adds an item to the database.
+        /// </summary>
+        public static void AddItem(Item item)
         {
-            var sb = new System.Text.StringBuilder(items.Count * 8);
-
-            foreach (var item in items)
+            Task.Run(async () =>
             {
-                sb.Append(item.ID.ToString()).Append(".");
-            }
-
-            return sb;
-        }
-
-
-        public static string GetLoansCSV()
-        {
-            var filtered = items.Where(item => item.Type == Item.ItemType.Loan).ToList();
-            // Rough capacity estimate: ~64 chars per row
-            var sb = new System.Text.StringBuilder(filtered.Count * 64);
-
-            foreach (var item in filtered)
-            {
-                var loan = item as LoanItem;
-                if (loan == null) continue;
-                sb.Append(loan.ID).Append(',')
-                  .Append(loan.Name).Append(',')
-                  .Append(loan.Description).Append(',')
-                  .Append(loan.Borrower).Append(',')
-                  .Append(loan.Email).Append(',')
-                  .Append(loan.DateCheckedOut).Append(',')
-                  .Append(loan.DateDue).Append(',')
-                  .Append(LoanItemsString(loan.Specimens).Append(',')
-                  .Append(loan.Status).Append('\n'));
-            }
-
-            return sb.ToString();
+                switch (item)
+                {
+                    case SpecimenItem specimen:
+                        await DbService.AddSpecimenAsync(specimen);
+                        break;
+                    case LoanItem loan:
+                        await DbService.AddLoanAsync(loan);
+                        break;
+                    case ContainerItem container:
+                        await DbService.AddContainerAsync(container);
+                        break;
+                }
+            }).Wait();
         }
     }
 }

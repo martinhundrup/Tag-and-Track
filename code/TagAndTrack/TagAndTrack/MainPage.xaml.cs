@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
 using TagAndTrack.Backend;
+using TagAndTrack.Backend.Data;
+using TagAndTrack.Backend.Employees;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Backend.Utils;
 using TagAndTrack.Components;
@@ -20,13 +22,7 @@ namespace TagAndTrack
         {
             Title = null;
             Background = CurrentTheme.Instance.Theme.Background;
-            DebugLogger.Init();
-            DebugLogger.Log(DebugLogger.GetLogFilePath());
-            DebugLogger.Log("App started");
-            //System.Diagnostics.Process.Start("explorer.exe", Path.GetDirectoryName(DebugLogger.GetLogFilePath())); // uncomment to open log file location windows ONLY
 
-            ItemManager.LoadAllDebugItems();
-            //await Databases.Database.Instance.InitAsync(); //initializes the database
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
@@ -34,6 +30,11 @@ namespace TagAndTrack
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+
+            // Build header with logged-in user info
+            var employeeName = EmployeeManager.ActiveEmployee?.Name ?? "Unknown";
+            var headerText = $"Home";
+
             var grid = new Grid
             {
                 Padding = 20,
@@ -51,28 +52,20 @@ namespace TagAndTrack
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = GridLength.Auto },
                 }
             };
-
-
 
             var buttons = new[]
             {
                 new TagAndTrackButton("Scan Item", new Command(async () => await Navigation.PushAsync(new ScanItemPage()))),
                 new TagAndTrackButton("Start Loan", new Command(async () => await Navigation.PushAsync(new StartLoanPage()))),
-                //new TagAndTrackButton("Check-in Loan", new Command(async () => await Navigation.PushAsync(new CheckInLoanPage()))),
                 new TagAndTrackButton("Loan History", new Command(async () => await Navigation.PushAsync(new LoanHistoryPage()))),
                 new TagAndTrackButton("All Specimens", new Command(async () => await Navigation.PushAsync(new AllSpecimensPage()))),
+                new TagAndTrackButton("Containers", new Command(async () => await Navigation.PushAsync(new AllContainersPage()))),
                 new TagAndTrackButton("Add Item", new Command(async () => await Navigation.PushAsync(new AddItemPage()))),
-                new TagAndTrackButton("Login", new Command(async () => await Navigation.PushAsync(new LoginPage()))),
                 new TagAndTrackButton("Settings", new Command(async () => await Navigation.PushAsync(new SettingsPage()))),
                 new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme())),
-                new TagAndTrackButton("Specimen:1", new Command(async () => foo())),
-                new TagAndTrackButton("Loan:1", new Command(async () => bar())),
-                new TagAndTrackButton("Send Email", new Command(async () => TestEmail())),
-                new TagAndTrackButton("Open Debug Logs", new Command(async () => OpenDebugLogs())),
-
+                new TagAndTrackButton("Logout", new Command(async () => await LogoutAsync())),
             };
 
             for (int i = 0; i < buttons.Length; i++)
@@ -84,39 +77,31 @@ namespace TagAndTrack
                 Grid.SetColumn(buttons[i], col);
             }
 
-            Content = new StackLayout()
+            // Welcome message
+            var welcomeLabel = new Label
             {
-                Children = { new HeaderTemplate("Home", true), grid }
+                Text = $"Logged in as: {employeeName}",
+                FontSize = 14,
+                TextColor = CurrentTheme.Instance.Theme.Text,
+                HorizontalOptions = LayoutOptions.Center,
+                Margin = new Thickness(0, 0, 0, 10)
+            };
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                    welcomeLabel.TextColor = CurrentTheme.Instance.Theme.Text;
             };
 
-
-        } // end initialize()
-
-        private async void foo()
-        {
-            ScannedQRItem.lastScannedItem = "Specimen:1";
-            await Navigation.PushAsync(new ViewItemPage());
-        }
-        private async void bar()
-        {
-            ScannedQRItem.lastScannedItem = "Loan:1";
-            await Navigation.PushAsync(new ViewItemPage());
-        }
-
-        private void TestEmail()
-        {
-            DebugLogger.Log("attempting to send email to hundrupm@gmail.com");
-            var response = Emailer.Email("hundrupm@gmail.com", "test", "hello world!");
-            DebugLogger.Log($"email response: {response}");
-        }
-
-        private void OpenDebugLogs()
-        {
-            Process.Start(new ProcessStartInfo
+            Content = new StackLayout()
             {
-                FileName = DebugLogger.GetLogFilePath(),
-                UseShellExecute = true
-            });
+                Children = { new HeaderTemplate(headerText, true), welcomeLabel, grid }
+            };
+        }
+
+        private async Task LogoutAsync()
+        {
+            EmployeeManager.SetActiveEmployee(null);
+            await Shell.Current.GoToAsync("//LoginPage");
         }
     }
 }

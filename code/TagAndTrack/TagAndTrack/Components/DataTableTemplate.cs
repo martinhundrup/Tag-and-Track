@@ -528,8 +528,8 @@ namespace TagAndTrack.Components
             ColumnSpacing = 1;
             BackgroundColor = CurrentTheme.Instance.Theme.Background;
 
-            // Create columns for ID, name, description, borrower, date checked out, date due, specimens, status, and the view button
-            for (int i = 0; i < 9; i++)
+            // Create columns for ID, name, borrower, date checked out, date due, status, and the view button (removed specimens column)
+            for (int i = 0; i < 7; i++)
             {
                 ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             }
@@ -537,7 +537,7 @@ namespace TagAndTrack.Components
             // Add a row definition for the header row
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            string[] headers = { "ID", "Name", "Description", "Borrower", "Date checked Out", "Due Date", "Specimens", "Status", "View" };
+            string[] headers = { "ID", "Name", "Borrower", "Checked Out", "Due Date", "Status", "View" };
             // Make a row with the headers
             for (int j = 0; j < headers.Length; j++)
             {
@@ -584,14 +584,6 @@ namespace TagAndTrack.Components
                     Content = new LabelTemplate(10, loan.Name),
                 };
 
-                var descriptionBorder = new Border
-                {
-                    Stroke = CurrentTheme.Instance.Theme.Borders,
-                    BackgroundColor = CurrentTheme.Instance.Theme.Background,
-                    StrokeThickness = 1,
-                    Content = new LabelTemplate(10, loan.Description),
-                };
-
                 var borrowerBorder = new Border
                 {
                     Stroke = CurrentTheme.Instance.Theme.Borders,
@@ -605,7 +597,7 @@ namespace TagAndTrack.Components
                     Stroke = CurrentTheme.Instance.Theme.Borders,
                     BackgroundColor = CurrentTheme.Instance.Theme.Background,
                     StrokeThickness = 1,
-                    Content = new LabelTemplate(10, loan.DateCheckedOut.ToString()),
+                    Content = new LabelTemplate(10, loan.DateCheckedOut.ToString("yyyy-MM-dd")),
                 };
 
                 var dueDateBorder = new Border
@@ -613,21 +605,7 @@ namespace TagAndTrack.Components
                     Stroke = CurrentTheme.Instance.Theme.Borders,
                     BackgroundColor = CurrentTheme.Instance.Theme.Background,
                     StrokeThickness = 1,
-                    Content = new LabelTemplate(10, loan.DateDue.ToString()),
-                };
-
-                string specimenIDs = "";
-                foreach (SpecimenItem specimen in loan.Specimens)
-                {
-                    specimenIDs += specimen.ID.ToString() + ".";
-                }
-
-                var specimensBorder = new Border
-                {
-                    Stroke = CurrentTheme.Instance.Theme.Borders,
-                    BackgroundColor = CurrentTheme.Instance.Theme.Background,
-                    StrokeThickness = 1,
-                    Content = new LabelTemplate(10, specimenIDs),
+                    Content = new LabelTemplate(10, loan.DateDue.ToString("yyyy-MM-dd")),
                 };
 
                 var statusBorder = new Border
@@ -635,7 +613,7 @@ namespace TagAndTrack.Components
                     Stroke = CurrentTheme.Instance.Theme.Borders,
                     BackgroundColor = CurrentTheme.Instance.Theme.Background,
                     StrokeThickness = 1,
-                    Content = new LabelTemplate(10, loan.Status.ToString()),
+                    Content = new LabelTemplate(10, loan.Status ? "Returned" : "On Loan"),
                 };
 
                 var viewBtn = new Button
@@ -671,16 +649,12 @@ namespace TagAndTrack.Components
                         idborder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                         nameBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
                         nameBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
-                        descriptionBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
-                        descriptionBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                         borrowerBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
                         borrowerBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                         checkedOutDateBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
                         checkedOutDateBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                         dueDateBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
                         dueDateBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
-                        specimensBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
-                        specimensBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                         statusBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
                         statusBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                         buttonBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
@@ -690,13 +664,11 @@ namespace TagAndTrack.Components
 
                 this.Add(idborder, 0, row);
                 this.Add(nameBorder, 1, row);
-                this.Add(descriptionBorder, 2, row);
-                this.Add(borrowerBorder, 3, row);
-                this.Add(checkedOutDateBorder, 4, row);
-                this.Add(dueDateBorder, 5, row);
-                this.Add(specimensBorder, 6, row);
-                this.Add(statusBorder, 7, row);
-                this.Add(buttonBorder, 8, row);
+                this.Add(borrowerBorder, 2, row);
+                this.Add(checkedOutDateBorder, 3, row);
+                this.Add(dueDateBorder, 4, row);
+                this.Add(statusBorder, 5, row);
+                this.Add(buttonBorder, 6, row);
 
                 row++;
             }
