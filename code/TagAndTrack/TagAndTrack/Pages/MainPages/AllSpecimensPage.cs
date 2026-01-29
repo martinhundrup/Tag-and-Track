@@ -1,5 +1,6 @@
 using System.Text;
 using TagAndTrack.Backend;
+using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Components;
 
@@ -8,10 +9,17 @@ namespace TagAndTrack.Pages
     public class AllSpecimensPage : TagAndTrackPage
     {
         protected const string titleText = "View All Specimens";
-        public AllSpecimensPage() { Initialize(); }
+        private VerticalStackLayout? contentLayout;
+
+        public AllSpecimensPage()
+        {
+            DebugLogger.Log("AllSpecimensPage constructor called");
+            Initialize();
+        }
 
         protected override void Initialize()
         {
+            DebugLogger.Log("AllSpecimensPage.Initialize() starting");
             Background = CurrentTheme.Instance.Theme.Background;
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
@@ -21,19 +29,14 @@ namespace TagAndTrack.Pages
                 }
             };
 
-            string dtHeader = "ID,Arctos ID,Name,Description,Status";
-            var items = ItemManager.GetItemsOfType(Item.ItemType.Specimen);
-            var sb = new StringBuilder();
-            List<SpecimenItem> list = new List<SpecimenItem>();
-            foreach (var item in items)
-            {
-                list.Add((SpecimenItem)item);
-            }
-            var dt = new DataTableTemplate(dtHeader, sb.ToString());
-            dt = new DataTableTemplate(list, false);
-
             var header = new HeaderTemplate(titleText);
-            //var searchbar = new EntryTemplate(300, "Search");
+
+            contentLayout = new VerticalStackLayout
+            {
+                Spacing = 5,
+                Padding = new Thickness(10)
+            };
+
             Content = new ScrollView
             {
                 Orientation = ScrollOrientation.Vertical,
@@ -42,22 +45,50 @@ namespace TagAndTrack.Pages
                     Children =
                     {
                         header,
-                        //searchbar,
-                        dt
+                        contentLayout
                     }
                 }
             };
+
+            _ = LoadSpecimensAsync();
+            DebugLogger.Log("AllSpecimensPage.Initialize() complete");
         }
 
-        private static string ItemToCSVEntry(Item item)
+        protected override void OnAppearing()
         {
-            var sb = new StringBuilder();
-                sb.Append(item.ID).Append(',')
-                  .Append(item.ArctosID).Append(',')
-                  .Append(item.Name).Append(',')
-                  .Append(item.Description).Append(',')
-                  .Append(item.Status).AppendLine();
-            return sb.ToString();
+            DebugLogger.Log("AllSpecimensPage.OnAppearing() called");
+            base.OnAppearing();
+            // Don't reload here - Initialize already loaded
+            // _ = LoadSpecimensAsync();
+        }
+
+        private async Task LoadSpecimensAsync()
+        {
+            DebugLogger.Log("AllSpecimensPage.LoadSpecimensAsync() starting");
+            if (contentLayout == null) return;
+
+            contentLayout.Children.Clear();
+            DebugLogger.Log("AllSpecimensPage: contentLayout cleared");
+
+            var specimens = await DbService.GetAllSpecimensAsync();
+
+            if (specimens.Count == 0)
+            {
+                contentLayout.Children.Add(new Label
+                {
+                    Text = "No specimens found",
+                    FontSize = 16,
+                    TextColor = CurrentTheme.Instance.Theme.Text,
+                    HorizontalOptions = LayoutOptions.Center
+                });
+                return;
+            }
+
+            // Create a simple data table
+            DebugLogger.Log($"AllSpecimensPage: Creating DataTableTemplate with {specimens.Count} specimens");
+            var dt = new DataTableTemplate(specimens, false);
+            contentLayout.Children.Add(dt);
+            DebugLogger.Log("AllSpecimensPage.LoadSpecimensAsync() complete");
         }
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.Maui.Controls;
 using TagAndTrack.Backend.Items;
+using TagAndTrack.Backend.Data;
 using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
@@ -226,7 +227,18 @@ namespace TagAndTrack.Pages
         private async Task CheckInLoan()
         {
             if (loanItem == null) return;
+            
+            // Update in-memory state
             loanItem.Checkin();
+
+            // Persist loan to database (cast ulong ID to int for DB)
+            await DbService.UpdateLoanAsync((int)loanItem.ID, true);
+
+            // Persist all specimens to database
+            foreach (var specimen in loanItem.Specimens)
+            {
+                await DbService.UpdateSpecimenAsync((int)specimen.ID, true);
+            }
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
