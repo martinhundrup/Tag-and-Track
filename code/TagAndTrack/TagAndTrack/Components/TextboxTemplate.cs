@@ -9,7 +9,7 @@ namespace TagAndTrack.Components
     /// <summary>
     /// The template for the textboxes the app will use.
     /// </summary>
-    internal class TextboxTemplate : Border
+    internal class TextboxTemplate : Border, IDisposable
     {
         /// <summary>
         /// The textbox used in the template.
@@ -33,7 +33,6 @@ namespace TagAndTrack.Components
             this.StrokeThickness = 1;
             this.BackgroundColor = Colors.Transparent;
 
-
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
@@ -45,6 +44,20 @@ namespace TagAndTrack.Components
             };
 
             this.Content = textbox;
+        }
+
+        public void Dispose()
+        {
+            // Unsubscribe from the event to prevent memory leaks.
+            CurrentTheme.Instance.PropertyChanged -= (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    textbox.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                    textbox.TextColor = CurrentTheme.Instance.Theme.Text;
+                    this.Stroke = CurrentTheme.Instance.Theme.Borders;
+                }
+            };
         }
     }
 }

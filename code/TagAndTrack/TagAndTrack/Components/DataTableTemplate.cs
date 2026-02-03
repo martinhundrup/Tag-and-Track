@@ -527,6 +527,7 @@ namespace TagAndTrack.Components
             RowSpacing = 1;
             ColumnSpacing = 1;
             BackgroundColor = CurrentTheme.Instance.Theme.Background;
+            HorizontalOptions = LayoutOptions.Center;
 
             // Create columns for ID, name, borrower, date checked out, date due, status, and the view button (removed specimens column)
             for (int i = 0; i < 7; i++)

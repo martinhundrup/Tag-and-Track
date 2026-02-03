@@ -64,7 +64,6 @@ namespace TagAndTrack
                 new TagAndTrackButton("Containers", new Command(async () => await Navigation.PushAsync(new AllContainersPage()))),
                 new TagAndTrackButton("Add Item", new Command(async () => await Navigation.PushAsync(new AddItemPage()))),
                 new TagAndTrackButton("Settings", new Command(async () => await Navigation.PushAsync(new SettingsPage()))),
-                new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme())),
                 new TagAndTrackButton("Logout", new Command(async () => await LogoutAsync())),
             };
 

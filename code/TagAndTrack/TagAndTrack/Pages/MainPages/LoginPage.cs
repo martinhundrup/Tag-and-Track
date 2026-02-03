@@ -125,7 +125,7 @@ namespace TagAndTrack.Pages
 
             var loginButton = new TagAndTrackButton("Login", new Command(async () => await LoginAsync()));
 
-            Content = new VerticalStackLayout
+            var pageContent = new VerticalStackLayout
             {
                 Padding = 40,
                 Spacing = 15,
@@ -133,12 +133,24 @@ namespace TagAndTrack.Pages
                 HorizontalOptions = LayoutOptions.Center,
                 Children =
                 {
-                    header,
                     instructions,
                     pickerBorder,
                     orLabel,
                     newEmployeeEntry,
                     loginButton
+                }
+            };
+
+            Content = new ScrollView
+            {
+                Orientation = ScrollOrientation.Vertical,
+                Content = new VerticalStackLayout
+                {
+                    Children =
+                    {
+                        header,
+                        pageContent
+                    }
                 }
             };
 
