@@ -19,6 +19,7 @@ namespace TagAndTrack.Pages
 
         protected override void Initialize()
         {
+            Title = null; // No title in navigation bar
             DebugLogger.Log("LoginPage.Initialize() starting");
             Background = CurrentTheme.Instance.Theme.Background;
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
