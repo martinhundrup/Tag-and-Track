@@ -7,8 +7,10 @@ namespace TagAndTrack.Components
     /// <summary>
     /// The header template for the pages.
     /// </summary>
-    public class HeaderTemplate : ContentView
+    public class HeaderTemplate : ContentView, IDisposable
     {
+        private BoxView border;
+
         /// <summary>
         /// Creates a new instance of the <see cref="HeaderTemplate"/> class.
         /// </summary>
@@ -32,7 +34,7 @@ namespace TagAndTrack.Components
             };
 
             // Header text.
-            var label = new TextTemplate(text, TextAlignment.Start, 50);
+            var label = new TextTemplate(text, TextAlignment.Center, 50);
             grid.Add(label, 0, 0);
 
             // Right button.
@@ -60,7 +62,7 @@ namespace TagAndTrack.Components
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             // Wrap in a border for bottom stroke
-            var border = new BoxView
+            border = new BoxView
             {
                 HeightRequest = 1.5,
                 Color = CurrentTheme.Instance.Theme.Text,
@@ -68,13 +70,13 @@ namespace TagAndTrack.Components
                 VerticalOptions = LayoutOptions.End,
             };
 
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                CurrentTheme.Instance.PropertyChanged += (s, e) =>
                 {
-                    border.Color = CurrentTheme.Instance.Theme.Text;
-                }
-            };
+                    if (e.PropertyName == nameof(CurrentTheme.Theme))
+                    {
+                        border.Color = CurrentTheme.Instance.Theme.Text;
+                    }
+                };
 
             var stack = new StackLayout
             {
@@ -83,6 +85,21 @@ namespace TagAndTrack.Components
             };
 
             Content = stack;
+        }
+
+        /// <summary>
+        /// Disposable method to clean up event subscriptions.
+        /// </summary>
+        public void Dispose()
+        {
+            // Unsubscribe from events to prevent memory leaks.
+            CurrentTheme.Instance.PropertyChanged -= (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    border.Color = CurrentTheme.Instance.Theme.Text;
+                }
+            };
         }
     }
 }

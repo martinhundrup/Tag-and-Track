@@ -44,12 +44,7 @@ namespace TagAndTrack.Pages
                     {
                         header,
                         searchbar,
-                        new ScrollView
-                        {
-                            Orientation = ScrollOrientation.Horizontal,
-                            HorizontalScrollBarVisibility = ScrollBarVisibility.Always,
-                            Content = dt
-                        }
+                        dt
                     }
                 }
             };

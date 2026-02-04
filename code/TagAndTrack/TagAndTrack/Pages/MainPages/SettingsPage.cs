@@ -46,6 +46,8 @@ namespace TagAndTrack.Pages
                 },
             };
 
+            var themeButton = new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme()));
+
             Content = new VerticalStackLayout()
             {
                 Children =
@@ -57,7 +59,8 @@ namespace TagAndTrack.Pages
                         qr[1],
                         qr[2],
                         qr[3],
-                    }
+                    },
+                    themeButton
                 }
             };
         }

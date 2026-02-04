@@ -19,6 +19,7 @@ namespace TagAndTrack.Pages
 
         protected override void Initialize()
         {
+            Title = null; // No title in navigation bar
             DebugLogger.Log("LoginPage.Initialize() starting");
             Background = CurrentTheme.Instance.Theme.Background;
             CurrentTheme.Instance.PropertyChanged += (s, e) =>
@@ -125,7 +126,7 @@ namespace TagAndTrack.Pages
 
             var loginButton = new TagAndTrackButton("Login", new Command(async () => await LoginAsync()));
 
-            Content = new VerticalStackLayout
+            var pageContent = new VerticalStackLayout
             {
                 Padding = 40,
                 Spacing = 15,
@@ -133,12 +134,24 @@ namespace TagAndTrack.Pages
                 HorizontalOptions = LayoutOptions.Center,
                 Children =
                 {
-                    header,
                     instructions,
                     pickerBorder,
                     orLabel,
                     newEmployeeEntry,
                     loginButton
+                }
+            };
+
+            Content = new ScrollView
+            {
+                Orientation = ScrollOrientation.Vertical,
+                Content = new VerticalStackLayout
+                {
+                    Children =
+                    {
+                        header,
+                        pageContent
+                    }
                 }
             };
 

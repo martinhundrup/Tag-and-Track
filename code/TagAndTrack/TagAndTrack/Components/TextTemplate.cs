@@ -9,7 +9,7 @@ namespace TagAndTrack.Components
     /// <summary>
     /// Creates a template for the text we intend to use.
     /// </summary>
-    public class TextTemplate : Label
+    public class TextTemplate : Label, IDisposable
     {
         /// <summary>
         /// Creates a new instance of the <see cref="TextTemplate"/> class.
@@ -19,15 +19,15 @@ namespace TagAndTrack.Components
             Text = "";
             TextColor = CurrentTheme.Instance.Theme.Text;
             HorizontalTextAlignment = TextAlignment.Center;
-
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(CurrentTheme.Theme))
+           
+                CurrentTheme.Instance.PropertyChanged += (s, e) =>
                 {
-                    TextColor = CurrentTheme.Instance.Theme.Text;
-                }
-            };
-        }
+                    if (e.PropertyName == nameof(CurrentTheme.Theme))
+                    {
+                        TextColor = CurrentTheme.Instance.Theme.Text;
+                    }
+                };
+            }
 
         /// <summary>
         /// Creates a new instance of the <see cref="TextTemplate"/> class and initializes its text.
@@ -61,6 +61,21 @@ namespace TagAndTrack.Components
                     TextColor = CurrentTheme.Instance.Theme.Text;
                 }
             };
+        }
+
+        /// <summary>
+        /// Disposable method to clean up event subscriptions.
+        /// </summary>
+        public void Dispose()
+        {
+                // Unsubscribe from the PropertyChanged event to prevent memory leaks.
+                CurrentTheme.Instance.PropertyChanged -= (s, e) =>
+                {
+                    if (e.PropertyName == nameof(CurrentTheme.Theme))
+                    {
+                        TextColor = CurrentTheme.Instance.Theme.Text;
+                    }
+                };
         }
     }
 }
