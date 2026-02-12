@@ -138,9 +138,10 @@ namespace TagAndTrack.Components
 
                     var btn = new Button
                     {
+                        // Image will only show its tint on iOS.
                         ImageSource = "info_circle.svg",
                         TextColor = Colors.Black,
-                        BackgroundColor = Colors.Gray,
+                        BackgroundColor = Colors.Transparent,
                         BorderWidth = 0,
                         Padding = 4,
                         WidthRequest = 24,
