@@ -34,6 +34,7 @@ namespace TagAndTrack.Components
             ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             Margin = new Thickness(10, 5);
             textbox = new TextboxTemplate(width);
+            
             button = new Button
             {
                 Text = buttonText,
