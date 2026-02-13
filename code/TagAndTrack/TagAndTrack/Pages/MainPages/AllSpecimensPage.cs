@@ -92,7 +92,30 @@ namespace TagAndTrack.Pages
 
             // Create a simple data table
             DebugLogger.Log($"AllSpecimensPage: Creating DataTableTemplate with {specimens.Count} specimens");
-            var dt = new SpecimenDataTable(specimens);
+            var dt = new DataTable<SpecimenItem>(specimens, columns =>
+            {
+                columns.Add("ID", s => s.ID, 60);
+                columns.Add("Arctos ID", s => s.ArctosID, 100);
+                columns.Add("Name", s => s.Name);
+                columns.Add("Description", s => s.Description);
+                columns.AddIcon("Status", s =>
+                    s.Status
+                        ? new Icon("check_circle.svg", Colors.Green)
+                        : new Icon("minus_circle.svg", Colors.Red),
+                    width: 80);
+
+
+
+                columns.AddButton("View Specimen",
+                s =>
+                {
+                    ScannedQRItem.lastScannedItem = s.QRID;
+                    Navigation.PushAsync(new ViewItemPage());
+                },
+                "info_circle.svg", 80);
+
+            });
+
             contentLayout.Children.Add(dt);
             DebugLogger.Log("AllSpecimensPage.LoadSpecimensAsync() complete");
         }

@@ -1,7 +1,8 @@
 using Microsoft.Maui.Controls;
-using TagAndTrack.Backend.Items;
 using TagAndTrack.Backend.Data;
+using TagAndTrack.Backend.Items;
 using TagAndTrack.Components;
+using TagAndTrack.Databases;
 
 namespace TagAndTrack.Pages
 {
@@ -204,12 +205,26 @@ namespace TagAndTrack.Pages
             root.Children.Add(pageDataBorder);
             Grid.SetRow(pageDataBorder, 1);
 
+            var dt = new DataTable<SpecimenItem>(loan.Specimens, columns =>
+            {
+                columns.Add("ID", s => s.ID, 60);
+                columns.Add("Name", s => s.Name);
+
+                columns.AddButton("View Specimen",
+                s =>
+                {
+                    ScannedQRItem.lastScannedItem = s.QRID;
+                    Navigation.PushAsync(new ViewItemPage());
+                },
+                "info_circle.svg", 80);
+
+            }, showSearchBar: false);
             var dataView = new DataTableTemplate(loan.Specimens);
 
             var listContainer = new VerticalStackLayout
             {
                 Spacing = 8,
-                Children = { listLabel, dataView }
+                Children = { listLabel, dt }
             };
             root.Children.Add(listContainer);
             Grid.SetRow(listContainer, 2);
