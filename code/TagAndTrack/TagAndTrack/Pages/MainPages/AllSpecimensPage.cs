@@ -10,7 +10,6 @@ namespace TagAndTrack.Pages
     {
         protected const string titleText = "View All Specimens";
         private Grid? contentLayout;
-        private SpecimenDataTable? specimenDataTable;
 
         public AllSpecimensPage()
         {
