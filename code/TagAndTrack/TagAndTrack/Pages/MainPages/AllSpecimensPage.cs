@@ -9,7 +9,7 @@ namespace TagAndTrack.Pages
     public class AllSpecimensPage : TagAndTrackPage
     {
         protected const string titleText = "View All Specimens";
-        private VerticalStackLayout? contentLayout;
+        private Grid? contentLayout;
 
         public AllSpecimensPage()
         {
@@ -31,24 +31,29 @@ namespace TagAndTrack.Pages
 
             var header = new HeaderTemplate(titleText);
 
-            contentLayout = new VerticalStackLayout
+            contentLayout = new Grid
             {
-                Spacing = 5,
                 Padding = new Thickness(10)
             };
 
-            Content = new ScrollView
+            var pageLayout = new Grid
             {
-                Orientation = ScrollOrientation.Vertical,
-                Content = new VerticalStackLayout
+                RowDefinitions =
                 {
-                    Children =
-                    {
-                        header,
-                        contentLayout
-                    }
+                    new RowDefinition { Height = GridLength.Auto }, // header
+                    new RowDefinition { Height = GridLength.Star }  // table
                 }
             };
+
+            pageLayout.Children.Add(header);
+            Grid.SetRow(header, 0);
+
+            pageLayout.Children.Add(contentLayout);
+            Grid.SetRow(contentLayout, 1);
+
+            Content = pageLayout;
+
+
 
             _ = LoadSpecimensAsync();
             DebugLogger.Log("AllSpecimensPage.Initialize() complete");
@@ -86,7 +91,30 @@ namespace TagAndTrack.Pages
 
             // Create a simple data table
             DebugLogger.Log($"AllSpecimensPage: Creating DataTableTemplate with {specimens.Count} specimens");
-            var dt = new DataTableTemplate(specimens, false);
+            var dt = new DataTable<SpecimenItem>(specimens, columns =>
+            {
+                columns.Add("ID", s => s.ID, 60);
+                columns.Add("Arctos ID", s => s.ArctosID, 100);
+                columns.Add("Name", s => s.Name);
+                columns.Add("Description", s => s.Description);
+                columns.AddIcon("Status", s =>
+                    s.Status
+                        ? new Icon("check_circle.svg", Colors.Green)
+                        : new Icon("minus_circle.svg", Colors.Red),
+                    width: 80);
+
+
+
+                columns.AddButton("View Specimen",
+                s =>
+                {
+                    ScannedQRItem.lastScannedItem = s.QRID;
+                    Navigation.PushAsync(new ViewItemPage());
+                },
+                "info_circle.svg", 80);
+
+            });
+
             contentLayout.Children.Add(dt);
             DebugLogger.Log("AllSpecimensPage.LoadSpecimensAsync() complete");
         }

@@ -21,17 +21,25 @@ namespace TagAndTrack.Pages
                 }
             };
 
-           /* string dtHeader = "ID,Arctos ID,Name,Description,Remove item";
 
-            var sb = new StringBuilder(); // entries
-            foreach (var entry in LoanCreator.LoanItems)
+            DataTable<SpecimenItem>? dt = null;
+
+            dt = new DataTable<SpecimenItem>(LoanCreator.LoanItems, columns =>
             {
-                sb.Append(ItemToCSVEntry(entry));
-            }
+                columns.Add("ID", s => s.ID, 60);
+                columns.Add("Arctos ID", s => s.ArctosID, 100);
+                columns.Add("Name", s => s.Name);
+                columns.Add("Description", s => s.Description);
 
-            var dt = new DataTableTemplate(dtHeader, sb.ToString());*/
+                columns.AddButton("Remove from Loan",
+                s =>
+                {
+                    LoanCreator.RemoveItem(s);
+                    dt!.RemoveItem(s);
+                },
+                "trash.svg", 80);
 
-            var dt = new DataTableTemplate(LoanCreator.LoanItems, true, false);
+            }, showSearchBar: false);
 
             var header = new HeaderTemplate(titleText);
             Content = new ScrollView

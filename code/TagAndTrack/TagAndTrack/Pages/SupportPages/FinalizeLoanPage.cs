@@ -52,10 +52,24 @@ namespace TagAndTrack.Pages.SupportPages
 
             var confirmButton = new TagAndTrackButton("Confirm Loan", new Command(async () => await ConfirmLoan()));
 
+            DataTable<SpecimenItem>? dt = null;
 
-            //var dt = CreateDT();
+            dt = new DataTable<SpecimenItem>(LoanCreator.LoanItems, columns =>
+            {
+                columns.Add("ID", s => s.ID, 60);
+                columns.Add("Arctos ID", s => s.ArctosID, 100);
+                columns.Add("Name", s => s.Name);
+                columns.Add("Description", s => s.Description);
 
-            var dt = new DataTableTemplate(LoanCreator.LoanItems, true);
+                columns.AddButton("Remove from Loan",
+                s =>
+                {
+                    LoanCreator.RemoveItem(s);
+                    dt!.RemoveItem(s);
+                },
+                "trash.svg", 80);
+
+            }, showSearchBar: false);
 
             Content = new ScrollView
             {
