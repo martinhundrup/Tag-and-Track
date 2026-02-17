@@ -63,5 +63,11 @@ The team has identified the following challenges:
 * [Sprint Reports](docs/sprints/)
 * [Abstract](docs/abstract.pdf)
 
+## Credits
+<a href="https://www.flaticon.com/free-icons/info" title="info icons">Info icons created by Freepik - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/cross" title="cross icons">Cross icons created by Ilham Fitrotul Hayat - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/success" title="success icons">Success icons created by Ilham Fitrotul Hayat - Flaticon</a>
+<a href="https://www.flaticon.com/free-icons/trash-can" title="trash can icons">Trash can icons created by Md Tanvirul Haque - Flaticon</a>
+
 ## License
 MIT License. See `LICENSE.txt` for details.
