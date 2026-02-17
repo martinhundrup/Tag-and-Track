@@ -216,7 +216,7 @@ namespace TagAndTrack.Pages
                     ScannedQRItem.lastScannedItem = s.QRID;
                     Navigation.PushAsync(new ViewItemPage());
                 },
-                "info_circle.svg", 80);
+                "info.png", 80);
 
             }, showSearchBar: false);
             var dataView = new DataTableTemplate(loan.Specimens);

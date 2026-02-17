@@ -42,7 +42,7 @@ namespace TagAndTrack.Pages
                     ScannedQRItem.lastScannedItem = s.QRID;
                     Navigation.PushAsync(new ViewItemPage());
                 },
-                "info_circle.svg", 80);
+                "info.png", 80);
 
             });
 

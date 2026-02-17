@@ -103,15 +103,16 @@ namespace TagAndTrack.Components
 
                         if (col.IsButton)
                         {
-                            var btn = new Button
+                            var btn = new ImageButton
                             {
-                                ImageSource = col.ButtonIcon,
+                                Source = col.ButtonIcon,
                                 BackgroundColor = Colors.Transparent,
-                                BorderWidth = 0,
-                                Padding = 4,
+                                Padding = 0,
                                 WidthRequest = 24,
                                 HeightRequest = 24,
-                                TextColor = Colors.Black // iOS tint
+                                HorizontalOptions = LayoutOptions.Center,
+                                VerticalOptions = LayoutOptions.Center,
+                                Aspect = Aspect.AspectFit
                             };
 
                             btn.Clicked += (s, e) =>
@@ -124,33 +125,29 @@ namespace TagAndTrack.Components
                         }
                         else if (col.IsIcon)
                         {
-                            var imgBtn = new Button
+                            var imgBtn = new ImageButton
                             {
                                 BackgroundColor = Colors.Transparent,
-                                BorderWidth = 0,
                                 Padding = 0,
-                                WidthRequest = 20,
-                                HeightRequest = 20,
+                                WidthRequest = 24,
+                                HeightRequest = 24,
                                 HorizontalOptions = LayoutOptions.Center,
                                 VerticalOptions = LayoutOptions.Center,
-                                IsEnabled = false // behaves like an Image
+                                Aspect = Aspect.AspectFit,
+                                IsEnabled = false // behaves like an image
                             };
 
                             imgBtn.SetBinding(ImageButton.SourceProperty, new Binding
                             {
                                 Path = ".",
                                 Converter = new FuncConverter<T, ImageSource>(item =>
-                                {
-                                    var icon = col.IconWithTintSelector!(item);
-
-                                    // iOS tinting works because ImageButton uses TextColor as tint
-                                    imgBtn.TextColor = icon.Tint;
-
-                                    return icon.SvgPath;
-                                })
+                                    col.IconSelector!(item)
+                                )
                             });
 
                             row.Add(imgBtn, i, 0);
+
+
                         }
                         else
                         {

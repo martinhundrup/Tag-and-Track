@@ -14,7 +14,6 @@ namespace TagAndTrack.Components
         public string? ButtonIcon { get; set; }
         public bool IsIcon { get; set; }
         public Func<T, string>? IconSelector { get; set; }
-        public Func<T, Icon>? IconWithTintSelector { get; set; }
         public bool IsFilterable { get; set; } = true;
 
     }
