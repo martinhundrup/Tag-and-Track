@@ -99,9 +99,10 @@ namespace TagAndTrack.Pages
                 columns.Add("Description", s => s.Description);
                 columns.AddIcon("Status", s =>
                     s.Status
-                        ? new Icon("check_circle.svg", Colors.Green)
-                        : new Icon("minus_circle.svg", Colors.Red),
+                        ? "check.png"
+                        : "cross.png",
                     width: 80);
+
 
 
 
@@ -111,7 +112,7 @@ namespace TagAndTrack.Pages
                     ScannedQRItem.lastScannedItem = s.QRID;
                     Navigation.PushAsync(new ViewItemPage());
                 },
-                "info_circle.svg", 80);
+                "info.png", 80);
 
             });
 

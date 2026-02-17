@@ -67,7 +67,7 @@ namespace TagAndTrack.Pages.SupportPages
                     LoanCreator.RemoveItem(s);
                     dt!.RemoveItem(s);
                 },
-                "trash.svg", 80);
+                "trash.png", 80);
 
             }, showSearchBar: false);
 
