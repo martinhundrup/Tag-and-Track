@@ -23,6 +23,7 @@ namespace TagAndTrack.Backend.Utils
                     mail.To.Add(email);
                     mail.Subject = subject;
                     mail.Body = body;
+                    mail.IsBodyHtml = true;
 
                     using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
                     {
