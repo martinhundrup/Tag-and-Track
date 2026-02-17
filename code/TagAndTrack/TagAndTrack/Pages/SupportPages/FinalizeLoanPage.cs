@@ -118,6 +118,36 @@ namespace TagAndTrack.Pages.SupportPages
             return sb.ToString();
         }
 
+        private static string CsvToHtmlTable(string csv)
+        {
+            var sb = new StringBuilder();
+            sb.Append("<html><body><table border='1' style='border-collapse: collapse;'>");
+
+            sb.Append("<tr>")
+                .Append("<th>ID</th>")
+                .Append("<th>ArctosID</th>")
+                .Append("<th>Name</th>")
+                .Append("<th>Description</th>")
+                .Append("</tr>");
+
+            // Split rows by line breaks
+            var rows = csv.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (var row in rows)
+            {
+                sb.Append("<tr>");
+                var columns = row.Split(',');
+                for (int i = 0; i < columns.Length - 1; i++)
+                {
+                    sb.Append("<td>").Append(System.Net.WebUtility.HtmlEncode(columns[i])).Append("</td>");
+                }
+                sb.Append("</tr>");
+            }
+
+            sb.Append("</table></body></html>");
+            return sb.ToString();
+        }
+
         private async Task ConfirmLoan()
         {
             if (loanNameEntry.Text == "")
@@ -149,10 +179,14 @@ namespace TagAndTrack.Pages.SupportPages
                 .Append($"Client Name: {clientNameEntry.Text}").AppendLine()
                 .Append($"Date Checked Out: {loan.DateCheckedOut.ToString()}").AppendLine()
                 .Append($"Date Due: {loan.DateDue}").AppendLine()
-                .Append($"Items included in loan:").AppendLine()
-                .Append(CreateDTCSV()).AppendLine();
+                .Append($"Items included in loan:").AppendLine();
+            //.Append(CreateDTCSV()).AppendLine();
 
-            var body = sb.ToString();
+            sb = sb.Replace("\n", "<br>");
+
+            var htmlTable = CsvToHtmlTable(CreateDTCSV());
+
+            var body = sb.ToString() + "<br>" + htmlTable;
 
             var emailResult = Emailer.Email(clientEmailEntry.Text, $"Tag and Track Loan {loan.ID} Confirmed", body);
 
@@ -165,8 +199,7 @@ namespace TagAndTrack.Pages.SupportPages
             else
             {
                 await Shell.Current.DisplayAlert("Success!", "Loan registered and email sent!", "OK");
-                await Shell.Current.Navigation.PopToRootAsync();
-
+                await Shell.Current.GoToAsync("//LoginPage/MainPage");
             }
         }
     }
