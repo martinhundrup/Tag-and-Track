@@ -10,7 +10,7 @@ namespace TagAndTrack.Components
     /// Home button component.
     /// TODO: Change Button to ImageButton once we have an appropriate (open source) home icon.
     /// </summary>
-    internal class HomeButton : Button
+    internal class HomeButton : ImageButton
     {
         /// <summary>
         /// Creates a new instance of the <see cref="HomeButton"/> class.
@@ -22,7 +22,7 @@ namespace TagAndTrack.Components
             // Set the command to navigate to MainPage when clicked.
             Command = new Command(async() => await Navigation.PushAsync(new MainPage()));
 
-            BackgroundColor = Colors.Gray;
+            Source = "building.png";
         }
     }
 }

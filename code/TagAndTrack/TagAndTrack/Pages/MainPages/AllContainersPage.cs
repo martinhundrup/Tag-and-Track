@@ -33,7 +33,7 @@ namespace TagAndTrack.Pages
 
             var header = new HeaderTemplate(titleText);
 
-            var addButton = new TagAndTrackButton("Add Container", new Command(async () => await AddContainerAsync()));
+            var addButton = new TagAndTrackButton("Add Container", new Command(async () => await AddContainerAsync()), "plus.png");
 
             // Loading indicator - shown initially
             loadingIndicator = new ActivityIndicator

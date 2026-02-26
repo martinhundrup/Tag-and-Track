@@ -153,7 +153,7 @@ namespace TagAndTrack.Pages
                 Padding = 4,
             };
 
-            var checkinButton = new TagAndTrackButton("Check In", new Command(async () => await CheckInLoan()));
+            var checkinButton = new TagAndTrackButton("Check In", new Command(async () => await CheckInLoan()), "check.png");
 
             var pageData = new HorizontalStackLayout
             {

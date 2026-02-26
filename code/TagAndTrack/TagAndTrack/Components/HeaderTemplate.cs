@@ -36,13 +36,14 @@ namespace TagAndTrack.Components
             // Header text.
             var label = new TextTemplate(text, TextAlignment.Center, 50);
             grid.Add(label, 0, 0);
+            Grid.SetColumnSpan(label, 2);
 
             // Right button.
-            if(isImage)
+            if (isImage)
             {
                 var right = new Image()
                 {
-                    Source = "wsulogo.png",
+                    Source = "wsu_logo_head.png",
                     HeightRequest = 70,
                     WidthRequest = 70,
                     HorizontalOptions = LayoutOptions.End,

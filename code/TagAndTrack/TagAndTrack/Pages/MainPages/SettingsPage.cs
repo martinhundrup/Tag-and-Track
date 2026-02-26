@@ -46,7 +46,7 @@ namespace TagAndTrack.Pages
                 },
             };
 
-            var themeButton = new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme()));
+            var themeButton = new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme()), "day_and_night.png");
 
             Content = new VerticalStackLayout()
             {
