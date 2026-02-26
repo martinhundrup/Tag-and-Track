@@ -50,7 +50,7 @@ namespace TagAndTrack.Pages.SupportPages
             //var dueDate = new EntryTemplate(300, "Client Email"); // TODO: date entry that complies with a DateTime
 
 
-            var confirmButton = new TagAndTrackButton("Confirm Loan", new Command(async () => await ConfirmLoan()));
+            var confirmButton = new TagAndTrackButton("Confirm Loan", new Command(async () => await ConfirmLoan()), "check.png");
 
             DataTable<SpecimenItem>? dt = null;
 

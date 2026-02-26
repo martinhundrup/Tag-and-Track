@@ -19,13 +19,14 @@ namespace TagAndTrack.Components
         /// specified command. The button is centered horizontally and includes spacing between its elements.</remarks>
         /// <param name="text">The text to display on the button.</param>
         /// <param name="command">The command to execute when the button is clicked.</param>
-        public TagAndTrackButton(string text, Command command)
+        public TagAndTrackButton(string text, Command command, string image = "")
         {
             Spacing = 5;
             HorizontalOptions = LayoutOptions.Center;
             ButtonTemplate button = new ButtonTemplate()
-            { 
-                Command = command
+            {
+                Command = command,
+                Source = image,
             };
             TextTemplate buttonText = new TextTemplate(text);
 
