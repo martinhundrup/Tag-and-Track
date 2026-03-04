@@ -28,11 +28,35 @@ namespace TagAndTrack.Components
             StartInteraction += OnStartInteraction;
             DragInteraction += OnDragInteraction;
             EndInteraction += OnEndInteraction;
+            CancelInteraction += OnCancelInteraction;
+        }
+
+        /// <summary>
+        /// Walks up the visual tree and toggles ScrollView scrolling.
+        /// Disabling scroll while drawing prevents the page from moving under the finger.
+        /// </summary>
+        private void SetParentScrollEnabled(bool enabled)
+        {
+            Element? current = this.Parent;
+            while (current != null)
+            {
+                if (current is ScrollView sv)
+                {
+                    sv.InputTransparent = !enabled;
+                    // On iOS/Android the most reliable way is to toggle orientation
+                    sv.Orientation = enabled
+                        ? ScrollOrientation.Vertical
+                        : ScrollOrientation.Neither;
+                    break;
+                }
+                current = (current as VisualElement)?.Parent ?? (current as Element)?.Parent;
+            }
         }
 
         private void OnStartInteraction(object? sender, TouchEventArgs e)
         {
             if (e.Touches.Length == 0) return;
+            SetParentScrollEnabled(false);
             _currentStroke = new List<PointF> { e.Touches[0] };
             Invalidate();
         }
@@ -51,6 +75,19 @@ namespace TagAndTrack.Components
                 _strokes.Add(_currentStroke);
             }
             _currentStroke = null;
+            SetParentScrollEnabled(true);
+            Invalidate();
+        }
+
+        private void OnCancelInteraction(object? sender, EventArgs e)
+        {
+            // Touch was cancelled (e.g. system gesture) — commit partial stroke and re-enable scroll
+            if (_currentStroke != null && _currentStroke.Count > 0)
+            {
+                _strokes.Add(_currentStroke);
+            }
+            _currentStroke = null;
+            SetParentScrollEnabled(true);
             Invalidate();
         }
 
