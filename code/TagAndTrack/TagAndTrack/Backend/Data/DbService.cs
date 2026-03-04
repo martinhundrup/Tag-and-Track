@@ -111,7 +111,8 @@ namespace TagAndTrack.Backend.Data
                 DateCheckedOut = loan.DateCheckedOut,
                 DateDue = loan.DateDue,
                 IsReturned = loan.Status,
-                SpecimenIds = specimenIds
+                SpecimenIds = specimenIds,
+                SignatureData = loan.SignatureImageBytes
             };
             await _db!.InsertAsync(entity);
             return entity.Id;
@@ -136,6 +137,7 @@ namespace TagAndTrack.Backend.Data
             loan.SetBorrower(e.Borrower);
             loan.SetEmail(e.Email);
             loan.SetDates(e.DateCheckedOut, e.DateDue);
+            loan.SetSignature(e.SignatureData);
 
             // Load specimens
             if (!string.IsNullOrEmpty(e.SpecimenIds))

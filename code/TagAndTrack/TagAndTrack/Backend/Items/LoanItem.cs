@@ -19,6 +19,9 @@
         public DateTime DateCheckedOut { get; set; }
         public DateTime DateDue { get; set; }
 
+        // borrower signature (JSON-serialized stroke data)
+        public byte[]? SignatureImageBytes { get; private set; }
+
         // linked specimens
         public IReadOnlyList<SpecimenItem> Specimens => specimens;
         private readonly List<SpecimenItem> specimens = new();
@@ -32,6 +35,7 @@
             DateDue = dueDate;
         }
         internal void AddSpecimen(SpecimenItem s) => specimens.Add(s);
+        internal void SetSignature(byte[]? data) => SignatureImageBytes = data;
 
         public override void Checkin()
         {

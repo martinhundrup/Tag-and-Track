@@ -42,7 +42,7 @@ namespace TagAndTrack.Backend.Utils
             LoanItems.Remove(item);
         }
 
-        public static LoanItem FinalizeLoan(string loanName, string loanDescription, string borrower, string borrowerEmail, DateTime dueDate)
+        public static LoanItem FinalizeLoan(string loanName, string loanDescription, string borrower, string borrowerEmail, DateTime dueDate, byte[]? signatureBytes = null)
         {
             var loan = new LoanItem(loanName, loanDescription);
 
@@ -57,6 +57,7 @@ namespace TagAndTrack.Backend.Utils
             loan.Email = borrowerEmail;
             loan.DateCheckedOut = DateTime.Now;
             loan.DateDue = dueDate;
+            loan.SetSignature(signatureBytes);
 
             ItemManager.AddItem(loan);
 
