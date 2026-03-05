@@ -1,7 +1,9 @@
 using System.Net;
 using System.Net.Mail;
+using System.Net.Mime;
 using System.Text;
 using System.Text.Json;
+using SkiaSharp;
 
 namespace TagAndTrack.Backend.Utils
 {
@@ -10,7 +12,7 @@ namespace TagAndTrack.Backend.Utils
     {
         /// <summary>
         /// Sends an HTML-formatted email. If signatureData is provided,
-        /// the borrower's handwritten signature is embedded as inline SVG in the HTML body.
+        /// the borrower's handwritten signature is embedded inline in the HTML body as CID-linked PNG.
         /// Returns (success, errorMessage). errorMessage is null on success.
         /// </summary>
         public static (bool Success, string? Error) Email(string email, string subject, string body, byte[]? signatureData = null)
@@ -24,16 +26,19 @@ namespace TagAndTrack.Backend.Utils
                 const string appPassword = "";        // 16-char Google app password, no spaces
 
                 var finalBody = body;
+                byte[]? signaturePng = null;
+                string? signatureContentId = null;
 
-                // Embed signature as inline SVG in HTML
+                // Embed signature as CID-linked PNG in HTML
                 if (signatureData != null && signatureData.Length > 0)
                 {
-                    var signatureSvg = StrokesToSvg(signatureData);
-                    if (signatureSvg != null)
+                    signaturePng = StrokesToPng(signatureData);
+                    if (signaturePng != null)
                     {
+                        signatureContentId = $"borrower-signature-{Guid.NewGuid():N}";
                         var signatureBlock = "<br><b>Borrower Signature:</b><br>"
                                            + $"<div style='border:1px solid #ccc; padding:8px; display:inline-block; background:#fff;'>"
-                                           + signatureSvg
+                                           + $"<img alt='Borrower signature' src='cid:{signatureContentId}' style='display:block; width:300px; height:auto;' />"
                                            + "</div>";
                         finalBody = InsertBeforeBodyClose(finalBody, signatureBlock);
                     }
@@ -50,6 +55,20 @@ namespace TagAndTrack.Backend.Utils
                     mail.Subject = subject;
                     mail.Body = finalBody;
                     mail.IsBodyHtml = true;
+
+                    var htmlView = AlternateView.CreateAlternateViewFromString(finalBody, Encoding.UTF8, MediaTypeNames.Text.Html);
+                    if (signaturePng != null && signatureContentId != null)
+                    {
+                        var signatureStream = new MemoryStream(signaturePng);
+                        var signatureResource = new LinkedResource(signatureStream, "image/png")
+                        {
+                            ContentId = signatureContentId,
+                            TransferEncoding = TransferEncoding.Base64,
+                            ContentType = { Name = "borrower-signature.png" }
+                        };
+                        htmlView.LinkedResources.Add(signatureResource);
+                    }
+                    mail.AlternateViews.Add(htmlView);
 
                     using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
                     {
@@ -93,10 +112,10 @@ namespace TagAndTrack.Backend.Utils
         }
 
         /// <summary>
-        /// Converts JSON stroke data (float[][][]) into an inline SVG string.
+        /// Converts JSON stroke data (float[][][]) into a PNG image byte array.
         /// Returns null if data cannot be parsed.
         /// </summary>
-        private static string? StrokesToSvg(byte[] signatureData)
+        private static byte[]? StrokesToPng(byte[] signatureData)
         {
             try
             {
@@ -124,8 +143,8 @@ namespace TagAndTrack.Backend.Utils
                 var dataWidth = Math.Max(1f, maxX - minX);
                 var dataHeight = Math.Max(1f, maxY - minY);
 
-                const float targetWidth = 1200f;
-                const float targetHeight = 440f;
+                const int targetWidth = 1200;
+                const int targetHeight = 440;
                 const float pad = 20f;
 
                 var scaleX = (targetWidth - pad * 2) / dataWidth;
@@ -137,9 +156,30 @@ namespace TagAndTrack.Backend.Utils
                 var offsetX = (targetWidth - usedWidth) / 2f;
                 var offsetY = (targetHeight - usedHeight) / 2f;
 
-                var svg = new StringBuilder();
-                svg.Append($"<svg xmlns='http://www.w3.org/2000/svg' width='300' height='110' viewBox='0 0 {targetWidth:F0} {targetHeight:F0}' preserveAspectRatio='xMidYMid meet' style='display:block;'>");
-                svg.Append($"<rect x='1' y='1' width='{targetWidth - 2:F0}' height='{targetHeight - 2:F0}' fill='white' stroke='#dddddd' stroke-width='2' />");
+                using var bitmap = new SKBitmap(targetWidth, targetHeight, SKColorType.Rgba8888, SKAlphaType.Premul);
+                using var canvas = new SKCanvas(bitmap);
+                canvas.Clear(SKColors.White);
+
+                using (var borderPaint = new SKPaint
+                {
+                    Color = new SKColor(221, 221, 221),
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 2,
+                    IsAntialias = true
+                })
+                {
+                    canvas.DrawRect(new SKRect(1, 1, targetWidth - 1, targetHeight - 1), borderPaint);
+                }
+
+                using var signaturePaint = new SKPaint
+                {
+                    Color = SKColors.Black,
+                    Style = SKPaintStyle.Stroke,
+                    StrokeWidth = 8,
+                    StrokeCap = SKStrokeCap.Round,
+                    StrokeJoin = SKStrokeJoin.Round,
+                    IsAntialias = true
+                };
 
                 foreach (var stroke in strokes)
                 {
@@ -149,26 +189,32 @@ namespace TagAndTrack.Backend.Utils
                     {
                         var dotX = (stroke[0][0] - minX) * scale + offsetX;
                         var dotY = (stroke[0][1] - minY) * scale + offsetY;
-                        svg.Append($"<circle cx='{dotX:F1}' cy='{dotY:F1}' r='4' fill='black' />");
+                        canvas.DrawCircle(dotX, dotY, 4, signaturePaint);
                         continue;
                     }
 
-                    svg.Append("<polyline points='");
-                    for (int i = 0; i < stroke.Length; i++)
+                    using var path = new SKPath();
+                    var startX = (stroke[0][0] - minX) * scale + offsetX;
+                    var startY = (stroke[0][1] - minY) * scale + offsetY;
+                    path.MoveTo(startX, startY);
+
+                    for (int i = 1; i < stroke.Length; i++)
                     {
                         var x = (stroke[i][0] - minX) * scale + offsetX;
                         var y = (stroke[i][1] - minY) * scale + offsetY;
-                        svg.Append($"{x:F1},{y:F1} ");
+                        path.LineTo(x, y);
                     }
-                    svg.Append("' fill='none' stroke='black' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' />");
+
+                    canvas.DrawPath(path, signaturePaint);
                 }
 
-                svg.Append("</svg>");
-                return svg.ToString();
+                using var image = SKImage.FromBitmap(bitmap);
+                using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+                return data.ToArray();
             }
             catch (Exception ex)
             {
-                DebugLogger.Log("Failed to convert signature to SVG: " + ex.Message);
+                DebugLogger.Log("Failed to convert signature to PNG: " + ex.Message);
                 return null;
             }
         }
