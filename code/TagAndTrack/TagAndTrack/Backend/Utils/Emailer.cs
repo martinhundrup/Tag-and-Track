@@ -11,7 +11,7 @@ namespace TagAndTrack.Backend.Utils
     {
         /// <summary>
         /// Sends an HTML-formatted email. If signatureData is provided,
-        /// the borrower's handwritten signature is generated as a PNG attachment.
+        /// the borrower's handwritten signature is embedded as a PNG in the HTML body.
         /// Returns (success, errorMessage). errorMessage is null on success.
         /// </summary>
         public static (bool Success, string? Error) Email(string email, string subject, string body, byte[]? signatureData = null)
@@ -26,6 +26,25 @@ namespace TagAndTrack.Backend.Utils
 
                 var finalBody = body;
 
+                // Embed signature PNG directly in HTML (no file attachment)
+                if (signatureData != null && signatureData.Length > 0)
+                {
+                    var signaturePng = StrokesToPng(signatureData);
+                    if (signaturePng != null)
+                    {
+                        var base64Png = Convert.ToBase64String(signaturePng);
+                        var signatureBlock = "<br><b>Borrower Signature:</b><br>"
+                                           + $"<div style='border:1px solid #ccc; padding:8px; display:inline-block; background:#fff;'>"
+                                           + $"<img alt='Borrower signature' src='data:image/png;base64,{base64Png}' style='display:block; width:300px; height:auto;' />"
+                                           + "</div>";
+                        finalBody = InsertBeforeBodyClose(finalBody, signatureBlock);
+                    }
+                    else
+                    {
+                        finalBody = InsertBeforeBodyClose(finalBody, "<br><p><em>Borrower signature is on file.</em></p>");
+                    }
+                }
+
                 using (var mail = new MailMessage())
                 {
                     mail.From = new MailAddress(fromEmail, "Tag and Track");
@@ -33,18 +52,6 @@ namespace TagAndTrack.Backend.Utils
                     mail.Subject = subject;
                     mail.Body = finalBody;
                     mail.IsBodyHtml = true;
-
-                    // PNG-only signature delivery for broad mail client compatibility
-                    if (signatureData != null && signatureData.Length > 0)
-                    {
-                        var signaturePng = StrokesToPng(signatureData);
-                        if (signaturePng != null)
-                        {
-                            var signatureStream = new MemoryStream(signaturePng);
-                            var signatureAttachment = new Attachment(signatureStream, "borrower-signature.png", "image/png");
-                            mail.Attachments.Add(signatureAttachment);
-                        }
-                    }
 
                     using (var smtpClient = new SmtpClient("smtp.gmail.com", 587))
                     {
@@ -72,6 +79,19 @@ namespace TagAndTrack.Backend.Utils
                 }
                 return (false, errorMsg);
             }
+        }
+
+        /// <summary>
+        /// Inserts HTML content right before </body> if present; otherwise appends.
+        /// </summary>
+        private static string InsertBeforeBodyClose(string html, string content)
+        {
+            var bodyCloseIndex = html.IndexOf("</body>", StringComparison.OrdinalIgnoreCase);
+            if (bodyCloseIndex >= 0)
+            {
+                return html.Insert(bodyCloseIndex, content);
+            }
+            return html + content;
         }
 
         /// <summary>
