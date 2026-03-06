@@ -351,6 +351,33 @@ namespace TagAndTrack.Backend.Data
             DebugLogger.Log("DbService: Database seeded successfully!");
         }
 
+        // ===== RESET =====
+        /// <summary>
+        /// Drops all tables, reinitializes the schema, and reseeds sample data.
+        /// Development use only – equivalent to deleting the .db3 file.
+        /// </summary>
+        public static async Task ResetDatabaseAsync()
+        {
+            DebugLogger.Log("DbService.ResetDatabaseAsync() - wiping database...");
+
+            await _db!.DropTableAsync<SpecimenEntity>();
+            await _db!.DropTableAsync<LoanEntity>();
+            await _db!.DropTableAsync<ContainerEntity>();
+            await _db!.DropTableAsync<EmployeeEntity>();
+
+            DebugLogger.Log("DbService: All tables dropped. Recreating...");
+
+            await _db!.CreateTableAsync<SpecimenEntity>();
+            await _db!.CreateTableAsync<LoanEntity>();
+            await _db!.CreateTableAsync<ContainerEntity>();
+            await _db!.CreateTableAsync<EmployeeEntity>();
+
+            DebugLogger.Log("DbService: Tables recreated. Seeding...");
+            await SeedIfEmptyAsync();
+
+            DebugLogger.Log("DbService: Database reset complete.");
+        }
+
         // ===== HELPERS =====
         private static readonly System.Reflection.PropertyInfo? IdProp =
             typeof(Item).GetProperty("ID", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);

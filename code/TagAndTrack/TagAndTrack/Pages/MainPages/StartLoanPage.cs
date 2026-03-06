@@ -82,9 +82,10 @@ namespace TagAndTrack.Pages
             scanView.ScanCaptured += ScanCaptured;
 
 
-            var buttonLayout = new HorizontalStackLayout
+            var buttonLayout = new VerticalStackLayout
             {
                 Spacing = 10,
+                VerticalOptions = LayoutOptions.Center,
                 Children =
                 {
                     new TagAndTrackButton("Cancel Loan", new Command(async () => await CancelLoan()), "cross.png"),
@@ -93,6 +94,20 @@ namespace TagAndTrack.Pages
                 }
             };
 
+            // Scanner + buttons side-by-side so buttons stay visible in landscape
+            var scannerRow = new Grid
+            {
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition(GridLength.Star),
+                    new ColumnDefinition(GridLength.Auto)
+                },
+                ColumnSpacing = 20,
+                HorizontalOptions = LayoutOptions.Fill
+            };
+            scannerRow.Add(scanView, 0);
+            scannerRow.Add(buttonLayout, 1);
+
             Content = new VerticalStackLayout
             {
                 Padding = 20,
@@ -100,9 +115,8 @@ namespace TagAndTrack.Pages
                 Children =
                 {
                     header,
-                    scanView,
+                    scannerRow,
                     scanResultLabel,
-                    buttonLayout,
                 }
             };
 
