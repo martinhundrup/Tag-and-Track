@@ -8,6 +8,12 @@ namespace TagAndTrack.Pages
         protected const string titleText = "View Loan History";
         public LoanHistoryPage() { Initialize(); }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            BuildContent();
+        }
+
         protected override void Initialize()
         {
             Background = CurrentTheme.Instance.Theme.Background;
@@ -19,6 +25,11 @@ namespace TagAndTrack.Pages
                 }
             };
 
+            BuildContent();
+        }
+
+        private void BuildContent()
+        {
             var allLoans = ItemManager.GetItemsOfType(Item.ItemType.Loan);
             List<LoanItem> loans = new List<LoanItem>();
             foreach( var item in allLoans )
@@ -33,7 +44,7 @@ namespace TagAndTrack.Pages
                 columns.Add("Borrower", s => s.Borrower);
                 columns.Add("Checked Out", s => s.DateCheckedOut.ToShortDateString(), width: 100, filterable: false);
                 columns.Add("Due Date", s => s.DateDue.ToShortDateString(), width: 100, filterable: false);
-                columns.Add("Status", s => DateTime.Now > s.DateDue ? "Overdue" : "On Loan", width: 100, filterable: false);
+                columns.Add("Status", s => s.Status ? "Checked In" : (DateTime.Now > s.DateDue ? "Overdue" : "On Loan"), width: 100, filterable: false);
 
 
                 columns.AddButton("View Loan",
