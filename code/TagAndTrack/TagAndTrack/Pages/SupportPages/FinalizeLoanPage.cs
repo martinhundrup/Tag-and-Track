@@ -233,7 +233,7 @@ namespace TagAndTrack.Pages.SupportPages
                 await Shell.Current.DisplayAlert("DEBUG: Signature Capture Error", ex.ToString(), "OK");
             }
 
-            var loan = LoanCreator.FinalizeLoan(loanNameEntry.Text, 
+            var loan = await LoanCreator.FinalizeLoanAsync(loanNameEntry.Text, 
                 loanDescriptionEntry.Text,
                 clientNameEntry.Text,
                 clientEmailEntry.Text,

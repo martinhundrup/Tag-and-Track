@@ -125,6 +125,7 @@ namespace TagAndTrack.Pages
             };
 
             var loginButton = new TagAndTrackButton("Login", new Command(async () => await LoginAsync()), "enter.png");
+            var resetDbButton = new TagAndTrackButton("Reset DB", new Command(async () => await ResetDatabaseAsync()), "trash.png");
 
             var pageContent = new VerticalStackLayout
             {
@@ -138,7 +139,8 @@ namespace TagAndTrack.Pages
                     pickerBorder,
                     orLabel,
                     newEmployeeEntry,
-                    loginButton
+                    loginButton,
+                    resetDbButton
                 }
             };
 
@@ -256,6 +258,35 @@ namespace TagAndTrack.Pages
                 DebugLogger.Log($"LoginAsync ERROR: {ex.GetType().Name}: {ex.Message}");
                 DebugLogger.Log($"Stack trace: {ex.StackTrace}");
                 await DisplayAlert("Login Error", ex.Message, "OK");
+            }
+        }
+
+        private async Task ResetDatabaseAsync()
+        {
+            bool confirm = await DisplayAlert(
+                "Reset Database",
+                "This will wipe ALL data and reseed with development sample data. Continue?",
+                "Reset",
+                "Cancel");
+
+            if (!confirm) return;
+
+            try
+            {
+                await DbService.ResetDatabaseAsync();
+                await LoadEmployeesAsync();
+
+                if (newEmployeeEntry != null)
+                    newEmployeeEntry.Text = string.Empty;
+
+                if (employeePicker != null)
+                    employeePicker.SelectedIndex = -1;
+
+                await DisplayAlert("Done", "Database reset complete.", "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Reset failed: {ex.Message}", "OK");
             }
         }
     }

@@ -102,5 +102,6 @@ namespace TagAndTrack
             EmployeeManager.SetActiveEmployee(null);
             await Shell.Current.GoToAsync("//LoginPage");
         }
+
     }
 }
