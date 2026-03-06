@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Items;
 
 namespace TagAndTrack.Backend.Utils
@@ -22,7 +23,7 @@ namespace TagAndTrack.Backend.Utils
 
         public static string? AddItem(SpecimenItem item) // returns an error message if something went awry
         {
-            if (LoanItems.Contains(item)) // already in loan
+            if (LoanItems.Any(x => x.ID == item.ID)) // already in loan (compare by ID, not reference)
             {
                 return $"Item {item.Name} is already present in the loan!";
             }
@@ -42,15 +43,16 @@ namespace TagAndTrack.Backend.Utils
             LoanItems.Remove(item);
         }
 
-        public static LoanItem FinalizeLoan(string loanName, string loanDescription, string borrower, string borrowerEmail, DateTime dueDate, byte[]? signatureBytes = null)
+        public static async Task<LoanItem> FinalizeLoanAsync(string loanName, string loanDescription, string borrower, string borrowerEmail, DateTime dueDate, byte[]? signatureBytes = null)
         {
             var loan = new LoanItem(loanName, loanDescription);
 
-            // add and checkout loans
+            // add and checkout specimens – persist each checkout to the database
             foreach (var item in LoanItems)
             {
                 loan.AddSpecimen(item);
                 item.Checkout();
+                await DbService.UpdateSpecimenAsync((int)item.ID, false);
             }
 
             loan.Borrower = borrower;

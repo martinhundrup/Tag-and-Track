@@ -65,6 +65,7 @@ namespace TagAndTrack
                 new TagAndTrackButton("Add Item", new Command(async () => await Navigation.PushAsync(new AddItemPage())), "plus.png"),
                 new TagAndTrackButton("Settings", new Command(async () => await Navigation.PushAsync(new SettingsPage())), "setting.png"),
                 new TagAndTrackButton("Logout", new Command(async () => await LogoutAsync()), "logout.png"),
+                new TagAndTrackButton("Reset DB", new Command(async () => await ResetDatabaseAsync()), "trash.png"),
             };
 
             for (int i = 0; i < buttons.Length; i++)
@@ -101,6 +102,29 @@ namespace TagAndTrack
         {
             EmployeeManager.SetActiveEmployee(null);
             await Shell.Current.GoToAsync("//LoginPage");
+        }
+
+        private async Task ResetDatabaseAsync()
+        {
+            bool confirm = await Shell.Current.DisplayAlert(
+                "Reset Database",
+                "This will wipe ALL data and reseed the database with sample data. Continue?",
+                "Reset", "Cancel");
+
+            if (!confirm) return;
+
+            try
+            {
+                await DbService.ResetDatabaseAsync();
+                await Shell.Current.DisplayAlert("Done", "Database has been reset and reseeded.", "OK");
+                // Navigate back to login since employee records are gone
+                EmployeeManager.SetActiveEmployee(null);
+                await Shell.Current.GoToAsync("//LoginPage");
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error", $"Reset failed: {ex.Message}", "OK");
+            }
         }
     }
 }
