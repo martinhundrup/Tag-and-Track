@@ -57,14 +57,14 @@ namespace TagAndTrack
 
             var buttons = new[]
             {
-                new TagAndTrackButton("Scan Item", new Command(async () => await Navigation.PushAsync(new ScanItemPage()))),
-                new TagAndTrackButton("Start Loan", new Command(async () => await Navigation.PushAsync(new StartLoanPage()))),
-                new TagAndTrackButton("Loan History", new Command(async () => await Navigation.PushAsync(new LoanHistoryPage()))),
-                new TagAndTrackButton("All Specimens", new Command(async () => await Navigation.PushAsync(new AllSpecimensPage()))),
-                new TagAndTrackButton("Containers", new Command(async () => await Navigation.PushAsync(new AllContainersPage()))),
-                new TagAndTrackButton("Add Item", new Command(async () => await Navigation.PushAsync(new AddItemPage()))),
-                new TagAndTrackButton("Settings", new Command(async () => await Navigation.PushAsync(new SettingsPage()))),
-                new TagAndTrackButton("Logout", new Command(async () => await LogoutAsync())),
+                new TagAndTrackButton("Scan Item", new Command(async () => await Navigation.PushAsync(new ScanItemPage())), "qr_code.png"),
+                new TagAndTrackButton("Start Loan", new Command(async () => await Navigation.PushAsync(new StartLoanPage())), "document.png"),
+                new TagAndTrackButton("Loan History", new Command(async () => await Navigation.PushAsync(new LoanHistoryPage())), "history.png"),
+                new TagAndTrackButton("All Specimens", new Command(async () => await Navigation.PushAsync(new AllSpecimensPage())), "fish.png"),
+                new TagAndTrackButton("Containers", new Command(async () => await Navigation.PushAsync(new AllContainersPage())), "boxes.png"),
+                new TagAndTrackButton("Add Item", new Command(async () => await Navigation.PushAsync(new AddItemPage())), "plus.png"),
+                new TagAndTrackButton("Settings", new Command(async () => await Navigation.PushAsync(new SettingsPage())), "setting.png"),
+                new TagAndTrackButton("Logout", new Command(async () => await LogoutAsync()), "logout.png"),
             };
 
             for (int i = 0; i < buttons.Length; i++)

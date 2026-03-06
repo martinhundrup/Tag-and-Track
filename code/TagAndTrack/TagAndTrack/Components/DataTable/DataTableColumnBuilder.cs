@@ -32,13 +32,13 @@ namespace TagAndTrack.Components
             });
         }
 
-        public void AddIcon(string header, Func<T, Icon> selector, double width = 40)
+        public void AddIcon(string header, Func<T, string> selector, double width = 40)
         {
             Columns.Add(new DataTableColumn<T>
             {
                 Header = header,
                 IsIcon = true,
-                IconWithTintSelector = selector,
+                IconSelector = selector,
                 Width = width,
                 IsFilterable = false
             });

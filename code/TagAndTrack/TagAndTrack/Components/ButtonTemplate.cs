@@ -9,7 +9,7 @@ namespace TagAndTrack.Components
     /// <summary>
     /// Contains a template for the button and the text that will be underneath.
     /// </summary>
-    public class ButtonTemplate : Button
+    public class ButtonTemplate : ImageButton
     {
         /// <summary>
         /// Creates a new instance of the <see cref="ButtonTemplate"/> class.
@@ -20,6 +20,8 @@ namespace TagAndTrack.Components
             WidthRequest = 80;
             HeightRequest = 80;
             CornerRadius = 40;
+            Aspect = Aspect.AspectFit;
+            Padding = 20;
         }
     }
 }

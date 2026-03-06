@@ -87,9 +87,9 @@ namespace TagAndTrack.Pages
                 Spacing = 10,
                 Children =
                 {
-                    new TagAndTrackButton("Cancel Loan", new Command(async () => await CancelLoan())),
-                    new TagAndTrackButton("View Items", new Command(async () => await ViewItems())),
-                    new TagAndTrackButton("Finalize Loan", new Command(async () => await FinalizeLoan()))
+                    new TagAndTrackButton("Cancel Loan", new Command(async () => await CancelLoan()), "cross.png"),
+                    new TagAndTrackButton("View Items", new Command(async () => await ViewItems()), "eye.png"),
+                    new TagAndTrackButton("Finalize Loan", new Command(async () => await FinalizeLoan()), "check.png")
                 }
             };
 

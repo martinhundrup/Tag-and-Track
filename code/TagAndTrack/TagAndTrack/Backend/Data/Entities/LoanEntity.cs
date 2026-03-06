@@ -16,5 +16,6 @@ namespace TagAndTrack.Backend.Data.Entities
         public DateTime DateDue { get; set; }
         public bool IsReturned { get; set; } = false;
         public string SpecimenIds { get; set; } = ""; // Comma-separated IDs
+        public byte[]? SignatureData { get; set; } // Handwritten signature stored as JSON stroke data
     }
 }

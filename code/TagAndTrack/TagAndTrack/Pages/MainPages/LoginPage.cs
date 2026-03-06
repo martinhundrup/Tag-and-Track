@@ -124,7 +124,7 @@ namespace TagAndTrack.Pages
                 }
             };
 
-            var loginButton = new TagAndTrackButton("Login", new Command(async () => await LoginAsync()));
+            var loginButton = new TagAndTrackButton("Login", new Command(async () => await LoginAsync()), "enter.png");
 
             var pageContent = new VerticalStackLayout
             {

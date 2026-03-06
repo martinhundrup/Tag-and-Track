@@ -191,7 +191,7 @@ namespace TagAndTrack.Pages
                         _addButtonContainer.Children.Clear();
                         _addButtonContainer.Children.Add(
                             new TagAndTrackButton("Add Specimen to Container",
-                                new Command(async () => await AddSpecimenAsync())));
+                                new Command(async () => await AddSpecimenAsync()), "plus.png"));
                         _addButtonContainer.IsVisible = true;
                     }
 

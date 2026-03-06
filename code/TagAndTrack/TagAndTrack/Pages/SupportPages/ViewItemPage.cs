@@ -153,7 +153,7 @@ namespace TagAndTrack.Pages
                 Padding = 4,
             };
 
-            var checkinButton = new TagAndTrackButton("Check In", new Command(async () => await CheckInLoan()));
+            var checkinButton = new TagAndTrackButton("Check In", new Command(async () => await CheckInLoan()), "check.png");
 
             var pageData = new HorizontalStackLayout
             {
@@ -197,13 +197,46 @@ namespace TagAndTrack.Pages
             };
             root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
 
             root.Children.Add(header);
             Grid.SetRow(header, 0);
 
             root.Children.Add(pageDataBorder);
             Grid.SetRow(pageDataBorder, 1);
+
+            // Signature display (if signature is on file)
+            View? signatureSection = null;
+            var sigDisplay = SignaturePadView.CreateSignatureDisplay(loan.SignatureImageBytes, 300, 120);
+            if (sigDisplay != null)
+            {
+                var sigLabel = new Label
+                {
+                    Text = "Borrower Signature:",
+                    FontSize = 14,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = CurrentTheme.Instance.Theme.Text
+                };
+                var sigBorder = new Border
+                {
+                    Stroke = Colors.DarkGray,
+                    StrokeThickness = 1,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 4 },
+                    Padding = 4,
+                    BackgroundColor = Colors.White,
+                    Content = sigDisplay
+                };
+                signatureSection = new VerticalStackLayout
+                {
+                    Spacing = 4,
+                    Children = { sigLabel, sigBorder }
+                };
+                root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                root.Children.Add(signatureSection);
+                Grid.SetRow(signatureSection, 2);
+            }
+
+            var specimenGridRow = signatureSection != null ? 3 : 2;
+            root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
 
             var dt = new DataTable<SpecimenItem>(loan.Specimens, columns =>
             {
@@ -216,7 +249,7 @@ namespace TagAndTrack.Pages
                     ScannedQRItem.lastScannedItem = s.QRID;
                     Navigation.PushAsync(new ViewItemPage());
                 },
-                "info_circle.svg", 80);
+                "info.png", 80);
 
             }, showSearchBar: false);
             var dataView = new DataTableTemplate(loan.Specimens);
@@ -227,7 +260,7 @@ namespace TagAndTrack.Pages
                 Children = { listLabel, dt }
             };
             root.Children.Add(listContainer);
-            Grid.SetRow(listContainer, 2);
+            Grid.SetRow(listContainer, specimenGridRow);
             //root.Children.Add(qr);
             
             ApplyThemeToLayout(root);

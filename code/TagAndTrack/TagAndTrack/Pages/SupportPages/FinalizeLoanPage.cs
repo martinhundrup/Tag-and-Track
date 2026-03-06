@@ -16,6 +16,7 @@ namespace TagAndTrack.Pages.SupportPages
         private EntryTemplate loanDescriptionEntry;
         private EntryTemplate clientNameEntry;
         private EntryTemplate clientEmailEntry;
+        private SignaturePadView signaturePad;
 
         public FinalizeLoanPage()
         {
@@ -49,8 +50,55 @@ namespace TagAndTrack.Pages.SupportPages
             clientEmailEntry = new EntryTemplate(300, "Client Email");
             //var dueDate = new EntryTemplate(300, "Client Email"); // TODO: date entry that complies with a DateTime
 
+            // Signature pad for borrower handwritten signature
+            var signatureLabel = new Label
+            {
+                Text = "Borrower Signature (sign below):",
+                FontSize = 16,
+                FontAttributes = FontAttributes.Bold,
+                Margin = new Thickness(24, 20, 24, 4),
+                TextColor = CurrentTheme.Instance.Theme.Text
+            };
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                    signatureLabel.TextColor = CurrentTheme.Instance.Theme.Text;
+            };
 
-            var confirmButton = new TagAndTrackButton("Confirm Loan", new Command(async () => await ConfirmLoan()));
+            signaturePad = new SignaturePadView
+            {
+                HeightRequest = 200,
+                MinimumHeightRequest = 200,
+                StrokeColor = Colors.Black,
+                StrokeWidth = 3,
+                BackgroundColor = Colors.White,
+                HorizontalOptions = LayoutOptions.Fill,
+            };
+
+            var signatureBorder = new Border
+            {
+                Stroke = Colors.DarkGray,
+                StrokeThickness = 2,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
+                Padding = 4,
+                Margin = new Thickness(24, 4, 24, 4),
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Colors.White,
+                Content = signaturePad
+            };
+
+            var clearSignatureButton = new Button
+            {
+                Text = "Clear Signature",
+                BackgroundColor = Colors.Gray,
+                TextColor = Colors.White,
+                HorizontalOptions = LayoutOptions.Center,
+                Margin = new Thickness(0, 4, 0, 12)
+            };
+            clearSignatureButton.Clicked += (s, e) => signaturePad.Clear();
+
+
+            var confirmButton = new TagAndTrackButton("Confirm Loan", new Command(async () => await ConfirmLoan()), "check.png");
 
             DataTable<SpecimenItem>? dt = null;
 
@@ -67,7 +115,7 @@ namespace TagAndTrack.Pages.SupportPages
                     LoanCreator.RemoveItem(s);
                     dt!.RemoveItem(s);
                 },
-                "trash.svg", 80);
+                "trash.png", 80);
 
             }, showSearchBar: false);
 
@@ -83,6 +131,9 @@ namespace TagAndTrack.Pages.SupportPages
                         loanDescriptionEntry,
                         clientNameEntry,
                         clientEmailEntry,
+                        signatureLabel,
+                        signatureBorder,
+                        clearSignatureButton,
                         confirmButton,
                         dt
                     }
@@ -165,12 +216,29 @@ namespace TagAndTrack.Pages.SupportPages
                 await Shell.Current.DisplayAlert("Error", "Client email must be entered.", "OK");
                 return;
             }
+            if (signaturePad.IsBlank)
+            {
+                await Shell.Current.DisplayAlert("Error", "Borrower signature is required.", "OK");
+                return;
+            }
+
+            // Capture signature as JSON stroke bytes
+            byte[]? signatureBytes = null;
+            try
+            {
+                signatureBytes = signaturePad.GetSignatureBytes();
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("DEBUG: Signature Capture Error", ex.ToString(), "OK");
+            }
 
             var loan = LoanCreator.FinalizeLoan(loanNameEntry.Text, 
                 loanDescriptionEntry.Text,
                 clientNameEntry.Text,
                 clientEmailEntry.Text,
-                DateTime.MaxValue);
+                DateTime.MaxValue,
+                signatureBytes);
 
             var sb = new StringBuilder();
             sb.Append($"Loan Name: {loanNameEntry.Text}").AppendLine()
@@ -188,11 +256,11 @@ namespace TagAndTrack.Pages.SupportPages
 
             var body = sb.ToString() + "<br>" + htmlTable;
 
-            var emailResult = Emailer.Email(clientEmailEntry.Text, $"Tag and Track Loan {loan.ID} Confirmed", body);
+            var (emailSuccess, emailError) = Emailer.Email(clientEmailEntry.Text, $"Tag and Track Loan {loan.ID} Confirmed", body, signatureBytes);
 
-            if (!emailResult)
+            if (!emailSuccess)
             {
-                await Shell.Current.DisplayAlert("Error", "Email failed to send. Please double check email address.", "OK");
+                await Shell.Current.DisplayAlert("Email Error", $"Email failed to send.\n\nDetails: {emailError}", "OK");
                 // TODO: undo loan checkin
                 return;
             }
