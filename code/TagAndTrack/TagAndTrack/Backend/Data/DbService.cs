@@ -73,7 +73,7 @@ namespace TagAndTrack.Backend.Data
 
         private static SpecimenItem MapToSpecimen(SpecimenEntity e)
         {
-            var s = new SpecimenItem(e.Name, e.Description);
+            var s = new SpecimenItem(e.ArctosId, e.Name, e.Description);
             SetItemId(s, (ulong)e.Id);
             SetItemArctosId(s, e.ArctosId);
             SetItemStatus(s, e.IsPresent);

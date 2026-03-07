@@ -7,10 +7,12 @@
             Type = ItemType.Specimen;
         }
 
-        public SpecimenItem(string name, string description) : this()
+        public SpecimenItem(string arctos, string name, string description) : this()
         {
             Name = name;
             Description = description;
+            ArctosID = arctos;
+            Status = true;
         }
     }
 }
