@@ -7,9 +7,17 @@ namespace TagAndTrack
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute("MainPage", typeof(MainPage));
             Routing.RegisterRoute("AllContainersPage", typeof(AllContainersPage));
             Routing.RegisterRoute("ViewContainerPage", typeof(ViewContainerPage));
+
+            // Add main page to shell structure so that it can be navigated to with "//MainPage" route.
+            // This allows the navigation stack to be cleared if navigating to MainPage.
+            Items.Add(new ShellContent
+            {
+                Route = "MainPage",
+                ContentTemplate = new DataTemplate(typeof(MainPage))
+            });
+
         }
     }
 }

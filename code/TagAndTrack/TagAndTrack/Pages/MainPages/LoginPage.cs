@@ -248,9 +248,8 @@ namespace TagAndTrack.Pages
 
                 DebugLogger.Log($"Employee logged in: {employee.Name} (ID: {employee.ID})");
 
-                // Navigate to home - use relative route since MainPage is registered as a route, not a ShellContent
                 DebugLogger.Log("Navigating to MainPage...");
-                await Shell.Current.GoToAsync("MainPage");
+                await Shell.Current.GoToAsync("//MainPage");
                 DebugLogger.Log("Navigation completed");
             }
             catch (Exception ex)
