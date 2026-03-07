@@ -20,7 +20,7 @@ namespace TagAndTrack.Components
             WidthRequest = 70;
             HeightRequest = 70;
             // Set the command to navigate to MainPage when clicked.
-            Command = new Command(async() => await Navigation.PushAsync(new MainPage()));
+            Command = new Command(async() => await Shell.Current.GoToAsync("//MainPage"));
 
             Source = "building.png";
         }
