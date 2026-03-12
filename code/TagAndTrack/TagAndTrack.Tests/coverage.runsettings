@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <!-- Include backend source classes (linked into the test assembly) -->
+          <Include>[TagAndTrack.Tests]*TagAndTrack.Backend.*</Include>
+          <!-- Exclude test classes themselves -->
+          <Exclude>[TagAndTrack.Tests]*TagAndTrack.Tests.*</Exclude>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

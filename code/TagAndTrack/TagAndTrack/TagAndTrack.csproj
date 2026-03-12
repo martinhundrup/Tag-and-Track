@@ -38,6 +38,10 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="TagAndTrack.Tests" />
+	</ItemGroup>
+
 	<!-- iOS specific properties -->
 	<!-- iOS-only settings -->
 	<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-ios'">
