@@ -25,9 +25,13 @@ namespace TagAndTrack
                         await DbService.InitAsync();
                         DebugLogger.Log("DbService.InitAsync() completed");
 
+#if SEED_DB
                         DebugLogger.Log("DbService.SeedIfEmptyAsync() starting...");
                         await DbService.SeedIfEmptyAsync();
                         DebugLogger.Log("DbService.SeedIfEmptyAsync() completed");
+#else
+                        DebugLogger.Log("SEED_DB not defined — skipping database seeding");
+#endif
                     }
                     catch (Exception ex)
                     {

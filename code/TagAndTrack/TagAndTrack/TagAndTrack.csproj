@@ -1,5 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+	<!-- Define SEED_DB to populate the database with sample data on first launch.
+	     Remove or comment out to build for a fresh, empty database (new installs). -->
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+		<!-- <DefineConstants>$(DefineConstants);SEED_DB</DefineConstants> -->
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<TargetFrameworks>net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
