@@ -14,7 +14,7 @@ public class SpecimenItemTests
     [Fact]
     public void Constructor_SetsNameAndDescription()
     {
-        var item = new SpecimenItem("Fossil A", "A trilobite fossil");
+        var item = new SpecimenItem("ARC-1", "Fossil A", "A trilobite fossil");
         Assert.Equal("Fossil A", item.Name);
         Assert.Equal("A trilobite fossil", item.Description);
     }

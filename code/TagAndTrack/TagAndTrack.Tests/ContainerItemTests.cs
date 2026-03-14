@@ -23,7 +23,7 @@ public class ContainerItemTests
     public void AddSpecimen_AppearsInList()
     {
         var container = new ContainerItem();
-        var specimen = new SpecimenItem("Rock", "A rock");
+        var specimen = new SpecimenItem("ARC-1", "Rock", "A rock");
         container.AddSpecimen(specimen);
 
         Assert.Single(container.Specimens);
@@ -34,7 +34,7 @@ public class ContainerItemTests
     public void AddSpecimen_DuplicateId_IsIgnored()
     {
         var container = new ContainerItem();
-        var specimen = new SpecimenItem("Rock", "A rock");
+        var specimen = new SpecimenItem("ARC-1", "Rock", "A rock");
         container.AddSpecimen(specimen);
         container.AddSpecimen(specimen); // same object, same ID
 
@@ -45,7 +45,7 @@ public class ContainerItemTests
     public void RemoveSpecimen_RemovesById()
     {
         var container = new ContainerItem();
-        var specimen = new SpecimenItem("Rock", "A rock");
+        var specimen = new SpecimenItem("ARC-1", "Rock", "A rock");
         container.AddSpecimen(specimen);
         container.RemoveSpecimen(specimen);
 
@@ -56,8 +56,8 @@ public class ContainerItemTests
     public void ClearSpecimens_EmptiesList()
     {
         var container = new ContainerItem();
-        container.AddSpecimen(new SpecimenItem("A", "a"));
-        container.AddSpecimen(new SpecimenItem("B", "b"));
+        container.AddSpecimen(new SpecimenItem("ARC-A", "A", "a"));
+        container.AddSpecimen(new SpecimenItem("ARC-B", "B", "b"));
         container.ClearSpecimens();
 
         Assert.Empty(container.Specimens);
@@ -67,9 +67,9 @@ public class ContainerItemTests
     public void MultipleSpecimens_AllPresent()
     {
         var container = new ContainerItem();
-        var s1 = new SpecimenItem("A", "a");
-        var s2 = new SpecimenItem("B", "b");
-        var s3 = new SpecimenItem("C", "c");
+        var s1 = new SpecimenItem("ARC-A", "A", "a");
+        var s2 = new SpecimenItem("ARC-B", "B", "b");
+        var s3 = new SpecimenItem("ARC-C", "C", "c");
         container.AddSpecimen(s1);
         container.AddSpecimen(s2);
         container.AddSpecimen(s3);

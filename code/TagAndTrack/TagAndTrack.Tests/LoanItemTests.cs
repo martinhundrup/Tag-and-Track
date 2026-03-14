@@ -33,8 +33,8 @@ public class LoanItemTests
     public void Checkin_CascadesToSpecimens()
     {
         var loan = new LoanItem("Loan", "desc");
-        var s1 = new SpecimenItem("A", "a");
-        var s2 = new SpecimenItem("B", "b");
+        var s1 = new SpecimenItem("A", "a", "desc a");
+        var s2 = new SpecimenItem("B", "b", "desc b");
         loan.AddSpecimen(s1);
         loan.AddSpecimen(s2);
 
@@ -58,7 +58,7 @@ public class LoanItemTests
     public void Specimens_IsReadOnlyView()
     {
         var loan = new LoanItem();
-        var s1 = new SpecimenItem("A", "a");
+        var s1 = new SpecimenItem("A", "a", "desc a");
         loan.AddSpecimen(s1);
 
         Assert.Single(loan.Specimens);
