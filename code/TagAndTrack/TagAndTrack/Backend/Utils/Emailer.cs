@@ -10,7 +10,7 @@ namespace TagAndTrack.Backend.Utils
     // responsible for sending emails to the user's email
     public static class Emailer
     {
-        /// <summary>
+        /// <summary>⁄
         /// Sends an HTML-formatted email. If signatureData is provided,
         /// the borrower's handwritten signature is embedded inline in the HTML body as CID-linked PNG.
         /// Returns (success, errorMessage). errorMessage is null on success.

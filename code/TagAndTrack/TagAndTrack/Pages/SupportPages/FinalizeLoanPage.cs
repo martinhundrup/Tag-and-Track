@@ -203,22 +203,22 @@ namespace TagAndTrack.Pages.SupportPages
         {
             if (loanNameEntry.Text == "")
             {
-                await Shell.Current.DisplayAlert("Error", "Loan name must be entered.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Loan name must be entered.", "OK");
                 return;
             }
             if (clientNameEntry.Text == "")
             {
-                await Shell.Current.DisplayAlert("Error", "Client name must be entered.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Client name must be entered.", "OK");
                 return;
             }
             if (clientEmailEntry.Text == "")
             {
-                await Shell.Current.DisplayAlert("Error", "Client email must be entered.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Client email must be entered.", "OK");
                 return;
             }
             if (signaturePad.IsBlank)
             {
-                await Shell.Current.DisplayAlert("Error", "Borrower signature is required.", "OK");
+                await Shell.Current.DisplayAlertAsync("Error", "Borrower signature is required.", "OK");
                 return;
             }
 
@@ -230,7 +230,7 @@ namespace TagAndTrack.Pages.SupportPages
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("DEBUG: Signature Capture Error", ex.ToString(), "OK");
+                await Shell.Current.DisplayAlertAsync("DEBUG: Signature Capture Error", ex.ToString(), "OK");
             }
 
             var loan = await LoanCreator.FinalizeLoanAsync(loanNameEntry.Text, 
@@ -260,13 +260,13 @@ namespace TagAndTrack.Pages.SupportPages
 
             if (!emailSuccess)
             {
-                await Shell.Current.DisplayAlert("Email Error", $"Email failed to send.\n\nDetails: {emailError}", "OK");
+                await Shell.Current.DisplayAlertAsync("Email Error", $"Email failed to send.\n\nDetails: {emailError}", "OK");
                 // TODO: undo loan checkin
                 return;
             }
             else
             {
-                await Shell.Current.DisplayAlert("Success!", "Loan registered and email sent!", "OK");
+                await Shell.Current.DisplayAlertAsync("Success!", "Loan registered and email sent!", "OK");
                 await Shell.Current.GoToAsync("//LoginPage/MainPage");
             }
         }

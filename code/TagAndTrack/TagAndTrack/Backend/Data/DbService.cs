@@ -372,8 +372,10 @@ namespace TagAndTrack.Backend.Data
             await _db!.CreateTableAsync<ContainerEntity>();
             await _db!.CreateTableAsync<EmployeeEntity>();
 
+#if SEED_DB
             DebugLogger.Log("DbService: Tables recreated. Seeding...");
             await SeedIfEmptyAsync();
+#endif
 
             DebugLogger.Log("DbService: Database reset complete.");
         }

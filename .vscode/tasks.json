@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Tag and Track: Run Tests",
+            "type": "shell",
+            "command": "dotnet-coverage collect \"dotnet test ${workspaceFolder}/code/TagAndTrack/TagAndTrack.Tests/TagAndTrack.Tests.csproj --no-build --verbosity normal\" --output ${workspaceFolder}/TestResults/coverage.cobertura.xml --output-format cobertura; reportgenerator -reports:${workspaceFolder}/TestResults/coverage.cobertura.xml -targetdir:${workspaceFolder}/TestResults/CoverageReport -reporttypes:TextSummary; Get-Content ${workspaceFolder}/TestResults/CoverageReport/Summary.txt",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Tag and Track: Build & Run Tests",
+            "type": "shell",
+            "command": "dotnet test ${workspaceFolder}/code/TagAndTrack/TagAndTrack.Tests/TagAndTrack.Tests.csproj --verbosity normal",
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
