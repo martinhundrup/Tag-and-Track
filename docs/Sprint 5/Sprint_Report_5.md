@@ -1,5 +1,5 @@
 # Sprint 4 Report 2/15/26 - 3/15/26
-## YouTube Link: 
+## YouTube Link: https://youtu.be/fA399uUoS8A
 
 ## What's New (User Facing)
 * Users are able to provide a signature when checking out a loan.
