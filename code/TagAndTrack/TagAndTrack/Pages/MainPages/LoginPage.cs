@@ -8,7 +8,7 @@ namespace TagAndTrack.Pages
     public class LoginPage : TagAndTrackPage
     {
         private Picker? employeePicker;
-        private Entry? newEmployeeEntry;
+        private TextboxTemplate? newEmployeeEntry;
         private List<Employee> employees = new();
 
         public LoginPage()
@@ -63,7 +63,7 @@ namespace TagAndTrack.Pages
                     var selectedName = employeePicker.SelectedItem.ToString();
                     if (newEmployeeEntry != null)
                     {
-                        newEmployeeEntry.Text = selectedName;
+                        newEmployeeEntry.textbox.Text = selectedName;
                     }
                 }
             };
@@ -105,24 +105,7 @@ namespace TagAndTrack.Pages
                     orLabel.TextColor = CurrentTheme.Instance.Theme.Text;
             };
 
-            // New employee entry
-            newEmployeeEntry = new Entry
-            {
-                Placeholder = "Enter your name",
-                HorizontalOptions = LayoutOptions.Fill,
-                WidthRequest = 300,
-                FontSize = 16,
-                TextColor = CurrentTheme.Instance.Theme.Text,
-                BackgroundColor = CurrentTheme.Instance.Theme.Background
-            };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(CurrentTheme.Theme))
-                {
-                    newEmployeeEntry.TextColor = CurrentTheme.Instance.Theme.Text;
-                    newEmployeeEntry.BackgroundColor = CurrentTheme.Instance.Theme.Background;
-                }
-            };
+            newEmployeeEntry = new TextboxTemplate(300, "Enter your name");
 
             var loginButton = new TagAndTrackButton("Login", new Command(async () => await LoginAsync()), "enter.png");
             var resetDbButton = new TagAndTrackButton("Reset DB", new Command(async () => await ResetDatabaseAsync()), "trash.png");
@@ -200,7 +183,7 @@ namespace TagAndTrack.Pages
             {
                 DebugLogger.Log("LoginAsync() called");
 
-                string? name = newEmployeeEntry?.Text?.Trim();
+                string? name = newEmployeeEntry?.textbox?.Text?.Trim();
                 DebugLogger.Log($"Entry text value: '{name ?? "(null)"}'");
 
                 // Prefer typed name over picker selection
@@ -276,7 +259,7 @@ namespace TagAndTrack.Pages
                 await LoadEmployeesAsync();
 
                 if (newEmployeeEntry != null)
-                    newEmployeeEntry.Text = string.Empty;
+                    newEmployeeEntry.textbox.Text = string.Empty;
 
                 if (employeePicker != null)
                     employeePicker.SelectedIndex = -1;
