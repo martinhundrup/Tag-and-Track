@@ -19,7 +19,7 @@ namespace TagAndTrack.Components
         /// <summary>
         /// Creates a new instance of the <see cref="ButtonTemplate"/> class.
         /// </summary>
-        public TextboxTemplate(double width)
+        public TextboxTemplate(double width, string previewText = "")
         {
             textbox.WidthRequest = width;
             this.WidthRequest = width + 5;
@@ -28,6 +28,7 @@ namespace TagAndTrack.Components
             textbox.BackgroundColor = CurrentTheme.Instance.Theme.Background;
             textbox.TextColor = CurrentTheme.Instance.Theme.Text;
             textbox.ClearButtonVisibility = ClearButtonVisibility.WhileEditing;
+            textbox.Placeholder = previewText;
 
             this.Stroke = CurrentTheme.Instance.Theme.Borders;
             this.StrokeThickness = 1;

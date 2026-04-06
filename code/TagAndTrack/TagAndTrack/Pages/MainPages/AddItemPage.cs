@@ -11,9 +11,9 @@ namespace TagAndTrack.Pages
     {
         protected const string titleText = "Add Specimen";
 
-        private EntryTemplate arctosEntry;
-        private EntryTemplate specimenNameEntry;
-        private EntryTemplate specimenDescriptionEntry;
+        private TextboxTemplate arctosEntry;
+        private TextboxTemplate specimenNameEntry;
+        private TextboxTemplate specimenDescriptionEntry;
 
         public AddItemPage() { Initialize(); }
 
@@ -37,9 +37,9 @@ namespace TagAndTrack.Pages
                 FontSize = 18
             };
 
-            arctosEntry = new EntryTemplate(300, "Arctos ID (Enter only the numbers)");
-            specimenNameEntry = new EntryTemplate(300, "Specimen Name");
-            specimenDescriptionEntry = new EntryTemplate(300, "Specimen Description");
+            arctosEntry = new TextboxTemplate(300, "Arctos ID (Enter only the numbers)");
+            specimenNameEntry = new TextboxTemplate(300, "Specimen Name");
+            specimenDescriptionEntry = new TextboxTemplate(300, "Specimen Description");
 
             var confirmButton = new TagAndTrackButton("Confirm Specimen", new Command(async () => await ConfirmSpecimen()), "check.png");
 
@@ -62,23 +62,23 @@ namespace TagAndTrack.Pages
 
         private async Task ConfirmSpecimen()
         {
-            if (specimenNameEntry.Text == "")
+            if (specimenNameEntry.textbox.Text == "")
             {
                 await Shell.Current.DisplayAlert("Error", "Specimen name must be entered.", "OK");
                 return;
             }
-            if (specimenDescriptionEntry.Text == "")
+            if (specimenDescriptionEntry.textbox.Text == "")
             {
                 await Shell.Current.DisplayAlert("Error", "Specimen description must be entered.", "OK");
                 return;
             }
-            if (arctosEntry.Text == "")
+            if (arctosEntry.textbox.Text == "")
             {
                 await Shell.Current.DisplayAlert("Error", "Arctos ID must be entered.", "OK");
                 return;
             }
 
-            string arc = arctosEntry.Text;
+            string arc = arctosEntry.textbox.Text;
 
             bool isNumber = int.TryParse(arc, out int id);
 
@@ -94,7 +94,7 @@ namespace TagAndTrack.Pages
                 return;
             }
 
-            var specimen = new SpecimenItem($"ARC-{id:D6}", specimenNameEntry.Text, specimenDescriptionEntry.Text);
+            var specimen = new SpecimenItem($"ARC-{id:D6}", specimenNameEntry.textbox.Text, specimenDescriptionEntry.textbox.Text);
 
             //TO DO: Look into where we want to check for duplicate ARC ID's (they may need to keep this functionality)
             await DbService.AddSpecimenAsync(specimen);
