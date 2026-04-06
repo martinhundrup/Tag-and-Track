@@ -12,10 +12,10 @@ namespace TagAndTrack.Pages.SupportPages
     {
         protected const string titleText = "Finalize Loan";
 
-        private EntryTemplate loanNameEntry;
-        private EntryTemplate loanDescriptionEntry;
-        private EntryTemplate clientNameEntry;
-        private EntryTemplate clientEmailEntry;
+        private TextboxTemplate loanNameEntry;
+        private TextboxTemplate loanDescriptionEntry;
+        private TextboxTemplate clientNameEntry;
+        private TextboxTemplate clientEmailEntry;
         private SignaturePadView signaturePad;
 
         public FinalizeLoanPage()
@@ -44,10 +44,10 @@ namespace TagAndTrack.Pages.SupportPages
                 FontSize = 18
             };
 
-            loanNameEntry = new EntryTemplate(300, "Loan Name");
-            loanDescriptionEntry = new EntryTemplate(300, "Loan Description");
-            clientNameEntry = new EntryTemplate(300, "Client Name");
-            clientEmailEntry = new EntryTemplate(300, "Client Email");
+            loanNameEntry = new TextboxTemplate(300, "Loan Name");
+            loanDescriptionEntry = new TextboxTemplate(300, "Loan Description");
+            clientNameEntry = new TextboxTemplate(300, "Client Name");
+            clientEmailEntry = new TextboxTemplate(300, "Client Email");
             //var dueDate = new EntryTemplate(300, "Client Email"); // TODO: date entry that complies with a DateTime
 
             // Signature pad for borrower handwritten signature
@@ -201,17 +201,17 @@ namespace TagAndTrack.Pages.SupportPages
 
         private async Task ConfirmLoan()
         {
-            if (loanNameEntry.Text == "")
+            if (loanNameEntry.textbox.Text == "")
             {
                 await Shell.Current.DisplayAlertAsync("Error", "Loan name must be entered.", "OK");
                 return;
             }
-            if (clientNameEntry.Text == "")
+            if (clientNameEntry.textbox.Text == "")
             {
                 await Shell.Current.DisplayAlertAsync("Error", "Client name must be entered.", "OK");
                 return;
             }
-            if (clientEmailEntry.Text == "")
+            if (clientEmailEntry.textbox.Text == "")
             {
                 await Shell.Current.DisplayAlertAsync("Error", "Client email must be entered.", "OK");
                 return;
@@ -233,18 +233,18 @@ namespace TagAndTrack.Pages.SupportPages
                 await Shell.Current.DisplayAlertAsync("DEBUG: Signature Capture Error", ex.ToString(), "OK");
             }
 
-            var loan = await LoanCreator.FinalizeLoanAsync(loanNameEntry.Text, 
-                loanDescriptionEntry.Text,
-                clientNameEntry.Text,
-                clientEmailEntry.Text,
+            var loan = await LoanCreator.FinalizeLoanAsync(loanNameEntry.textbox.Text, 
+                loanDescriptionEntry.textbox.Text,
+                clientNameEntry.textbox.Text,
+                clientEmailEntry.textbox.Text,
                 DateTime.MaxValue,
                 signatureBytes);
 
             var sb = new StringBuilder();
-            sb.Append($"Loan Name: {loanNameEntry.Text}").AppendLine()
+            sb.Append($"Loan Name: {loanNameEntry.textbox.Text}").AppendLine()
                 .Append($"Loan ID: {loan.ID}").AppendLine()
-                .Append($"Loan Description: {loanDescriptionEntry.Text}").AppendLine()
-                .Append($"Client Name: {clientNameEntry.Text}").AppendLine()
+                .Append($"Loan Description: {loanDescriptionEntry.textbox.Text}").AppendLine()
+                .Append($"Client Name: {clientNameEntry.textbox.Text}").AppendLine()
                 .Append($"Date Checked Out: {loan.DateCheckedOut.ToString()}").AppendLine()
                 .Append($"Date Due: {loan.DateDue}").AppendLine()
                 .Append($"Items included in loan:").AppendLine();
@@ -256,7 +256,7 @@ namespace TagAndTrack.Pages.SupportPages
 
             var body = sb.ToString() + "<br>" + htmlTable;
 
-            var (emailSuccess, emailError) = Emailer.Email(clientEmailEntry.Text, $"Tag and Track Loan {loan.ID} Confirmed", body, signatureBytes);
+            var (emailSuccess, emailError) = Emailer.Email(clientEmailEntry.textbox.Text, $"Tag and Track Loan {loan.ID} Confirmed", body, signatureBytes);
 
             if (!emailSuccess)
             {
