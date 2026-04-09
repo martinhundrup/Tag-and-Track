@@ -267,7 +267,7 @@ namespace TagAndTrack.Pages.SupportPages
             else
             {
                 await Shell.Current.DisplayAlertAsync("Success!", "Loan registered and email sent!", "OK");
-                await Shell.Current.GoToAsync("//LoginPage/MainPage");
+                await Shell.Current.GoToAsync("//MainPage");
             }
         }
     }
