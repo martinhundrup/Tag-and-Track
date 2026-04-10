@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using TagAndTrack.Backend;
+using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Backend.Utils;
 using TagAndTrack.Components;
@@ -15,7 +16,7 @@ namespace TagAndTrack.Pages
         private bool _listening;
         private bool _navigating;
 
-        public StartLoanPage() { Initialize(); }
+        public StartLoanPage() { LoanCreator.ClearLoan(); Initialize(); }
 
 
         protected override void OnAppearing()
@@ -88,6 +89,7 @@ namespace TagAndTrack.Pages
                 VerticalOptions = LayoutOptions.Center,
                 Children =
                 {
+                    new TagAndTrackButton("Manual Item Entry", new Command(async () => await ManualItemEntry()), "plus.png"),
                     new TagAndTrackButton("Cancel Loan", new Command(async () => await CancelLoan()), "cross.png"),
                     new TagAndTrackButton("View Items", new Command(async () => await ViewItems()), "view.png"),
                     new TagAndTrackButton("Finalize Loan", new Command(async () => await FinalizeLoan()), "check.png")
@@ -120,7 +122,6 @@ namespace TagAndTrack.Pages
                 }
             };
 
-            LoanCreator.ClearLoan();
         }
         private async void ScanCaptured(object? sender, ScanCapturedEventArgs args)
         {
@@ -137,6 +138,22 @@ namespace TagAndTrack.Pages
                     if (item == null)
                     {
                         await Shell.Current.DisplayAlert("Error", $"Value {qr} not recognized!", "OK");
+                        return;
+                    }
+
+                    if (item is ContainerItem container)
+                    {
+                        ScannedQRItem.lastScannedItem = qr;
+
+                        int added = LoanCreator.AddContainerItems(container);
+                        DebugLogger.Log($"added {added} items from container {container.ID} to loan");
+                        await Shell.Current.DisplayAlert(
+                            "Container Scanned",
+                            $"{added} item(s) from container {container.Name} added to loan.",
+                            "OK");
+
+                        if (scanResultLabel != null)
+                            scanResultLabel.Text = $"{added} item(s) from container {container.Name} added to loan.";
                         return;
                     }
 
@@ -194,8 +211,52 @@ namespace TagAndTrack.Pages
                 await Navigation.PushAsync(new ViewEditLoanItemsPage()));
         }
 
+        private async Task ManualItemEntry()
+        {
+            var allSpecimens = await DbService.GetAllSpecimensAsync();
+
+            // Show all checked-in specimens; items already in loan will be pre-checked
+            var existingIds = LoanCreator.LoanItems.Select(s => s.ID).ToHashSet();
+            var available = allSpecimens.Where(s => s.Status || existingIds.Contains(s.ID)).ToList();
+
+            if (available.Count == 0)
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                    await Shell.Current.DisplayAlert("Info", "No available specimens to add.", "OK"));
+                return;
+            }
+
+            var tcs = new TaskCompletionSource<List<SpecimenItem>>();
+            await Navigation.PushAsync(new SelectSpecimensPage(available, tcs, preSelectedIds: existingIds));
+
+            var selected = await tcs.Task;
+
+            // Sync loan items to match the final selection:
+            // remove unchecked items, add newly checked items
+            var selectedIds = selected.Select(s => s.ID).ToHashSet();
+            var toRemove = LoanCreator.LoanItems.Where(s => !selectedIds.Contains(s.ID)).ToList();
+            foreach (var specimen in toRemove)
+            {
+                LoanCreator.RemoveItem(specimen);
+            }
+            foreach (var specimen in selected)
+            {
+                LoanCreator.AddItem(specimen); // AddItem ignores duplicates
+            }
+
+            if (scanResultLabel != null)
+                scanResultLabel.Text = $"{LoanCreator.LoanItems.Count} specimen(s) in loan.";
+        }
+
         private async Task FinalizeLoan()
         {
+            if (LoanCreator.LoanItems.Count == 0)
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                    await Shell.Current.DisplayAlert("Error", "At least one item must be added to the loan before finalizing.", "OK"));
+                return;
+            }
+
             await MainThread.InvokeOnMainThreadAsync(async () =>
                 await Navigation.PushAsync(new FinalizeLoanPage()));
         }

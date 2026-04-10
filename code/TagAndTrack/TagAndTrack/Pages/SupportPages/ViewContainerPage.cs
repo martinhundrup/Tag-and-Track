@@ -14,10 +14,10 @@ namespace TagAndTrack.Pages
         private HeaderTemplate? _header;
         private Label? _descriptionLabel;
         private QrCodeView? _qrCode;
-        private VerticalStackLayout? _specimensLayout;
         private VerticalStackLayout? _addButtonContainer;
-        private Label? _specimensTitle;
+        private Grid? _specimensContainer;
         private ActivityIndicator? _loadingIndicator;
+        private DataTable<SpecimenItem>? _dataTable;
 
         public ViewContainerPage(int containerId)
         {
@@ -66,25 +66,10 @@ namespace TagAndTrack.Pages
                 IsVisible = false
             };
 
-            _specimensTitle = new Label
+            _specimensContainer = new Grid
             {
-                Text = "Specimens in this container:",
-                FontSize = 16,
-                FontAttributes = FontAttributes.Bold,
-                TextColor = CurrentTheme.Instance.Theme.Text,
-                Margin = new Thickness(20, 20, 20, 5),
+                Padding = new Thickness(10),
                 IsVisible = false
-            };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(CurrentTheme.Theme) && _specimensTitle != null)
-                    _specimensTitle.TextColor = CurrentTheme.Instance.Theme.Text;
-            };
-
-            _specimensLayout = new VerticalStackLayout
-            {
-                Spacing = 10,
-                Padding = new Thickness(10)
             };
 
             _loadingIndicator = new ActivityIndicator
@@ -99,23 +84,34 @@ namespace TagAndTrack.Pages
                 Margin = new Thickness(0, 40)
             };
 
-            Content = new ScrollView
+            var topSection = new VerticalStackLayout
             {
-                Orientation = ScrollOrientation.Vertical,
-                Content = new VerticalStackLayout
+                Children =
                 {
-                    Children =
-                    {
-                        _header,
-                        _loadingIndicator,
-                        _descriptionLabel,
-                        _qrCode,
-                        _addButtonContainer,
-                        _specimensTitle,
-                        _specimensLayout
-                    }
+                    _header,
+                    _loadingIndicator,
+                    _descriptionLabel,
+                    _qrCode,
+                    _addButtonContainer
                 }
             };
+
+            var pageGrid = new Grid
+            {
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Star }
+                }
+            };
+
+            pageGrid.Children.Add(topSection);
+            Grid.SetRow(topSection, 0);
+
+            pageGrid.Children.Add(_specimensContainer);
+            Grid.SetRow(_specimensContainer, 1);
+
+            Content = pageGrid;
 
             DebugLogger.Log("ViewContainerPage.Initialize() complete");
         }
@@ -196,17 +192,14 @@ namespace TagAndTrack.Pages
                     }
 
                     // Specimens title
-                    if (_specimensTitle != null)
-                        _specimensTitle.IsVisible = true;
-
-                    // Specimens list
-                    if (_specimensLayout != null)
+                    if (_specimensContainer != null)
                     {
-                        _specimensLayout.Children.Clear();
+                        _specimensContainer.Children.Clear();
+                        _specimensContainer.IsVisible = true;
 
                         if (_container.Specimens.Count == 0)
                         {
-                            _specimensLayout.Children.Add(new Label
+                            _specimensContainer.Children.Add(new Label
                             {
                                 Text = "No specimens in this container",
                                 FontSize = 14,
@@ -217,10 +210,27 @@ namespace TagAndTrack.Pages
                         }
                         else
                         {
-                            foreach (var specimen in _container.Specimens)
+                            _dataTable = new DataTable<SpecimenItem>(_container.Specimens.ToList(), columns =>
                             {
-                                _specimensLayout.Children.Add(CreateSpecimenRow(specimen));
-                            }
+                                columns.Add("ID", s => s.ID, 60);
+                                columns.Add("Arctos ID", s => s.ArctosID, 100);
+                                columns.Add("Name", s => s.Name);
+                                columns.Add("Description", s => s.Description);
+                                columns.AddIcon("Status", s =>
+                                    s.Status ? "check.png" : "cross.png", width: 80);
+                                columns.AddButton("View",
+                                    s =>
+                                    {
+                                        ScannedQRItem.lastScannedItem = s.QRID;
+                                        Navigation.PushAsync(new ViewItemPage());
+                                    },
+                                    "info.png", 60);
+                                columns.AddButton("Remove",
+                                    s => RemoveSpecimenAsync(s),
+                                    "trash.png", 80);
+                            });
+
+                            _specimensContainer.Children.Add(_dataTable);
                         }
                     }
 
@@ -239,10 +249,11 @@ namespace TagAndTrack.Pages
                         _loadingIndicator.IsRunning = false;
                         _loadingIndicator.IsVisible = false;
                     }
-                    if (_specimensLayout != null)
+                    if (_specimensContainer != null)
                     {
-                        _specimensLayout.Children.Clear();
-                        _specimensLayout.Children.Add(new Label
+                        _specimensContainer.Children.Clear();
+                        _specimensContainer.IsVisible = true;
+                        _specimensContainer.Children.Add(new Label
                         {
                             Text = $"Error loading container: {ex.Message}",
                             FontSize = 16,
@@ -255,66 +266,18 @@ namespace TagAndTrack.Pages
             }
         }
 
-        private View CreateSpecimenRow(SpecimenItem specimen)
+        private async void RemoveSpecimenAsync(SpecimenItem specimen)
         {
-            var nameLabel = new Label
+            bool confirm = await DisplayAlert("Confirm", $"Remove {specimen.Name} from container?", "Yes", "No");
+            if (confirm)
             {
-                Text = specimen.Name,
-                FontSize = 16,
-                TextColor = CurrentTheme.Instance.Theme.Text,
-                VerticalOptions = LayoutOptions.Center
-            };
-
-            var removeButton = new Button
-            {
-                Text = "Remove",
-                BackgroundColor = Colors.IndianRed,
-                TextColor = Colors.White,
-                Padding = new Thickness(10, 5),
-                BindingContext = specimen
-            };
-            removeButton.Clicked += async (s, e) =>
-            {
-                if ((s as Button)?.BindingContext is SpecimenItem sp)
+                _container?.RemoveSpecimen(specimen);
+                if (_container != null)
                 {
-                    bool confirm = await DisplayAlert("Confirm", $"Remove {sp.Name} from container?", "Yes", "No");
-                    if (confirm)
-                    {
-                        _container?.RemoveSpecimen(sp);
-                        if (_container != null)
-                        {
-                            await DbService.UpdateContainerSpecimensAsync(_containerId, _container.Specimens.ToList());
-                        }
-                        await LoadContainerAsync();
-                    }
+                    await DbService.UpdateContainerSpecimensAsync(_containerId, _container.Specimens.ToList());
                 }
-            };
-
-            var row = new Border
-            {
-                Stroke = CurrentTheme.Instance.Theme.Borders,
-                BackgroundColor = CurrentTheme.Instance.Theme.Background,
-                StrokeThickness = 1,
-                Padding = new Thickness(10),
-                Margin = new Thickness(10, 2),
-                Content = new HorizontalStackLayout
-                {
-                    Spacing = 20,
-                    Children = { nameLabel, removeButton }
-                }
-            };
-
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(CurrentTheme.Theme))
-                {
-                    nameLabel.TextColor = CurrentTheme.Instance.Theme.Text;
-                    row.Stroke = CurrentTheme.Instance.Theme.Borders;
-                    row.BackgroundColor = CurrentTheme.Instance.Theme.Background;
-                }
-            };
-
-            return row;
+                await LoadContainerAsync();
+            }
         }
 
         private async Task AddSpecimenAsync()
@@ -332,18 +295,18 @@ namespace TagAndTrack.Pages
                 return;
             }
 
-            // Show picker
-            var names = available.Select(s => s.Name ?? "Unknown").ToArray();
-            string? result = await DisplayActionSheet("Select Specimen", "Cancel", null, names);
+            var tcs = new TaskCompletionSource<List<SpecimenItem>>();
+            await Navigation.PushAsync(new SelectSpecimensPage(available, tcs));
 
-            if (string.IsNullOrEmpty(result) || result == "Cancel") return;
-
-            var selected = available.FirstOrDefault(s => s.Name == result);
-            if (selected != null && _container != null)
+            var selected = await tcs.Task;
+            if (selected.Count > 0 && _container != null)
             {
-                _container.AddSpecimen(selected);
+                foreach (var specimen in selected)
+                {
+                    _container.AddSpecimen(specimen);
+                }
                 await DbService.UpdateContainerSpecimensAsync(_containerId, _container.Specimens.ToList());
-                DebugLogger.Log($"Specimen {selected.Name} added to container {_container.Name}");
+                DebugLogger.Log($"{selected.Count} specimen(s) added to container {_container.Name}");
                 await LoadContainerAsync();
             }
         }

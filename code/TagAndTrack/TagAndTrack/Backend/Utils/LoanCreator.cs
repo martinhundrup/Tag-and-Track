@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+#if !UNIT_TESTING
 using TagAndTrack.Backend.Data;
+#endif
 using TagAndTrack.Backend.Items;
 
 namespace TagAndTrack.Backend.Utils
@@ -37,12 +39,24 @@ namespace TagAndTrack.Backend.Utils
             return null;
         }
 
+        public static int AddContainerItems(ContainerItem container)
+        {
+            int added = 0;
+            foreach (var specimen in container.Specimens)
+            {
+                if (AddItem(specimen) == null)
+                    added++;
+            }
+            return added;
+        }
+
         public static void RemoveItem(SpecimenItem item) 
         {
             if (!LoanItems.Contains(item)) return;
             LoanItems.Remove(item);
         }
 
+#if !UNIT_TESTING
         public static async Task<LoanItem> FinalizeLoanAsync(string loanName, string loanDescription, string borrower, string borrowerEmail, DateTime dueDate, byte[]? signatureBytes = null)
         {
             var loan = new LoanItem(loanName, loanDescription);
@@ -65,5 +79,6 @@ namespace TagAndTrack.Backend.Utils
 
             return loan;
         }
+#endif
     }
 }

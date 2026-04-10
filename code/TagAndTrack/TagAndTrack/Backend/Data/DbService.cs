@@ -2,6 +2,7 @@
 using TagAndTrack.Backend.Data.Entities;
 using TagAndTrack.Backend.Employees;
 using TagAndTrack.Backend.Items;
+using TagAndTrack.Backend.Utils;
 
 namespace TagAndTrack.Backend.Data
 {
@@ -68,6 +69,34 @@ namespace TagAndTrack.Backend.Data
             {
                 entity.IsPresent = isPresent;
                 await _db!.UpdateAsync(entity);
+            }
+        }
+
+        public static async Task<bool> IsSpecimenInAnyLoanAsync(int specimenId)
+        {
+            var entities = await _db!.Table<LoanEntity>().ToListAsync();
+            return entities.Any(e => SpecimenIdHelper.ContainsSpecimenId(e.SpecimenIds, specimenId));
+        }
+
+        public static async Task DeleteSpecimenAsync(int specimenId)
+        {
+            // Remove from specimen table
+            await _db!.DeleteAsync<SpecimenEntity>(specimenId);
+
+            // Remove from any container references
+            var containers = await _db!.Table<ContainerEntity>().ToListAsync();
+            foreach (var c in containers)
+            {
+                if (!string.IsNullOrEmpty(c.SpecimenIds))
+                {
+                    var ids = c.SpecimenIds.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                    var idStr = specimenId.ToString();
+                    if (ids.Remove(idStr))
+                    {
+                        c.SpecimenIds = string.Join(",", ids);
+                        await _db!.UpdateAsync(c);
+                    }
+                }
             }
         }
 
@@ -216,6 +245,35 @@ namespace TagAndTrack.Backend.Data
                 }
             }
             return container;
+        }
+
+        public static async Task<List<ContainerItem>> GetContainersBySpecimenIdAsync(int specimenId)
+        {
+            var entities = await _db!.Table<ContainerEntity>().ToListAsync();
+            var result = new List<ContainerItem>();
+            foreach (var e in entities)
+            {
+                if (SpecimenIdHelper.ContainsSpecimenId(e.SpecimenIds, specimenId))
+                {
+                    result.Add(await MapToContainerAsync(e));
+                }
+            }
+            return result;
+        }
+
+        // ===== LOANS (by specimen) =====
+        public static async Task<List<LoanItem>> GetLoansBySpecimenIdAsync(int specimenId)
+        {
+            var entities = await _db!.Table<LoanEntity>().ToListAsync();
+            var result = new List<LoanItem>();
+            foreach (var e in entities)
+            {
+                if (SpecimenIdHelper.ContainsSpecimenId(e.SpecimenIds, specimenId))
+                {
+                    result.Add(await MapToLoanAsync(e));
+                }
+            }
+            return result;
         }
 
         // ===== EMPLOYEES =====
@@ -391,5 +449,21 @@ namespace TagAndTrack.Backend.Data
         private static void SetItemId(Item item, ulong id) => IdProp?.SetValue(item, id);
         private static void SetItemArctosId(Item item, string? arctosId) => ArctosIdProp?.SetValue(item, arctosId);
         private static void SetItemStatus(Item item, bool status) => StatusProp?.SetValue(item, status);
+
+        // ===== RAW ENTITY ACCESS (for CSV import/export) =====
+        public static async Task<List<SpecimenEntity>> GetAllSpecimenEntitiesAsync()
+            => await _db!.Table<SpecimenEntity>().ToListAsync();
+
+        public static async Task<List<LoanEntity>> GetAllLoanEntitiesAsync()
+            => await _db!.Table<LoanEntity>().ToListAsync();
+
+        public static async Task<List<ContainerEntity>> GetAllContainerEntitiesAsync()
+            => await _db!.Table<ContainerEntity>().ToListAsync();
+
+        public static async Task<List<EmployeeEntity>> GetAllEmployeeEntitiesAsync()
+            => await _db!.Table<EmployeeEntity>().ToListAsync();
+
+        public static async Task InsertRawEntityAsync<T>(T entity) where T : new()
+            => await _db!.InsertAsync(entity);
     }
 }

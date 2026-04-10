@@ -16,6 +16,7 @@ namespace TagAndTrack.Pages.SupportPages
         private TextboxTemplate loanDescriptionEntry;
         private TextboxTemplate clientNameEntry;
         private TextboxTemplate clientEmailEntry;
+        private DatePicker dueDatePicker;
         private SignaturePadView signaturePad;
 
         public FinalizeLoanPage()
@@ -48,7 +49,41 @@ namespace TagAndTrack.Pages.SupportPages
             loanDescriptionEntry = new TextboxTemplate(300, "Loan Description");
             clientNameEntry = new TextboxTemplate(300, "Client Name");
             clientEmailEntry = new TextboxTemplate(300, "Client Email");
-            //var dueDate = new EntryTemplate(300, "Client Email"); // TODO: date entry that complies with a DateTime
+
+            var dueDateLabel = new Label
+            {
+                Text = "Due Date:",
+                FontSize = 16,
+                FontAttributes = FontAttributes.Bold,
+                Margin = new Thickness(24, 20, 24, 4),
+                TextColor = CurrentTheme.Instance.Theme.Text
+            };
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                    dueDateLabel.TextColor = CurrentTheme.Instance.Theme.Text;
+            };
+
+            dueDatePicker = new DatePicker
+            {
+                MinimumDate = DateTime.Today.AddDays(1),
+                Date = DateTime.Today.AddDays(30),
+                Format = "yyyy-MM-dd",
+                HorizontalOptions = LayoutOptions.Center,
+                Margin = new Thickness(24, 4, 24, 12),
+                TextColor = CurrentTheme.Instance.Theme.Text,
+                BackgroundColor = CurrentTheme.Instance.Theme.Background,
+                WidthRequest = 250,
+                HeightRequest = 40
+            };
+            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
+                {
+                    dueDatePicker.TextColor = CurrentTheme.Instance.Theme.Text;
+                    dueDatePicker.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                }
+            };
 
             // Signature pad for borrower handwritten signature
             var signatureLabel = new Label
@@ -131,6 +166,8 @@ namespace TagAndTrack.Pages.SupportPages
                         loanDescriptionEntry,
                         clientNameEntry,
                         clientEmailEntry,
+                        dueDateLabel,
+                        dueDatePicker,
                         signatureLabel,
                         signatureBorder,
                         clearSignatureButton,
@@ -216,59 +253,59 @@ namespace TagAndTrack.Pages.SupportPages
                 await Shell.Current.DisplayAlertAsync("Error", "Client email must be entered.", "OK");
                 return;
             }
-            if (signaturePad.IsBlank)
-            {
-                await Shell.Current.DisplayAlertAsync("Error", "Borrower signature is required.", "OK");
-                return;
-            }
 
-            // Capture signature as JSON stroke bytes
+            // Capture signature as JSON stroke bytes (optional)
             byte[]? signatureBytes = null;
             try
             {
-                signatureBytes = signaturePad.GetSignatureBytes();
+                if (!signaturePad.IsBlank)
+                    signatureBytes = signaturePad.GetSignatureBytes();
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlertAsync("DEBUG: Signature Capture Error", ex.ToString(), "OK");
             }
 
-            var loan = await LoanCreator.FinalizeLoanAsync(loanNameEntry.textbox.Text, 
-                loanDescriptionEntry.textbox.Text,
-                clientNameEntry.textbox.Text,
-                clientEmailEntry.textbox.Text,
-                DateTime.MaxValue,
-                signatureBytes);
+            // Build the email body BEFORE persisting to DB
+            var dueDate = dueDatePicker.Date ?? DateTime.Today.AddDays(30);
 
             var sb = new StringBuilder();
             sb.Append($"Loan Name: {loanNameEntry.textbox.Text}").AppendLine()
-                .Append($"Loan ID: {loan.ID}").AppendLine()
                 .Append($"Loan Description: {loanDescriptionEntry.textbox.Text}").AppendLine()
                 .Append($"Client Name: {clientNameEntry.textbox.Text}").AppendLine()
-                .Append($"Date Checked Out: {loan.DateCheckedOut.ToString()}").AppendLine()
-                .Append($"Date Due: {loan.DateDue}").AppendLine()
+                .Append($"Date Checked Out: {DateTime.Now}").AppendLine()
+                .Append($"Date Due: {dueDate}").AppendLine()
                 .Append($"Items included in loan:").AppendLine();
-            //.Append(CreateDTCSV()).AppendLine();
 
             sb = sb.Replace("\n", "<br>");
 
             var htmlTable = CsvToHtmlTable(CreateDTCSV());
-
             var body = sb.ToString() + "<br>" + htmlTable;
 
-            var (emailSuccess, emailError) = Emailer.Email(clientEmailEntry.textbox.Text, $"Tag and Track Loan {loan.ID} Confirmed", body, signatureBytes);
+            // Send email FIRST — only finalize to DB on success
+            var (emailSuccess, emailError) = Emailer.Email(
+                clientEmailEntry.textbox.Text,
+                $"Tag and Track Loan Confirmed",
+                body,
+                signatureBytes);
 
             if (!emailSuccess)
             {
-                await Shell.Current.DisplayAlertAsync("Email Error", $"Email failed to send.\n\nDetails: {emailError}", "OK");
-                // TODO: undo loan checkin
+                await Shell.Current.DisplayAlertAsync("Email Error", $"Email failed to send. Loan was NOT created.\n\nDetails: {emailError}", "OK");
                 return;
             }
-            else
-            {
-                await Shell.Current.DisplayAlertAsync("Success!", "Loan registered and email sent!", "OK");
-                await Shell.Current.GoToAsync("//MainPage");
-            }
+
+            // Email succeeded — now persist to DB
+            var loan = await LoanCreator.FinalizeLoanAsync(
+                loanNameEntry.textbox.Text,
+                loanDescriptionEntry.textbox.Text,
+                clientNameEntry.textbox.Text,
+                clientEmailEntry.textbox.Text,
+                dueDate,
+                signatureBytes);
+
+            await Shell.Current.DisplayAlertAsync("Success!", "Loan registered and email sent!", "OK");
+            await Shell.Current.GoToAsync("//MainPage");
         }
     }
 }
