@@ -68,5 +68,29 @@ namespace TagAndTrack.Backend.Utils
             fields.Add(current.ToString());
             return fields.ToArray();
         }
+
+        public static Dictionary<string, List<string>> ParseSections(string content)
+        {
+            var sections = new Dictionary<string, List<string>>();
+            string? currentSection = null;
+
+            foreach (var rawLine in content.Split('\n'))
+            {
+                var line = rawLine.TrimEnd('\r');
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                if (line.StartsWith('[') && line.EndsWith(']'))
+                {
+                    currentSection = line[1..^1];
+                    sections[currentSection] = new List<string>();
+                }
+                else if (currentSection != null)
+                {
+                    sections[currentSection].Add(line);
+                }
+            }
+
+            return sections;
+        }
     }
 }

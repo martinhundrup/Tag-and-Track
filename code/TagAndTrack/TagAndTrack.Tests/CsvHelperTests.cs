@@ -119,4 +119,70 @@ public class CsvHelperTests
         var decoded = Convert.FromBase64String(fields[1]);
         Assert.Equal(signatureBytes, decoded);
     }
+
+    // ===== ParseSections Tests =====
+
+    [Fact]
+    public void ParseSections_MultipleSections_ReturnsAll()
+    {
+        var csv = "[Specimens]\nId,Name\n1,Rock\n[Loans]\nId,Borrower\n2,Alice\n";
+        var sections = CsvHelper.ParseSections(csv);
+
+        Assert.Equal(2, sections.Count);
+        Assert.True(sections.ContainsKey("Specimens"));
+        Assert.True(sections.ContainsKey("Loans"));
+        Assert.Equal(2, sections["Specimens"].Count); // header + 1 row
+        Assert.Equal(2, sections["Loans"].Count);
+    }
+
+    [Fact]
+    public void ParseSections_EmptySection_ReturnsEmptyList()
+    {
+        var csv = "[Specimens]\n[Loans]\nId,Borrower\n";
+        var sections = CsvHelper.ParseSections(csv);
+
+        Assert.Empty(sections["Specimens"]);
+        Assert.Single(sections["Loans"]);
+    }
+
+    [Fact]
+    public void ParseSections_SkipsBlankLines()
+    {
+        var csv = "[Specimens]\nId,Name\n\n1,Rock\n\n";
+        var sections = CsvHelper.ParseSections(csv);
+
+        Assert.Equal(2, sections["Specimens"].Count);
+    }
+
+    [Fact]
+    public void ParseSections_HandlesWindowsLineEndings()
+    {
+        var csv = "[Specimens]\r\nId,Name\r\n1,Rock\r\n";
+        var sections = CsvHelper.ParseSections(csv);
+
+        Assert.Equal(2, sections["Specimens"].Count);
+        Assert.Equal("1,Rock", sections["Specimens"][1]);
+    }
+
+    [Fact]
+    public void ParseSections_NoSections_ReturnsEmpty()
+    {
+        var csv = "just some random text\n";
+        var sections = CsvHelper.ParseSections(csv);
+
+        Assert.Empty(sections);
+    }
+
+    [Fact]
+    public void ParseSections_AllFourSections_Parsed()
+    {
+        var csv = "[Specimens]\nheader\nrow1\n[Loans]\nheader\nrow1\n[Containers]\nheader\n[Employees]\nheader\nrow1\nrow2\n";
+        var sections = CsvHelper.ParseSections(csv);
+
+        Assert.Equal(4, sections.Count);
+        Assert.Equal(2, sections["Specimens"].Count);
+        Assert.Equal(2, sections["Loans"].Count);
+        Assert.Single(sections["Containers"]);
+        Assert.Equal(3, sections["Employees"].Count);
+    }
 }

@@ -44,19 +44,31 @@ namespace TagAndTrack.Pages
         {
             try
             {
-                var exportDir = await CsvService.ExportDatabaseAsync();
+                var exportFilePath = await CsvService.ExportDatabaseAsync();
 
-                var files = new List<ShareFile>();
-                foreach (var file in Directory.GetFiles(exportDir, "*.csv"))
-                {
-                    files.Add(new ShareFile(file));
-                }
+#if WINDOWS
+                // Windows: prompt user to pick a save location
+                var savePicker = new Windows.Storage.Pickers.FileSavePicker();
+                savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+                savePicker.FileTypeChoices.Add("CSV File", new List<string> { ".csv" });
+                savePicker.SuggestedFileName = "tagandtrack_export";
 
-                await Share.Default.RequestAsync(new ShareMultipleFilesRequest
+                var hwnd = ((MauiWinUIWindow)App.Current!.Windows[0].Handler!.PlatformView!).WindowHandle;
+                WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hwnd);
+
+                var file = await savePicker.PickSaveFileAsync();
+                if (file == null) return;
+
+                File.Copy(exportFilePath, file.Path, overwrite: true);
+                await DisplayAlert("Done", $"CSV saved to:\n{file.Path}", "OK");
+#else
+                // iOS/Mac: use Share sheet (has built-in Save to Files)
+                await Share.Default.RequestAsync(new ShareFileRequest
                 {
                     Title = "Export Tag & Track Database",
-                    Files = files
+                    File = new ShareFile(exportFilePath)
                 });
+#endif
             }
             catch (Exception ex)
             {
@@ -85,29 +97,23 @@ namespace TagAndTrack.Pages
                     { DevicePlatform.Android, new[] { "text/csv" } }
                 });
 
-                var results = await FilePicker.Default.PickMultipleAsync(new PickOptions
+                var result = await FilePicker.Default.PickAsync(new PickOptions
                 {
-                    PickerTitle = "Select CSV files (specimens, loans, containers, employees)",
+                    PickerTitle = "Select Tag & Track CSV export file",
                     FileTypes = csvTypes
                 });
 
-                if (results == null || !results.Any()) return;
+                if (result == null) return;
 
-                // Copy picked files to a temp folder so CsvService can read them by name
-                var importDir = Path.Combine(FileSystem.CacheDirectory, "TagAndTrack_Import");
-                if (Directory.Exists(importDir))
-                    Directory.Delete(importDir, true);
-                Directory.CreateDirectory(importDir);
-
-                foreach (var result in results)
+                // Copy picked file to a temp location so CsvService can read it
+                var importPath = Path.Combine(FileSystem.CacheDirectory, "tagandtrack_import.csv");
+                using (var source = await result.OpenReadAsync())
+                using (var dest = File.Create(importPath))
                 {
-                    var destPath = Path.Combine(importDir, result.FileName);
-                    using var source = await result.OpenReadAsync();
-                    using var dest = File.Create(destPath);
                     await source.CopyToAsync(dest);
                 }
 
-                await CsvService.ImportDatabaseAsync(importDir);
+                await CsvService.ImportDatabaseAsync(importPath);
                 await DisplayAlert("Done", "Database imported successfully.", "OK");
                 await Shell.Current.GoToAsync("//LoginPage");
             }

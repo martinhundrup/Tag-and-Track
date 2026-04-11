@@ -15,6 +15,11 @@ namespace TagAndTrack
         public MainPage()
         {
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
             Initialize();
         }
 

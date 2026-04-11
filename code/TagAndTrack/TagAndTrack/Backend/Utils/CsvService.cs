@@ -15,89 +15,80 @@ namespace TagAndTrack.Backend.Utils
                 Directory.Delete(exportDir, true);
             Directory.CreateDirectory(exportDir);
 
-            await ExportSpecimensAsync(Path.Combine(exportDir, "specimens.csv"));
-            await ExportLoansAsync(Path.Combine(exportDir, "loans.csv"));
-            await ExportContainersAsync(Path.Combine(exportDir, "containers.csv"));
-            await ExportEmployeesAsync(Path.Combine(exportDir, "employees.csv"));
+            var filePath = Path.Combine(exportDir, "tagandtrack_export.csv");
 
-            return exportDir;
+            var specimens = await DbService.GetAllSpecimenEntitiesAsync();
+            var loans = await DbService.GetAllLoanEntitiesAsync();
+            var containers = await DbService.GetAllContainerEntitiesAsync();
+            var employees = await DbService.GetAllEmployeeEntitiesAsync();
+
+            var content = BuildExportCsv(specimens, loans, containers, employees);
+            await File.WriteAllTextAsync(filePath, content);
+
+            return filePath;
         }
 
-        private static async Task ExportSpecimensAsync(string path)
+        internal static string BuildExportCsv(
+            IEnumerable<SpecimenEntity> specimens,
+            IEnumerable<LoanEntity> loans,
+            IEnumerable<ContainerEntity> containers,
+            IEnumerable<EmployeeEntity> employees)
         {
-            var specimens = await DbService.GetAllSpecimenEntitiesAsync();
             var sb = new StringBuilder();
+
+            sb.AppendLine("[Specimens]");
             sb.AppendLine("Id,ArctosId,Name,Description,IsPresent");
             foreach (var s in specimens)
-            {
                 sb.AppendLine($"{s.Id},{CsvEscape(s.ArctosId)},{CsvEscape(s.Name)},{CsvEscape(s.Description)},{s.IsPresent}");
-            }
-            await File.WriteAllTextAsync(path, sb.ToString());
-        }
 
-        private static async Task ExportLoansAsync(string path)
-        {
-            var loans = await DbService.GetAllLoanEntitiesAsync();
-            var sb = new StringBuilder();
+            sb.AppendLine("[Loans]");
             sb.AppendLine("Id,ArctosId,Name,Description,Borrower,Email,DateCheckedOut,DateDue,IsReturned,SpecimenIds,SignatureData");
             foreach (var l in loans)
             {
                 string sig = l.SignatureData != null ? Convert.ToBase64String(l.SignatureData) : "";
                 sb.AppendLine($"{l.Id},{CsvEscape(l.ArctosId)},{CsvEscape(l.Name)},{CsvEscape(l.Description)},{CsvEscape(l.Borrower)},{CsvEscape(l.Email)},{l.DateCheckedOut:O},{l.DateDue:O},{l.IsReturned},{CsvEscape(l.SpecimenIds)},{CsvEscape(sig)}");
             }
-            await File.WriteAllTextAsync(path, sb.ToString());
-        }
 
-        private static async Task ExportContainersAsync(string path)
-        {
-            var containers = await DbService.GetAllContainerEntitiesAsync();
-            var sb = new StringBuilder();
+            sb.AppendLine("[Containers]");
             sb.AppendLine("Id,Name,Description,SpecimenIds");
             foreach (var c in containers)
-            {
                 sb.AppendLine($"{c.Id},{CsvEscape(c.Name)},{CsvEscape(c.Description)},{CsvEscape(c.SpecimenIds)}");
-            }
-            await File.WriteAllTextAsync(path, sb.ToString());
-        }
 
-        private static async Task ExportEmployeesAsync(string path)
-        {
-            var employees = await DbService.GetAllEmployeeEntitiesAsync();
-            var sb = new StringBuilder();
+            sb.AppendLine("[Employees]");
             sb.AppendLine("Id,Name,LastLogin");
             foreach (var e in employees)
             {
                 string login = e.LastLogin.HasValue ? e.LastLogin.Value.ToString("O") : "";
                 sb.AppendLine($"{e.Id},{CsvEscape(e.Name)},{login}");
             }
-            await File.WriteAllTextAsync(path, sb.ToString());
+
+            return sb.ToString();
         }
 
         // ===== IMPORT =====
 
-        public static async Task ImportDatabaseAsync(string folderPath)
+        public static async Task ImportDatabaseAsync(string filePath)
         {
-            // Wipe existing data
+            var content = await File.ReadAllTextAsync(filePath);
+            var sections = ParseSections(content);
+
             await DbService.ResetDatabaseAsync();
 
-            var specimensPath = Path.Combine(folderPath, "specimens.csv");
-            var loansPath = Path.Combine(folderPath, "loans.csv");
-            var containersPath = Path.Combine(folderPath, "containers.csv");
-            var employeesPath = Path.Combine(folderPath, "employees.csv");
-
-            if (File.Exists(specimensPath))
-                await ImportSpecimensAsync(specimensPath);
-            if (File.Exists(loansPath))
-                await ImportLoansAsync(loansPath);
-            if (File.Exists(containersPath))
-                await ImportContainersAsync(containersPath);
-            if (File.Exists(employeesPath))
-                await ImportEmployeesAsync(employeesPath);
+            if (sections.TryGetValue("Specimens", out var specLines))
+                await ImportSpecimenLines(specLines);
+            if (sections.TryGetValue("Loans", out var loanLines))
+                await ImportLoanLines(loanLines);
+            if (sections.TryGetValue("Containers", out var containerLines))
+                await ImportContainerLines(containerLines);
+            if (sections.TryGetValue("Employees", out var employeeLines))
+                await ImportEmployeeLines(employeeLines);
         }
 
-        private static async Task ImportSpecimensAsync(string path)
+        internal static Dictionary<string, List<string>> ParseSections(string content)
+            => CsvHelper.ParseSections(content);
+
+        private static async Task ImportSpecimenLines(List<string> lines)
         {
-            var lines = await File.ReadAllLinesAsync(path);
             foreach (var line in lines.Skip(1)) // skip header
             {
                 var fields = ParseCsvLine(line);
@@ -113,9 +104,8 @@ namespace TagAndTrack.Backend.Utils
             }
         }
 
-        private static async Task ImportLoansAsync(string path)
+        private static async Task ImportLoanLines(List<string> lines)
         {
-            var lines = await File.ReadAllLinesAsync(path);
             foreach (var line in lines.Skip(1))
             {
                 var fields = ParseCsvLine(line);
@@ -137,9 +127,8 @@ namespace TagAndTrack.Backend.Utils
             }
         }
 
-        private static async Task ImportContainersAsync(string path)
+        private static async Task ImportContainerLines(List<string> lines)
         {
-            var lines = await File.ReadAllLinesAsync(path);
             foreach (var line in lines.Skip(1))
             {
                 var fields = ParseCsvLine(line);
@@ -154,9 +143,8 @@ namespace TagAndTrack.Backend.Utils
             }
         }
 
-        private static async Task ImportEmployeesAsync(string path)
+        private static async Task ImportEmployeeLines(List<string> lines)
         {
-            var lines = await File.ReadAllLinesAsync(path);
             foreach (var line in lines.Skip(1))
             {
                 var fields = ParseCsvLine(line);
