@@ -72,7 +72,7 @@ namespace TagAndTrack.Backend.Utils
             var content = await File.ReadAllTextAsync(filePath);
             var sections = ParseSections(content);
 
-            await DbService.ResetDatabaseAsync();
+            await DbService.ClearDatabaseAsync();
 
             if (sections.TryGetValue("Specimens", out var specLines))
                 await ImportSpecimenLines(specLines);

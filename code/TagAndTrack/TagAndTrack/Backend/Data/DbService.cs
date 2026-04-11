@@ -412,11 +412,27 @@ namespace TagAndTrack.Backend.Data
         // ===== RESET =====
         /// <summary>
         /// Drops all tables, reinitializes the schema, and reseeds sample data.
-        /// Development use only – equivalent to deleting the .db3 file.
+        /// Used by the "Clear Database" button to restore seed state.
         /// </summary>
         public static async Task ResetDatabaseAsync()
         {
-            DebugLogger.Log("DbService.ResetDatabaseAsync() - wiping database...");
+            await ClearDatabaseAsync();
+
+#if SEED_DB
+            DebugLogger.Log("DbService: Tables recreated. Seeding...");
+            await SeedIfEmptyAsync();
+#endif
+
+            DebugLogger.Log("DbService: Database reset complete.");
+        }
+
+        /// <summary>
+        /// Drops all tables and reinitializes empty schema without seeding.
+        /// Used before CSV import to ensure a clean slate.
+        /// </summary>
+        public static async Task ClearDatabaseAsync()
+        {
+            DebugLogger.Log("DbService.ClearDatabaseAsync() - wiping database...");
 
             await _db!.DropTableAsync<SpecimenEntity>();
             await _db!.DropTableAsync<LoanEntity>();
@@ -430,12 +446,7 @@ namespace TagAndTrack.Backend.Data
             await _db!.CreateTableAsync<ContainerEntity>();
             await _db!.CreateTableAsync<EmployeeEntity>();
 
-#if SEED_DB
-            DebugLogger.Log("DbService: Tables recreated. Seeding...");
-            await SeedIfEmptyAsync();
-#endif
-
-            DebugLogger.Log("DbService: Database reset complete.");
+            DebugLogger.Log("DbService: Database cleared (no seed).");
         }
 
         // ===== HELPERS =====
