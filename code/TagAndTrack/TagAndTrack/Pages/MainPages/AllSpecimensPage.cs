@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Data;
@@ -6,7 +7,7 @@ using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class AllSpecimensPage : TagAndTrackPage
+    public class AllSpecimensPage : TagAndTrackPage, IDisposable
     {
         protected const string titleText = "View All Specimens";
         private Grid? contentLayout;
@@ -16,6 +17,7 @@ namespace TagAndTrack.Pages
         private Button? _allButton;
         private Button? _checkedInButton;
         private Button? _checkedOutButton;
+        private PropertyChangedEventHandler handler;
 
         public AllSpecimensPage()
         {
@@ -27,13 +29,14 @@ namespace TagAndTrack.Pages
         {
             DebugLogger.Log("AllSpecimensPage.Initialize() starting");
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += handler;
 
             var header = new HeaderTemplate(titleText);
 
@@ -169,6 +172,20 @@ namespace TagAndTrack.Pages
             Grid.SetRow(_dataTable, 1);
 
             DebugLogger.Log("AllSpecimensPage.LoadSpecimensAsync() complete");
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            CurrentTheme.Instance.PropertyChanged -= handler;
         }
     }
 }

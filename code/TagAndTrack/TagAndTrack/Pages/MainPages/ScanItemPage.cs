@@ -1,17 +1,19 @@
 using Microsoft.Maui.Controls;
+using System.ComponentModel;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class ScanItemPage : TagAndTrackPage
+    public class ScanItemPage : TagAndTrackPage, IDisposable
     {
         protected const string titleText = "Scan Item";
         private Label? scanResultLabel;
         private ScanView? scanView;
         private bool _listening;
         private bool _navigating;
+        private PropertyChangedEventHandler handler;
 
         public ScanItemPage()
         {
@@ -21,11 +23,14 @@ namespace TagAndTrack.Pages
         protected override void Initialize()
         {
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                     Background = CurrentTheme.Instance.Theme.Background;
             };
+
+            CurrentTheme.Instance.PropertyChanged += handler;
 
             scanView = new ScanView
             {
@@ -112,6 +117,20 @@ namespace TagAndTrack.Pages
                 await Navigation.PushAsync(new ViewItemPage()));
 
             _navigating = false;
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            CurrentTheme.Instance.PropertyChanged -= handler;
         }
     }
 }

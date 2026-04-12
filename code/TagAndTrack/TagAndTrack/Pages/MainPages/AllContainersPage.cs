@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Items;
@@ -13,6 +14,7 @@ namespace TagAndTrack.Pages
         private Label? statusLabel;
         private ActivityIndicator? loadingIndicator;
         private ObservableCollection<ContainerItem> containers = new();
+        private List<PropertyChangedEventHandler> themeChangeHandlers = new List<PropertyChangedEventHandler>();
 
         public AllContainersPage()
         {
@@ -25,11 +27,14 @@ namespace TagAndTrack.Pages
             DebugLogger.Log("AllContainersPage.Initialize() starting");
             
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            PropertyChangedEventHandler themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                     Background = CurrentTheme.Instance.Theme.Background;
             };
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
+            themeChangeHandlers.Add(themeChangedHandler);
 
             var header = new HeaderTemplate(titleText);
 
@@ -57,11 +62,15 @@ namespace TagAndTrack.Pages
                 VerticalOptions = LayoutOptions.Center,
                 IsVisible = true
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme) && statusLabel != null)
                     statusLabel.TextColor = CurrentTheme.Instance.Theme.Text;
             };
+
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
+            themeChangeHandlers.Add(themeChangedHandler);
 
             // CollectionView for containers - handles scrolling properly on all platforms
             containerCollection = new CollectionView
@@ -276,7 +285,7 @@ namespace TagAndTrack.Pages
                 Content = cardGrid
             };
 
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            PropertyChangedEventHandler themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
@@ -287,6 +296,8 @@ namespace TagAndTrack.Pages
                     countLabel.TextColor = CurrentTheme.Instance.Theme.Text;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
+            themeChangeHandlers.Add(themeChangedHandler);
 
             return card;
         }
@@ -303,6 +314,24 @@ namespace TagAndTrack.Pages
 
             DebugLogger.Log($"Container added: {name}");
             await LoadContainersAsync();
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach (var handler in themeChangeHandlers)
+            {
+                CurrentTheme.Instance.PropertyChanged -= handler;
+            }
+            themeChangeHandlers.Clear();
         }
 
         // Converter to display specimen count

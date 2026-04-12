@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Employees;
@@ -5,11 +6,13 @@ using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class LoginPage : TagAndTrackPage
+    public class LoginPage : TagAndTrackPage, IDisposable
     {
         private Picker? employeePicker;
         private TextboxTemplate? newEmployeeEntry;
         private List<Employee> employees = new();
+        private readonly List<PropertyChangedEventHandler> _themeHandlers = new List<PropertyChangedEventHandler>();
+        private readonly List<EventHandler> _navigationHandlers = new List<EventHandler>();
 
         public LoginPage()
         {
@@ -22,11 +25,14 @@ namespace TagAndTrack.Pages
             Title = null; // No title in navigation bar
             DebugLogger.Log("LoginPage.Initialize() starting");
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            PropertyChangedEventHandler changeHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                     Background = CurrentTheme.Instance.Theme.Background;
             };
+            CurrentTheme.Instance.PropertyChanged += changeHandler;
+            _themeHandlers.Add(changeHandler);
 
             var header = new HeaderTemplate("Employee Login", true);
 
@@ -38,11 +44,13 @@ namespace TagAndTrack.Pages
                 HorizontalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0, 30, 0, 10)
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            changeHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                     instructions.TextColor = CurrentTheme.Instance.Theme.Text;
             };
+            _themeHandlers.Add(changeHandler);
+            CurrentTheme.Instance.PropertyChanged += changeHandler;
 
             // Employee picker - will be populated from DB
             employeePicker = new Picker
@@ -56,7 +64,7 @@ namespace TagAndTrack.Pages
                 BackgroundColor = CurrentTheme.Instance.Theme.Background
             };
             // When user selects from dropdown, update the text entry to show selected name
-            employeePicker.SelectedIndexChanged += (s, e) =>
+            EventHandler eventHandler = (s, e) =>
             {
                 if (employeePicker.SelectedIndex >= 0 && employeePicker.SelectedItem != null)
                 {
@@ -67,7 +75,10 @@ namespace TagAndTrack.Pages
                     }
                 }
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            employeePicker.SelectedIndexChanged += eventHandler;
+            _navigationHandlers.Add(eventHandler);
+
+            changeHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
@@ -75,6 +86,8 @@ namespace TagAndTrack.Pages
                     employeePicker.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += changeHandler;
+            _themeHandlers.Add(changeHandler);
 
             // Wrap picker in a border for visibility
             var pickerBorder = new Border
@@ -85,11 +98,14 @@ namespace TagAndTrack.Pages
                 BackgroundColor = CurrentTheme.Instance.Theme.Background,
                 Content = employeePicker
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            changeHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                     pickerBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
             };
+            CurrentTheme.Instance.PropertyChanged += changeHandler;
+            _themeHandlers.Add(changeHandler);
 
             var orLabel = new Label
             {
@@ -99,11 +115,14 @@ namespace TagAndTrack.Pages
                 HorizontalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0, 15)
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            changeHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                     orLabel.TextColor = CurrentTheme.Instance.Theme.Text;
             };
+            CurrentTheme.Instance.PropertyChanged += changeHandler;
+            _themeHandlers.Add(changeHandler);
 
             newEmployeeEntry = new TextboxTemplate(300, "Enter your name");
 
@@ -238,6 +257,27 @@ namespace TagAndTrack.Pages
                 DebugLogger.Log($"LoginAsync ERROR: {ex.GetType().Name}: {ex.Message}");
                 DebugLogger.Log($"Stack trace: {ex.StackTrace}");
                 await DisplayAlert("Login Error", ex.Message, "OK");
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach(var handler in _themeHandlers)
+            {
+                CurrentTheme.Instance.PropertyChanged -= handler;
+            }
+            foreach(var handler in _navigationHandlers)
+            {
+                if (employeePicker != null)
+                    employeePicker.SelectedIndexChanged -= handler;
+            }
+        }
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
             }
         }
     }

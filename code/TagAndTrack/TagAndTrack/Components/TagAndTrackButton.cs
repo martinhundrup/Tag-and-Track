@@ -11,7 +11,6 @@ namespace TagAndTrack.Components
     /// </summary>
     public class TagAndTrackButton : VerticalStackLayout
     {
-        // FUTURE: Make it so an image can be added too, those should be what are needed for making a button like this.
         /// <summary>
         /// Initializes a new instance of the <see cref="TagAndTrackButton"/> class with the specified text and command.
         /// </summary>

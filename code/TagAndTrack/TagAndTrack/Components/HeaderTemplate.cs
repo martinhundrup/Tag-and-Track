@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Graphics.Text;
+﻿using System.ComponentModel;
 
 namespace TagAndTrack.Components
 {
@@ -10,6 +8,7 @@ namespace TagAndTrack.Components
     public class HeaderTemplate : ContentView, IDisposable
     {
         private BoxView border;
+        private PropertyChangedEventHandler themeChangedHandler;
 
         /// <summary>
         /// Creates a new instance of the <see cref="HeaderTemplate"/> class.
@@ -71,13 +70,14 @@ namespace TagAndTrack.Components
                 VerticalOptions = LayoutOptions.End,
             };
 
-                CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            themeChangedHandler = (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
-                    if (e.PropertyName == nameof(CurrentTheme.Theme))
-                    {
-                        border.Color = CurrentTheme.Instance.Theme.Text;
-                    }
-                };
+                    border.Color = CurrentTheme.Instance.Theme.Text;
+                }
+            };
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
 
             var stack = new StackLayout
             {
@@ -88,19 +88,22 @@ namespace TagAndTrack.Components
             Content = stack;
         }
 
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
+            }
+        }
+
         /// <summary>
         /// Disposable method to clean up event subscriptions.
         /// </summary>
         public void Dispose()
         {
             // Unsubscribe from events to prevent memory leaks.
-            CurrentTheme.Instance.PropertyChanged -= (s, e) =>
-            {
-                if (e.PropertyName == nameof(CurrentTheme.Theme))
-                {
-                    border.Color = CurrentTheme.Instance.Theme.Text;
-                }
-            };
+            CurrentTheme.Instance.PropertyChanged -= themeChangedHandler;
         }
     }
 }

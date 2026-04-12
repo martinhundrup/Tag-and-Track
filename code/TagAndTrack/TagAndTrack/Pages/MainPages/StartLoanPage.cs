@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using System.ComponentModel;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Items;
@@ -8,13 +8,14 @@ using TagAndTrack.Pages.SupportPages;
 
 namespace TagAndTrack.Pages
 {
-    public class StartLoanPage : TagAndTrackPage
+    public class StartLoanPage : TagAndTrackPage, IDisposable
     {
         protected const string titleText = "Start Loan";
         private Label? scanResultLabel;
         private ScanView? scanView;
         private bool _listening;
         private bool _navigating;
+        private PropertyChangedEventHandler _themeChange;
 
         public StartLoanPage() { LoanCreator.ClearLoan(); Initialize(); }
 
@@ -56,17 +57,20 @@ namespace TagAndTrack.Pages
                 IsVisible = false
             });           
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            _themeChange = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += _themeChange;
 
             var header = new HeaderTemplate(titleText);
 
-            var scanView = new ScanView
+            // See if this change affects anything
+            scanView = new ScanView
             {
                 WidthRequest = 600,
                 HeightRequest = 600
@@ -259,6 +263,24 @@ namespace TagAndTrack.Pages
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
                 await Navigation.PushAsync(new FinalizeLoanPage()));
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (scanView != null)
+            {
+                scanView.ScanCaptured -= ScanCaptured;
+            }
+            CurrentTheme.Instance.PropertyChanged -= _themeChange;
         }
     }
 }

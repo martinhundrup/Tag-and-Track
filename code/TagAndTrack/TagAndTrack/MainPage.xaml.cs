@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Employees;
@@ -11,7 +12,7 @@ namespace TagAndTrack
 {
     public partial class MainPage : ContentPage
     {
-
+        PropertyChangedEventHandler themeChangedHandler;
         public MainPage()
         {
             InitializeComponent();
@@ -28,13 +29,15 @@ namespace TagAndTrack
             Title = null;
             Background = CurrentTheme.Instance.Theme.Background;
 
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
 
             // Build header with logged-in user info
             var employeeName = EmployeeManager.ActiveEmployee?.Name ?? "Unknown";
@@ -106,6 +109,20 @@ namespace TagAndTrack
         {
             EmployeeManager.SetActiveEmployee(null);
             await Shell.Current.GoToAsync("//LoginPage");
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            CurrentTheme.Instance.PropertyChanged -= themeChangedHandler;
         }
 
     }

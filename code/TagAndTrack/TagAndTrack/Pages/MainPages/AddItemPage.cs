@@ -3,30 +3,34 @@ using TagAndTrack.Backend.Data.Entities;
 using TagAndTrack.Components;
 using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Items;
+using System.ComponentModel;
 
 namespace TagAndTrack.Pages
 {
 
-    public class AddItemPage : TagAndTrackPage
+    public class AddItemPage : TagAndTrackPage, IDisposable
     {
         protected const string titleText = "Add Specimen";
 
         private TextboxTemplate arctosEntry;
         private TextboxTemplate specimenNameEntry;
         private TextboxTemplate specimenDescriptionEntry;
+        private PropertyChangedEventHandler _themeChange;
 
         public AddItemPage() { Initialize(); }
 
         protected override void Initialize()
         {
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            _themeChange = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += _themeChange;
 
             var header = new HeaderTemplate(titleText);
 
@@ -106,6 +110,20 @@ namespace TagAndTrack.Pages
 
             await Shell.Current.Navigation.PushAsync((Page)Activator.CreateInstance(pageType));
             Shell.Current.Navigation.RemovePage(current);
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            CurrentTheme.Instance.PropertyChanged -= _themeChange;
         }
     }
 }

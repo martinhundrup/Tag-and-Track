@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Utils;
@@ -5,21 +6,23 @@ using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class SettingsPage : TagAndTrackPage
+    public class SettingsPage : TagAndTrackPage, IDisposable
     {
+        private PropertyChangedEventHandler handler;
         protected const string titleText = "Settings";
         public SettingsPage() { Initialize(); }
 
         protected override void Initialize()
         {
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += handler;
             var header = new HeaderTemplate(titleText);
 
             var themeButton = new TagAndTrackButton("Light/Dark Mode", new Command(() => CurrentTheme.Instance.SwitchTheme()), "day_and_night.png");
@@ -145,6 +148,20 @@ namespace TagAndTrack.Pages
                 DebugLogger.Log($"ClearDatabaseAsync ERROR: {ex.Message}");
                 await DisplayAlert("Error", $"Clear failed: {ex.Message}", "OK");
             }
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            CurrentTheme.Instance.PropertyChanged -= handler;
         }
     }
 }

@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls;
+using System.ComponentModel;
 using TagAndTrack.Backend.Data;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Components;
@@ -10,11 +11,13 @@ namespace TagAndTrack.Pages
         protected new const string titleText = "View Item";
         public ViewItemPage() { Initialize(); }
         private LoanItem loanItem;
+        private List<PropertyChangedEventHandler> themeChangeHandlers = new List<PropertyChangedEventHandler>();
 
         protected override void Initialize()
         {
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            PropertyChangedEventHandler handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
@@ -22,6 +25,10 @@ namespace TagAndTrack.Pages
                     if (Content is Layout root) ApplyThemeToLayout(root);
                 }
             };
+
+            CurrentTheme.Instance.PropertyChanged += handler;
+            themeChangeHandlers.Add(handler);
+
             var header = new HeaderTemplate(titleText);
 
             if (ScannedQRItem.lastScannedItem == null)
@@ -81,7 +88,8 @@ namespace TagAndTrack.Pages
                 StrokeThickness = 1,
                 Content = pageData
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            PropertyChangedEventHandler handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
@@ -89,6 +97,9 @@ namespace TagAndTrack.Pages
                     pageDataBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                 }
             };
+
+            CurrentTheme.Instance.PropertyChanged += handler;
+            themeChangeHandlers.Add(handler);
 
             // Placeholder for async-loaded sections
             var containersSection = new VerticalStackLayout { Spacing = 8 };
@@ -273,7 +284,8 @@ namespace TagAndTrack.Pages
                 StrokeThickness = 1,
                 Content = pageData
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            PropertyChangedEventHandler handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
@@ -281,6 +293,9 @@ namespace TagAndTrack.Pages
                     pageDataBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                 }
             };
+
+            CurrentTheme.Instance.PropertyChanged += handler;
+            themeChangeHandlers.Add(handler);
 
             var listLabel = new Label
             {
@@ -476,6 +491,22 @@ namespace TagAndTrack.Pages
             {
                 if (c is Layout layout) ApplyThemeToLayout(layout);
                 if (c is Label lbl) lbl.TextColor = CurrentTheme.Instance.Theme.Text;
+            }
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
+            }
+        }
+        public void Dispose()
+        {
+            foreach (var handler in themeChangeHandlers)
+            {
+                CurrentTheme.Instance.PropertyChanged -= handler;
             }
         }
     }

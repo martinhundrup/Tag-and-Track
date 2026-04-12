@@ -12,6 +12,9 @@ namespace TagAndTrack.Components
         private readonly Border? searchBorder;
         private readonly bool _showSearchBar;
 
+        private EventHandler<TextChangedEventArgs>? _searchHandler;
+
+
         private readonly List<DataTableColumn<T>> columns;
 
         public DataTable(IEnumerable<T> items, Action<DataTableColumnBuilder<T>> config, bool showSearchBar = true)
@@ -34,8 +37,8 @@ namespace TagAndTrack.Components
                     BackgroundColor = Colors.Transparent,
                     TextColor = CurrentTheme.Instance.Theme.Text
                 };
-
-                searchBar.TextChanged += (s, e) => ApplyFilter(e.NewTextValue);
+                _searchHandler = (s, e) => ApplyFilter(e.NewTextValue);
+                searchBar.TextChanged += _searchHandler;
 
                 searchBorder = new Border
                 {
@@ -276,7 +279,16 @@ namespace TagAndTrack.Components
             if (_showSearchBar)
             {
                 CurrentTheme.Instance.PropertyChanged -= ThemeChanged;
-                searchBar?.TextChanged -= (s, e) => ApplyFilter(e.NewTextValue);
+                searchBar?.TextChanged -= _searchHandler;
+            }
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
             }
         }
     }

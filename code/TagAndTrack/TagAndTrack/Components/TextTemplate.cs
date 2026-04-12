@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace TagAndTrack.Components
 {
@@ -11,6 +7,8 @@ namespace TagAndTrack.Components
     /// </summary>
     public class TextTemplate : Label, IDisposable
     {
+        PropertyChangedEventHandler handler;
+
         /// <summary>
         /// Creates a new instance of the <see cref="TextTemplate"/> class.
         /// </summary>
@@ -20,13 +18,14 @@ namespace TagAndTrack.Components
             TextColor = CurrentTheme.Instance.Theme.Text;
             HorizontalTextAlignment = TextAlignment.Center;
            
-                CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            handler = (s, e) =>
+            {
+                if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
-                    if (e.PropertyName == nameof(CurrentTheme.Theme))
-                    {
-                        TextColor = CurrentTheme.Instance.Theme.Text;
-                    }
-                };
+                    TextColor = CurrentTheme.Instance.Theme.Text;
+                }
+            };
+            CurrentTheme.Instance.PropertyChanged += handler;
             }
 
         /// <summary>
@@ -39,13 +38,14 @@ namespace TagAndTrack.Components
             TextColor = CurrentTheme.Instance.Theme.Text;
             HorizontalTextAlignment = TextAlignment.Center;
 
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     TextColor = CurrentTheme.Instance.Theme.Text;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += handler;
         }
 
         public TextTemplate(string text, TextAlignment alignment, double textSize)
@@ -54,13 +54,14 @@ namespace TagAndTrack.Components
             TextColor = CurrentTheme.Instance.Theme.Text;
             HorizontalTextAlignment = alignment;
             FontSize = textSize;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     TextColor = CurrentTheme.Instance.Theme.Text;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += handler;
         }
 
         /// <summary>
@@ -68,14 +69,7 @@ namespace TagAndTrack.Components
         /// </summary>
         public void Dispose()
         {
-                // Unsubscribe from the PropertyChanged event to prevent memory leaks.
-                CurrentTheme.Instance.PropertyChanged -= (s, e) =>
-                {
-                    if (e.PropertyName == nameof(CurrentTheme.Theme))
-                    {
-                        TextColor = CurrentTheme.Instance.Theme.Text;
-                    }
-                };
+            CurrentTheme.Instance.PropertyChanged -= handler;
         }
     }
 }

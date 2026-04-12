@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text;
 using TagAndTrack.Backend.Items;
 using TagAndTrack.Backend.Utils;
@@ -5,21 +6,24 @@ using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class ViewEditLoanItemsPage : TagAndTrackPage
+    public class ViewEditLoanItemsPage : TagAndTrackPage, IDisposable
     {
+        private PropertyChangedEventHandler? themeChangedHandler;
         protected const string titleText = "View/Edit Loan Items";
         public ViewEditLoanItemsPage() { Initialize(); }
 
         protected override void Initialize()
         {
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
 
 
             DataTable<SpecimenItem>? dt = null;
@@ -54,6 +58,20 @@ namespace TagAndTrack.Pages
                     }
                 }
             };
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            CurrentTheme.Instance.PropertyChanged -= themeChangedHandler;
         }
 
         private static string ItemToCSVEntry(Item item)

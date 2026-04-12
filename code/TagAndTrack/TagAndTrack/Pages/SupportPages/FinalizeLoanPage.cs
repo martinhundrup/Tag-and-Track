@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using TagAndTrack.Backend;
@@ -18,6 +19,7 @@ namespace TagAndTrack.Pages.SupportPages
         private TextboxTemplate clientEmailEntry;
         private DatePicker dueDatePicker;
         private SignaturePadView signaturePad;
+        private List<PropertyChangedEventHandler> themeChangeHandlers = new List<PropertyChangedEventHandler>();
 
         public FinalizeLoanPage()
         {
@@ -28,13 +30,17 @@ namespace TagAndTrack.Pages.SupportPages
         {
             // Apply theme background and react to theme changes
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            PropertyChangedEventHandler themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
+            themeChangeHandlers.Add(themeChangedHandler);
 
             var header = new HeaderTemplate(titleText);
 
@@ -58,11 +64,15 @@ namespace TagAndTrack.Pages.SupportPages
                 Margin = new Thickness(24, 20, 24, 4),
                 TextColor = CurrentTheme.Instance.Theme.Text
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                     dueDateLabel.TextColor = CurrentTheme.Instance.Theme.Text;
             };
+
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
+            themeChangeHandlers.Add(themeChangedHandler);
 
             dueDatePicker = new DatePicker
             {
@@ -76,7 +86,8 @@ namespace TagAndTrack.Pages.SupportPages
                 WidthRequest = 250,
                 HeightRequest = 40
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
@@ -84,6 +95,9 @@ namespace TagAndTrack.Pages.SupportPages
                     dueDatePicker.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                 }
             };
+
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
+            themeChangeHandlers.Add(themeChangedHandler);
 
             // Signature pad for borrower handwritten signature
             var signatureLabel = new Label
@@ -94,11 +108,15 @@ namespace TagAndTrack.Pages.SupportPages
                 Margin = new Thickness(24, 20, 24, 4),
                 TextColor = CurrentTheme.Instance.Theme.Text
             };
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                     signatureLabel.TextColor = CurrentTheme.Instance.Theme.Text;
             };
+
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
+            themeChangeHandlers.Add(themeChangedHandler);
 
             signaturePad = new SignaturePadView
             {
@@ -306,6 +324,23 @@ namespace TagAndTrack.Pages.SupportPages
 
             await Shell.Current.DisplayAlertAsync("Success!", "Loan registered and email sent!", "OK");
             await Shell.Current.GoToAsync("//MainPage");
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach(var handler in themeChangeHandlers)
+            {
+                CurrentTheme.Instance.PropertyChanged -= handler;
+            }
         }
     }
 }
