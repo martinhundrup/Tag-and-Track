@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace TagAndTrack.Components
 {
@@ -11,6 +7,7 @@ namespace TagAndTrack.Components
     /// </summary>
     internal class LabelTemplate : Label
     {
+        private PropertyChangedEventHandler handler;
         /// <summary>
         /// Creates a new instance of the <see cref="LabelTemplate"/> class.
         /// </summary>
@@ -24,13 +21,29 @@ namespace TagAndTrack.Components
             VerticalOptions = LayoutOptions.Center;
             Padding = padding;
 
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     TextColor = CurrentTheme.Instance.Theme.Text;
                 }
             };
+
+            CurrentTheme.Instance.PropertyChanged += handler;
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            CurrentTheme.Instance.PropertyChanged -= handler;
         }
     }
 }

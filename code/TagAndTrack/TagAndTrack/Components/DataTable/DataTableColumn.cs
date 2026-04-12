@@ -15,6 +15,8 @@ namespace TagAndTrack.Components
         public bool IsIcon { get; set; }
         public Func<T, string>? IconSelector { get; set; }
         public bool IsFilterable { get; set; } = true;
-
+        public bool IsCheckbox { get; set; }
+        public Action<T, bool>? CheckboxAction { get; set; }
+        public Func<T, bool>? CheckboxInitialValue { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace TagAndTrack.Components
         /// The textbox used in the template.
         /// </summary>
         public Entry textbox = new Entry();
+
+        private PropertyChangedEventHandler themeChangedHandler;
 
         /// <summary>
         /// Creates a new instance of the <see cref="ButtonTemplate"/> class.
@@ -34,7 +37,8 @@ namespace TagAndTrack.Components
             this.StrokeThickness = 1;
             this.BackgroundColor = Colors.Transparent;
 
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            themeChangedHandler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
@@ -43,22 +47,24 @@ namespace TagAndTrack.Components
                     this.Stroke = CurrentTheme.Instance.Theme.Borders;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
 
             this.Content = textbox;
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
+            }
         }
 
         public void Dispose()
         {
             // Unsubscribe from the event to prevent memory leaks.
-            CurrentTheme.Instance.PropertyChanged -= (s, e) =>
-            {
-                if (e.PropertyName == nameof(CurrentTheme.Theme))
-                {
-                    textbox.BackgroundColor = CurrentTheme.Instance.Theme.Background;
-                    textbox.TextColor = CurrentTheme.Instance.Theme.Text;
-                    this.Stroke = CurrentTheme.Instance.Theme.Borders;
-                }
-            };
+            CurrentTheme.Instance.PropertyChanged -= themeChangedHandler;
         }
     }
 }

@@ -11,5 +11,13 @@ namespace TagAndTrack.Pages
 
         // Initialize sets up all content in the page and should be called in the page constructor.
         protected abstract void Initialize();
+
+        // Re-initialize page content whenever the page becomes visible,
+        // ensuring data is fresh after navigating back from another page.
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            Initialize();
+        }
     }
 }

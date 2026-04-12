@@ -43,5 +43,18 @@ namespace TagAndTrack.Components
                 IsFilterable = false
             });
         }
+
+        public void AddCheckbox(string header, Action<T, bool> onToggled, double width = 50, Func<T, bool>? initialValue = null)
+        {
+            Columns.Add(new DataTableColumn<T>
+            {
+                Header = header,
+                IsCheckbox = true,
+                CheckboxAction = onToggled,
+                CheckboxInitialValue = initialValue,
+                Width = width,
+                IsFilterable = false
+            });
+        }
     }
 }

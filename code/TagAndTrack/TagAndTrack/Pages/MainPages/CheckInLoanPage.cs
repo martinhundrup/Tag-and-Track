@@ -1,14 +1,16 @@
 using TagAndTrack.Components;
+using System.ComponentModel;
 
 namespace TagAndTrack.Pages
 {
-    public class CheckInLoanPage : TagAndTrackPage
+    public class CheckInLoanPage : TagAndTrackPage, IDisposable
     {
         protected const string titleText = "Check in a Loan";
         private Label? scanResultLabel;
         private ScanView? scanView;
         private bool _listening;
         private bool _navigating;
+        private PropertyChangedEventHandler handler;
         public CheckInLoanPage() { Initialize(); }
 
         protected override void OnAppearing()
@@ -42,13 +44,15 @@ namespace TagAndTrack.Pages
         protected override void Initialize()
         {
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+
+            handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += handler;
 
             var header = new HeaderTemplate(titleText);
 
@@ -83,6 +87,25 @@ namespace TagAndTrack.Pages
             {
 
             });
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (scanView != null && _listening)
+            {
+                scanView.ScanCaptured -= ScanCaptured;
+                _listening = false;
+            }
+            CurrentTheme.Instance.PropertyChanged -= handler;
         }
     }
 }

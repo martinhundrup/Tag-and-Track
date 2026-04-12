@@ -307,6 +307,15 @@ namespace TagAndTrack.Components
             }
         }
 
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
+            }
+        }
+
         public void Dispose()
         {
             foreach(var handler in _themeHandlers)

@@ -25,6 +25,8 @@ namespace TagAndTrack.Components
             Drawable = this;
             BackgroundColor = Colors.White;
 
+            // GraphicsView interaction events handle both touch (mobile)
+            // and mouse (desktop) input
             StartInteraction += OnStartInteraction;
             DragInteraction += OnDragInteraction;
             EndInteraction += OnEndInteraction;

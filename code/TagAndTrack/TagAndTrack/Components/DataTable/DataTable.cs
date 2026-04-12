@@ -12,6 +12,9 @@ namespace TagAndTrack.Components
         private readonly Border? searchBorder;
         private readonly bool _showSearchBar;
 
+        private EventHandler<TextChangedEventArgs>? _searchHandler;
+
+
         private readonly List<DataTableColumn<T>> columns;
 
         public DataTable(IEnumerable<T> items, Action<DataTableColumnBuilder<T>> config, bool showSearchBar = true)
@@ -34,8 +37,8 @@ namespace TagAndTrack.Components
                     BackgroundColor = Colors.Transparent,
                     TextColor = CurrentTheme.Instance.Theme.Text
                 };
-
-                searchBar.TextChanged += (s, e) => ApplyFilter(e.NewTextValue);
+                _searchHandler = (s, e) => ApplyFilter(e.NewTextValue);
+                searchBar.TextChanged += _searchHandler;
 
                 searchBorder = new Border
                 {
@@ -149,6 +152,31 @@ namespace TagAndTrack.Components
 
 
                         }
+                        else if (col.IsCheckbox)
+                        {
+                            var cb = new CheckBox
+                            {
+                                HorizontalOptions = LayoutOptions.Center,
+                                VerticalOptions = LayoutOptions.Center
+                            };
+
+                            if (col.CheckboxInitialValue != null)
+                            {
+                                cb.BindingContextChanged += (s, e) =>
+                                {
+                                    if (cb.BindingContext is T initItem)
+                                        cb.IsChecked = col.CheckboxInitialValue(initItem);
+                                };
+                            }
+
+                            cb.CheckedChanged += (s, e) =>
+                            {
+                                if (cb.BindingContext is T item)
+                                    col.CheckboxAction?.Invoke(item, e.Value);
+                            };
+
+                            row.Add(cb, i, 0);
+                        }
                         else
                         {
                             var label = new Label { TextColor = Colors.Black };
@@ -235,12 +263,32 @@ namespace TagAndTrack.Components
             _filteredItems.Remove(item);
         }
 
+        public void UpdateItems(IEnumerable<T> newItems)
+        {
+            _allItems.Clear();
+            _filteredItems.Clear();
+            foreach (var item in newItems)
+            {
+                _allItems.Add(item);
+                _filteredItems.Add(item);
+            }
+        }
+
         public void Dispose()
         {
             if (_showSearchBar)
             {
                 CurrentTheme.Instance.PropertyChanged -= ThemeChanged;
-                searchBar?.TextChanged -= (s, e) => ApplyFilter(e.NewTextValue);
+                searchBar?.TextChanged -= _searchHandler;
+            }
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if (Parent == null)
+            {
+                Dispose();
             }
         }
     }

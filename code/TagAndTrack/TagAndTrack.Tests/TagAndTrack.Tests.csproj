@@ -6,6 +6,7 @@
 		<IsPackable>false</IsPackable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<DefineConstants>UNIT_TESTING</DefineConstants>
 	</PropertyGroup>
 
 	<!-- Include backend source files directly (avoids MAUI/WinUI runtime dependency) -->
@@ -16,7 +17,7 @@
 		<Compile Remove="..\TagAndTrack\Backend\Data\Entities\**" />
 		<Compile Remove="..\TagAndTrack\Backend\Items\ItemManager.cs" />
 		<Compile Remove="..\TagAndTrack\Backend\Utils\Emailer.cs" />
-		<Compile Remove="..\TagAndTrack\Backend\Utils\LoanCreator.cs" />
+		<Compile Remove="..\TagAndTrack\Backend\Utils\CsvService.cs" />
 		<Compile Remove="..\TagAndTrack\Backend\DebugLogger.cs" />
 	</ItemGroup>
 

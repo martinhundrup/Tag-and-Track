@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Data;
@@ -6,10 +7,17 @@ using TagAndTrack.Components;
 
 namespace TagAndTrack.Pages
 {
-    public class AllSpecimensPage : TagAndTrackPage
+    public class AllSpecimensPage : TagAndTrackPage, IDisposable
     {
         protected const string titleText = "View All Specimens";
         private Grid? contentLayout;
+        private List<SpecimenItem> _allSpecimens = new();
+        private DataTable<SpecimenItem>? _dataTable;
+        private string _currentFilter = "All";
+        private Button? _allButton;
+        private Button? _checkedInButton;
+        private Button? _checkedOutButton;
+        private PropertyChangedEventHandler handler;
 
         public AllSpecimensPage()
         {
@@ -21,13 +29,14 @@ namespace TagAndTrack.Pages
         {
             DebugLogger.Log("AllSpecimensPage.Initialize() starting");
             Background = CurrentTheme.Instance.Theme.Background;
-            CurrentTheme.Instance.PropertyChanged += (s, e) =>
+            handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     Background = CurrentTheme.Instance.Theme.Background;
                 }
             };
+            CurrentTheme.Instance.PropertyChanged += handler;
 
             var header = new HeaderTemplate(titleText);
 
@@ -53,8 +62,6 @@ namespace TagAndTrack.Pages
 
             Content = pageLayout;
 
-
-
             _ = LoadSpecimensAsync();
             DebugLogger.Log("AllSpecimensPage.Initialize() complete");
         }
@@ -63,8 +70,31 @@ namespace TagAndTrack.Pages
         {
             DebugLogger.Log("AllSpecimensPage.OnAppearing() called");
             base.OnAppearing();
-            // Don't reload here - Initialize already loaded
-            // _ = LoadSpecimensAsync();
+        }
+
+        private void ApplyStatusFilter(string filter)
+        {
+            _currentFilter = filter;
+
+            var filtered = filter switch
+            {
+                "Checked In" => _allSpecimens.Where(s => s.Status).ToList(),
+                "Checked Out" => _allSpecimens.Where(s => !s.Status).ToList(),
+                _ => _allSpecimens
+            };
+
+            _dataTable?.UpdateItems(filtered);
+            UpdateFilterButtonStyles();
+        }
+
+        private void UpdateFilterButtonStyles()
+        {
+            var activeColor = Colors.CornflowerBlue;
+            var inactiveColor = Colors.Gray;
+
+            if (_allButton != null) _allButton.BackgroundColor = _currentFilter == "All" ? activeColor : inactiveColor;
+            if (_checkedInButton != null) _checkedInButton.BackgroundColor = _currentFilter == "Checked In" ? activeColor : inactiveColor;
+            if (_checkedOutButton != null) _checkedOutButton.BackgroundColor = _currentFilter == "Checked Out" ? activeColor : inactiveColor;
         }
 
         private async Task LoadSpecimensAsync()
@@ -75,9 +105,9 @@ namespace TagAndTrack.Pages
             contentLayout.Children.Clear();
             DebugLogger.Log("AllSpecimensPage: contentLayout cleared");
 
-            var specimens = await DbService.GetAllSpecimensAsync();
+            _allSpecimens = await DbService.GetAllSpecimensAsync();
 
-            if (specimens.Count == 0)
+            if (_allSpecimens.Count == 0)
             {
                 contentLayout.Children.Add(new Label
                 {
@@ -89,9 +119,27 @@ namespace TagAndTrack.Pages
                 return;
             }
 
+            // Filter buttons
+            _allButton = new Button { Text = "All", TextColor = Colors.White, Padding = new Thickness(10, 5) };
+            _checkedInButton = new Button { Text = "Checked In", TextColor = Colors.White, Padding = new Thickness(10, 5) };
+            _checkedOutButton = new Button { Text = "Checked Out", TextColor = Colors.White, Padding = new Thickness(10, 5) };
+
+            _allButton.Clicked += (s, e) => ApplyStatusFilter("All");
+            _checkedInButton.Clicked += (s, e) => ApplyStatusFilter("Checked In");
+            _checkedOutButton.Clicked += (s, e) => ApplyStatusFilter("Checked Out");
+
+            UpdateFilterButtonStyles();
+
+            var filterBar = new HorizontalStackLayout
+            {
+                Spacing = 10,
+                Margin = new Thickness(10, 5),
+                Children = { _allButton, _checkedInButton, _checkedOutButton }
+            };
+
             // Create a simple data table
-            DebugLogger.Log($"AllSpecimensPage: Creating DataTableTemplate with {specimens.Count} specimens");
-            var dt = new DataTable<SpecimenItem>(specimens, columns =>
+            DebugLogger.Log($"AllSpecimensPage: Creating DataTableTemplate with {_allSpecimens.Count} specimens");
+            _dataTable = new DataTable<SpecimenItem>(_allSpecimens, columns =>
             {
                 columns.Add("ID", s => s.ID, 60);
                 columns.Add("Arctos ID", s => s.ArctosID, 100);
@@ -103,9 +151,6 @@ namespace TagAndTrack.Pages
                         : "cross.png",
                     width: 80);
 
-
-
-
                 columns.AddButton("View Specimen",
                 s =>
                 {
@@ -116,8 +161,31 @@ namespace TagAndTrack.Pages
 
             });
 
-            contentLayout.Children.Add(dt);
+            contentLayout.RowDefinitions.Clear();
+            contentLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            contentLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
+
+            contentLayout.Children.Add(filterBar);
+            Grid.SetRow(filterBar, 0);
+
+            contentLayout.Children.Add(_dataTable);
+            Grid.SetRow(_dataTable, 1);
+
             DebugLogger.Log("AllSpecimensPage.LoadSpecimensAsync() complete");
+        }
+
+        protected override void OnParentChanged()
+        {
+            base.OnParentChanged();
+            if(Parent == null)
+            {
+                Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            CurrentTheme.Instance.PropertyChanged -= handler;
         }
     }
 }
