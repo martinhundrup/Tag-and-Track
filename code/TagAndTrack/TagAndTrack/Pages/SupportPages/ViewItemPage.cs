@@ -357,6 +357,22 @@ namespace TagAndTrack.Pages
             {
                 columns.Add("ID", s => s.ID, 60);
                 columns.Add("Name", s => s.Name);
+                columns.Add("Return Date", s =>
+                {
+                    var returnDate = loan.GetSpecimenReturnDate(s.ID);
+                    return returnDate?.ToString("yyyy-MM-dd HH:mm") ?? "On Loan";
+                }, width: 140);
+
+                if (!loan.Status) // only show check-in buttons if loan is active
+                {
+                    columns.AddButton("Check In",
+                    s =>
+                    {
+                        if (loan.GetSpecimenReturnDate(s.ID) != null) return; // already returned
+                        _ = CheckInSpecimenAsync(s);
+                    },
+                    "check.png", 80);
+                }
 
                 columns.AddButton("View Specimen",
                 s =>
@@ -387,29 +403,77 @@ namespace TagAndTrack.Pages
             };
         }
 
-        private async Task CheckInLoan()
+        private async Task CheckInSpecimenAsync(SpecimenItem specimen)
         {
             if (loanItem == null) return;
-            
+            if (loanItem.GetSpecimenReturnDate(specimen.ID) != null) return; // already returned
+
+            var now = DateTime.Now;
+
             // Update in-memory state
-            loanItem.Checkin();
+            loanItem.CheckinSpecimen(specimen.ID, now);
 
-            // Persist loan to database (cast ulong ID to int for DB)
-            await DbService.UpdateLoanAsync((int)loanItem.ID, true);
+            // Persist return date to join table
+            await DbService.CheckInLoanSpecimenAsync((int)loanItem.ID, (int)specimen.ID, now);
 
-            // Persist all specimens to database
-            foreach (var specimen in loanItem.Specimens)
+            // Only mark specimen as present if it's not in any OTHER active loan
+            bool inOtherLoan = await DbService.IsSpecimenInAnyActiveLoanAsync((int)specimen.ID, (int)loanItem.ID);
+            if (!inOtherLoan)
             {
+                specimen.Checkin();
                 await DbService.UpdateSpecimenAsync((int)specimen.ID, true);
+            }
+
+            // If all specimens are now returned, mark loan as returned
+            if (loanItem.Status)
+            {
+                await DbService.UpdateLoanAsync((int)loanItem.ID, true);
             }
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await Shell.Current.DisplayAlert("Loan Checked In", $"The loan and all its items have been checked in!", "OK");
+                string msg = loanItem.Status
+                    ? "All items returned — loan is now fully checked in!"
+                    : $"{specimen.Name} has been checked in.";
+                await Shell.Current.DisplayAlert("Specimen Checked In", msg, "OK");
             });
 
-                Initialize();
+            Initialize();
+        }
 
+        private async Task CheckInLoan()
+        {
+            if (loanItem == null) return;
+
+            var now = DateTime.Now;
+
+            // Check in each specimen that hasn't been returned yet for THIS loan
+            foreach (var specimen in loanItem.Specimens)
+            {
+                if (loanItem.GetSpecimenReturnDate(specimen.ID) != null)
+                    continue; // already returned for this loan — skip
+
+                loanItem.CheckinSpecimen(specimen.ID, now);
+                await DbService.CheckInLoanSpecimenAsync((int)loanItem.ID, (int)specimen.ID, now);
+
+                // Only mark specimen as present if not in another active loan
+                bool inOtherLoan = await DbService.IsSpecimenInAnyActiveLoanAsync((int)specimen.ID, (int)loanItem.ID);
+                if (!inOtherLoan)
+                {
+                    specimen.Checkin();
+                    await DbService.UpdateSpecimenAsync((int)specimen.ID, true);
+                }
+            }
+
+            // Mark loan as returned
+            await DbService.UpdateLoanAsync((int)loanItem.ID, true);
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await Shell.Current.DisplayAlert("Loan Checked In", "The loan and all its items have been checked in!", "OK");
+            });
+
+            Initialize();
         }
 
         private async Task DeleteSpecimenAsync(SpecimenItem specimen)

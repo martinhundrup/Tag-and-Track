@@ -79,12 +79,39 @@ namespace TagAndTrack.Pages.SupportPages
                 MinimumDate = DateTime.Today.AddDays(1),
                 Date = DateTime.Today.AddDays(30),
                 Format = "yyyy-MM-dd",
-                HorizontalOptions = LayoutOptions.Center,
-                Margin = new Thickness(24, 4, 24, 12),
+                HorizontalOptions = LayoutOptions.Fill,
                 TextColor = CurrentTheme.Instance.Theme.Text,
-                BackgroundColor = CurrentTheme.Instance.Theme.Background,
-                WidthRequest = 250,
+                BackgroundColor = Colors.Transparent,
                 HeightRequest = 40
+            };
+
+            var calendarIcon = new Label
+            {
+                Text = "📅",
+                FontSize = 24,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Start
+            };
+
+            var datePickerRow = new HorizontalStackLayout
+            {
+                Spacing = 10,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                Children = { calendarIcon, dueDatePicker }
+            };
+
+            var datePickerBorder = new Border
+            {
+                Stroke = CurrentTheme.Instance.Theme.Borders,
+                StrokeThickness = 1,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
+                Padding = new Thickness(12, 4),
+                Margin = new Thickness(24, 4, 24, 12),
+                HorizontalOptions = LayoutOptions.Center,
+                BackgroundColor = CurrentTheme.Instance.Theme.Background,
+                MinimumWidthRequest = 250,
+                Content = datePickerRow
             };
 
             themeChangedHandler = (s, e) =>
@@ -92,7 +119,8 @@ namespace TagAndTrack.Pages.SupportPages
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     dueDatePicker.TextColor = CurrentTheme.Instance.Theme.Text;
-                    dueDatePicker.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                    datePickerBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
+                    datePickerBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                 }
             };
 
@@ -143,10 +171,11 @@ namespace TagAndTrack.Pages.SupportPages
             var clearSignatureButton = new Button
             {
                 Text = "Clear Signature",
-                BackgroundColor = Colors.Gray,
+                BackgroundColor = Colors.Crimson,
                 TextColor = Colors.White,
                 HorizontalOptions = LayoutOptions.Center,
-                Margin = new Thickness(0, 4, 0, 12)
+                Margin = new Thickness(0, 4, 0, 12),
+                CornerRadius = 8
             };
             clearSignatureButton.Clicked += (s, e) => signaturePad.Clear();
 
@@ -185,7 +214,7 @@ namespace TagAndTrack.Pages.SupportPages
                         clientNameEntry,
                         clientEmailEntry,
                         dueDateLabel,
-                        dueDatePicker,
+                        datePickerBorder,
                         signatureLabel,
                         signatureBorder,
                         clearSignatureButton,

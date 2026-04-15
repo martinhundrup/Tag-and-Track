@@ -36,8 +36,6 @@ namespace TagAndTrack.Pages
                 }
             };
             CurrentTheme.Instance.PropertyChanged += handler;
-
-            BuildContent();
         }
 
         private string GetLoanStatus(LoanItem loan)
@@ -64,7 +62,7 @@ namespace TagAndTrack.Pages
 
         private void UpdateFilterButtonStyles()
         {
-            var activeColor = Colors.CornflowerBlue;
+            var activeColor = Colors.Crimson;
             var inactiveColor = Colors.Gray;
 
             if (_allButton != null) _allButton.BackgroundColor = _currentFilter == "All" ? activeColor : inactiveColor;
@@ -83,10 +81,10 @@ namespace TagAndTrack.Pages
             }
 
             // Filter buttons
-            _allButton = new Button { Text = "All", TextColor = Colors.White, Padding = new Thickness(10, 5) };
-            _onLoanButton = new Button { Text = "On Loan", TextColor = Colors.White, Padding = new Thickness(10, 5) };
-            _overdueButton = new Button { Text = "Overdue", TextColor = Colors.White, Padding = new Thickness(10, 5) };
-            _checkedInButton = new Button { Text = "Checked In", TextColor = Colors.White, Padding = new Thickness(10, 5) };
+            _allButton = new Button { Text = "All", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Crimson, CornerRadius = 8 };
+            _onLoanButton = new Button { Text = "On Loan", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };
+            _overdueButton = new Button { Text = "Overdue", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };
+            _checkedInButton = new Button { Text = "Checked In", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };
 
             _allButton.Clicked += (s, e) => ApplyStatusFilter("All");
             _onLoanButton.Clicked += (s, e) => ApplyStatusFilter("On Loan");

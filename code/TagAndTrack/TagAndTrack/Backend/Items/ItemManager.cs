@@ -47,27 +47,5 @@ namespace TagAndTrack.Backend.Items
                 _ => new List<Item>()
             };
         }
-
-        /// <summary>
-        /// Adds an item to the database.
-        /// </summary>
-        public static void AddItem(Item item)
-        {
-            Task.Run(async () =>
-            {
-                switch (item)
-                {
-                    case SpecimenItem specimen:
-                        await DbService.AddSpecimenAsync(specimen);
-                        break;
-                    case LoanItem loan:
-                        await DbService.AddLoanAsync(loan);
-                        break;
-                    case ContainerItem container:
-                        await DbService.AddContainerAsync(container);
-                        break;
-                }
-            }).Wait();
-        }
     }
 }

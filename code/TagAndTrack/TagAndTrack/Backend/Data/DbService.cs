@@ -31,6 +31,8 @@ namespace TagAndTrack.Backend.Data
             await _db.CreateTableAsync<ContainerEntity>();
             DebugLogger.Log("DbService: Creating EmployeeEntity table...");
             await _db.CreateTableAsync<EmployeeEntity>();
+            DebugLogger.Log("DbService: Creating LoanSpecimenEntity table...");
+            await _db.CreateTableAsync<LoanSpecimenEntity>();
 
             _initialized = true;
             DebugLogger.Log($"DbService: Database initialized successfully at {dbPath}");
@@ -60,6 +62,12 @@ namespace TagAndTrack.Backend.Data
             };
             await _db!.InsertAsync(entity);
             return entity.Id;
+        }
+
+        public static async Task<bool> ArctosIdExistsAsync(string arctosId)
+        {
+            var existing = await _db!.Table<SpecimenEntity>().FirstOrDefaultAsync(x => x.ArctosId == arctosId);
+            return existing != null;
         }
 
         public static async Task UpdateSpecimenAsync(int id, bool isPresent)
@@ -144,6 +152,19 @@ namespace TagAndTrack.Backend.Data
                 SignatureData = loan.SignatureImageBytes
             };
             await _db!.InsertAsync(entity);
+
+            // Insert join rows for each specimen
+            foreach (var specimen in loan.Specimens)
+            {
+                var returnDate = loan.GetSpecimenReturnDate(specimen.ID);
+                await _db!.InsertAsync(new LoanSpecimenEntity
+                {
+                    LoanId = entity.Id,
+                    SpecimenId = (int)specimen.ID,
+                    ReturnDate = returnDate
+                });
+            }
+
             return entity.Id;
         }
 
@@ -157,6 +178,28 @@ namespace TagAndTrack.Backend.Data
             }
         }
 
+        public static async Task CheckInLoanSpecimenAsync(int loanId, int specimenId, DateTime returnDate)
+        {
+            var joinRow = await _db!.Table<LoanSpecimenEntity>()
+                .FirstOrDefaultAsync(x => x.LoanId == loanId && x.SpecimenId == specimenId);
+            if (joinRow != null)
+            {
+                joinRow.ReturnDate = returnDate;
+                await _db!.UpdateAsync(joinRow);
+            }
+        }
+
+        public static async Task<bool> IsSpecimenInAnyActiveLoanAsync(int specimenId, int excludeLoanId)
+        {
+            var joinRows = await _db!.Table<LoanSpecimenEntity>()
+                .Where(x => x.SpecimenId == specimenId && x.ReturnDate == null)
+                .ToListAsync();
+            return joinRows.Any(x => x.LoanId != excludeLoanId);
+        }
+
+        public static async Task<List<LoanSpecimenEntity>> GetAllLoanSpecimenEntitiesAsync()
+            => await _db!.Table<LoanSpecimenEntity>().ToListAsync();
+
         private static async Task<LoanItem> MapToLoanAsync(LoanEntity e)
         {
             var loan = new LoanItem(e.Name, e.Description);
@@ -168,19 +211,21 @@ namespace TagAndTrack.Backend.Data
             loan.SetDates(e.DateCheckedOut, e.DateDue);
             loan.SetSignature(e.SignatureData);
 
-            // Load specimens
-            if (!string.IsNullOrEmpty(e.SpecimenIds))
+            // Load specimens and return dates from join table
+            var joinRows = await _db!.Table<LoanSpecimenEntity>()
+                .Where(ls => ls.LoanId == e.Id)
+                .ToListAsync();
+
+            foreach (var joinRow in joinRows)
             {
-                var ids = e.SpecimenIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                foreach (var idStr in ids)
+                var specimen = await GetSpecimenByIdAsync(joinRow.SpecimenId);
+                if (specimen != null)
                 {
-                    if (int.TryParse(idStr, out int specId))
-                    {
-                        var specimen = await GetSpecimenByIdAsync(specId);
-                        if (specimen != null) loan.AddSpecimen(specimen);
-                    }
+                    loan.AddSpecimen(specimen);
+                    loan.SetSpecimenReturnDate(specimen.ID, joinRow.ReturnDate);
                 }
             }
+
             return loan;
         }
 
@@ -264,15 +309,19 @@ namespace TagAndTrack.Backend.Data
         // ===== LOANS (by specimen) =====
         public static async Task<List<LoanItem>> GetLoansBySpecimenIdAsync(int specimenId)
         {
-            var entities = await _db!.Table<LoanEntity>().ToListAsync();
+            var joinRows = await _db!.Table<LoanSpecimenEntity>()
+                .Where(ls => ls.SpecimenId == specimenId)
+                .ToListAsync();
+
             var result = new List<LoanItem>();
-            foreach (var e in entities)
+            var loanIds = joinRows.Select(j => j.LoanId).Distinct();
+            foreach (var loanId in loanIds)
             {
-                if (SpecimenIdHelper.ContainsSpecimenId(e.SpecimenIds, specimenId))
-                {
-                    result.Add(await MapToLoanAsync(e));
-                }
+                var entity = await _db!.Table<LoanEntity>().FirstOrDefaultAsync(x => x.Id == loanId);
+                if (entity != null)
+                    result.Add(await MapToLoanAsync(entity));
             }
+
             return result;
         }
 
@@ -390,6 +439,18 @@ namespace TagAndTrack.Backend.Data
                     SpecimenIds = string.Join(",", specimenIds)
                 };
                 await _db.InsertAsync(loan);
+
+                // Insert join rows for each specimen in this loan
+                foreach (var specId in specimenIds)
+                {
+                    var loanSpecimen = new LoanSpecimenEntity
+                    {
+                        LoanId = loan.Id,
+                        SpecimenId = specId,
+                        ReturnDate = (i >= 8) ? DateTime.Now.AddDays(-5) : null // returned loans get a return date
+                    };
+                    await _db.InsertAsync(loanSpecimen);
+                }
             }
             DebugLogger.Log("DbService: 10 loans inserted");
 
@@ -436,6 +497,7 @@ namespace TagAndTrack.Backend.Data
 
             await _db!.DropTableAsync<SpecimenEntity>();
             await _db!.DropTableAsync<LoanEntity>();
+            await _db!.DropTableAsync<LoanSpecimenEntity>();
             await _db!.DropTableAsync<ContainerEntity>();
             await _db!.DropTableAsync<EmployeeEntity>();
 
@@ -443,6 +505,7 @@ namespace TagAndTrack.Backend.Data
 
             await _db!.CreateTableAsync<SpecimenEntity>();
             await _db!.CreateTableAsync<LoanEntity>();
+            await _db!.CreateTableAsync<LoanSpecimenEntity>();
             await _db!.CreateTableAsync<ContainerEntity>();
             await _db!.CreateTableAsync<EmployeeEntity>();
 

@@ -244,9 +244,10 @@ namespace TagAndTrack.Pages
             var viewButton = new Button
             {
                 Text = "View",
-                BackgroundColor = Colors.CornflowerBlue,
+                BackgroundColor = Colors.Crimson,
                 TextColor = Colors.White,
-                Padding = new Thickness(15, 8)
+                Padding = new Thickness(15, 8),
+                CornerRadius = 8
             };
             viewButton.Clicked += async (s, e) =>
             {

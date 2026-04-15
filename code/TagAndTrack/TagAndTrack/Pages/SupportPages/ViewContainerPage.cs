@@ -156,14 +156,18 @@ namespace TagAndTrack.Pages
                     }
 
                     // Update header - replace with new one showing container name
-                    if (_header != null && Content is ScrollView sv && sv.Content is VerticalStackLayout vsl)
+                    if (_header != null && Content is Grid pageGrid)
                     {
-                        var idx = vsl.Children.IndexOf(_header);
-                        if (idx >= 0)
+                        // topSection is the first child of the page grid
+                        if (pageGrid.Children[0] is VerticalStackLayout topSection)
                         {
-                            var newHeader = new HeaderTemplate(_container.Name ?? "Container");
-                            vsl.Children[idx] = newHeader;
-                            _header = newHeader;
+                            var idx = topSection.Children.IndexOf(_header);
+                            if (idx >= 0)
+                            {
+                                var newHeader = new HeaderTemplate(_container.Name ?? "Container");
+                                topSection.Children[idx] = newHeader;
+                                _header = newHeader;
+                            }
                         }
                     }
 

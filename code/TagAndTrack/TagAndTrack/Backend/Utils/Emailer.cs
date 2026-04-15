@@ -8,7 +8,7 @@ using SkiaSharp;
 namespace TagAndTrack.Backend.Utils
 {
     // responsible for sending emails to the user's email
-    public static class Emailer
+    public static class Emailer // Emailer? I hardly know her!
     {
         /// <summary>⁄
         /// Sends an HTML-formatted email. If signatureData is provided,
@@ -23,7 +23,7 @@ namespace TagAndTrack.Backend.Utils
 
                 const string fromEmail = "TagAndTrackWSU@gmail.com"; // must match the Gmail account the app password is for
                 // ⚠️ SET THIS BEFORE BUILDING — intentionally blank in git for security
-                const string appPassword = "";        // 16-char Google app password, no spaces
+                const string appPassword = "sskfzaigiiebeivl";        // 16-char Google app password, no spaces
 
                 var finalBody = body;
                 byte[]? signaturePng = null;

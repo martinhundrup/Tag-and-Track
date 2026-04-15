@@ -75,7 +75,8 @@ namespace TagAndTrack.Backend.Utils
             loan.DateDue = dueDate;
             loan.SetSignature(signatureBytes);
 
-            ItemManager.AddItem(loan);
+            // Persist loan + join rows to database
+            await DbService.AddLoanAsync(loan);
 
             return loan;
         }

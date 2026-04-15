@@ -34,7 +34,7 @@ namespace TagAndTrack.Components
                 searchBar = new SearchBar
                 {
                     Placeholder = "Search...",
-                    BackgroundColor = Colors.Transparent,
+                    BackgroundColor = CurrentTheme.Instance.Theme.Background,
                     TextColor = CurrentTheme.Instance.Theme.Text
                 };
                 _searchHandler = (s, e) => ApplyFilter(e.NewTextValue);
@@ -157,7 +157,8 @@ namespace TagAndTrack.Components
                             var cb = new CheckBox
                             {
                                 HorizontalOptions = LayoutOptions.Center,
-                                VerticalOptions = LayoutOptions.Center
+                                VerticalOptions = LayoutOptions.Center,
+                                Color = Colors.Crimson
                             };
 
                             if (col.CheckboxInitialValue != null)
@@ -231,9 +232,10 @@ namespace TagAndTrack.Components
         {
             if (e.PropertyName == nameof(CurrentTheme.Theme))
             {
-                searchBar?.TextColor = CurrentTheme.Instance.Theme.Text;
-                searchBorder?.Stroke = CurrentTheme.Instance.Theme.Borders;
-                searchBorder?.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                if (searchBar != null) searchBar.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                if (searchBar != null) searchBar.TextColor = CurrentTheme.Instance.Theme.Text;
+                if (searchBorder != null) searchBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
+                if (searchBorder != null) searchBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
             }
         }
 
