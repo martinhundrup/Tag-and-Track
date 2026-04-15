@@ -17,11 +17,11 @@ namespace TagAndTrack.Pages
         {
             base.OnAppearing();
 
-            // subscribe/start scanning when visible
+            // Subscribe and set the scanning forth when this page doth appear
             if (scanView != null && !_listening)
             {
                 scanView.ScanCaptured += ScanCaptured;
-                // if your ScanView supports control flags:
+                // Should thy ScanView bear the banner of control flags:
                 // scanView.IsScanning = true;
                 _listening = true;
             }
@@ -31,11 +31,11 @@ namespace TagAndTrack.Pages
         {
             base.OnDisappearing();
 
-            // unsubscribe/stop scanning when hidden
+            // Unsubscribe and still the scanning when this page doth retreat from sight
             if (scanView != null && _listening)
             {
                 scanView.ScanCaptured -= ScanCaptured;
-                // if supported:
+                // If such be supported:
                 // scanView.IsScanning = false;
                 _listening = false;
             }

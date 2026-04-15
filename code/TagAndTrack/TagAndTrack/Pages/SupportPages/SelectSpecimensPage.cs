@@ -16,7 +16,7 @@ namespace TagAndTrack.Pages
             _tcs = tcs;
             _preSelectedIds = preSelectedIds != null ? new HashSet<ulong>(preSelectedIds) : new HashSet<ulong>();
 
-            // Seed _selected with pre-checked items
+            // Sow the _selected field with those items already chosen
             foreach (var s in _available)
             {
                 if (_preSelectedIds.Contains(s.ID))

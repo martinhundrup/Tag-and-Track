@@ -80,7 +80,7 @@ namespace TagAndTrack.Pages
                 _allLoans.Add((LoanItem)item);
             }
 
-            // Filter buttons
+            // Buttons for the art of filtering
             _allButton = new Button { Text = "All", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Crimson, CornerRadius = 8 };
             _onLoanButton = new Button { Text = "On Loan", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };
             _overdueButton = new Button { Text = "Overdue", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };

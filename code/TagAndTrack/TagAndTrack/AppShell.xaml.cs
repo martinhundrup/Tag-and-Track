@@ -10,8 +10,8 @@ namespace TagAndTrack
             Routing.RegisterRoute("AllContainersPage", typeof(AllContainersPage));
             Routing.RegisterRoute("ViewContainerPage", typeof(ViewContainerPage));
 
-            // Add main page to shell structure so that it can be navigated to with "//MainPage" route.
-            // This allows the navigation stack to be cleared if navigating to MainPage.
+            // Bestow the main page unto the shell's dominion, that it may be reached by the "//MainPage" route.
+            // Thus shall the navigation stack be swept clean when one journeys unto MainPage.
             Items.Add(new ShellContent
             {
                 Route = "MainPage",

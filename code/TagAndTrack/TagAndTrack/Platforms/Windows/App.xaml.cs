@@ -1,7 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+// To learn more of WinUI, its project structure,
+// and further of our project templates, pray visit: http://aka.ms/winui-project-info.
 
 namespace TagAndTrack.WinUI
 {

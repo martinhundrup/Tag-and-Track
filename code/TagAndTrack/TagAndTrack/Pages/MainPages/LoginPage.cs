@@ -52,7 +52,7 @@ namespace TagAndTrack.Pages
             _themeHandlers.Add(changeHandler);
             CurrentTheme.Instance.PropertyChanged += changeHandler;
 
-            // Employee picker - will be populated from DB
+            // The employee picker — to be filled from the database in due course
             employeePicker = new Picker
             {
                 Title = "-- Select Employee --",
@@ -63,7 +63,7 @@ namespace TagAndTrack.Pages
                 TitleColor = Colors.Gray,
                 BackgroundColor = CurrentTheme.Instance.Theme.Background
             };
-            // When user selects from dropdown, update the text entry to show selected name
+            // When the user chooseth from the dropdown, let the text entry mirror the chosen name
             EventHandler eventHandler = (s, e) =>
             {
                 if (employeePicker.SelectedIndex >= 0 && employeePicker.SelectedItem != null)
@@ -89,7 +89,7 @@ namespace TagAndTrack.Pages
             CurrentTheme.Instance.PropertyChanged += changeHandler;
             _themeHandlers.Add(changeHandler);
 
-            // Wrap picker in a border for visibility
+            // Encase the picker within a border, that it may be clearly seen
             var pickerBorder = new Border
             {
                 Stroke = Colors.Gray,
@@ -157,7 +157,7 @@ namespace TagAndTrack.Pages
                 }
             };
 
-            // Load employees from database
+            // Summon the employees from the database
             DebugLogger.Log("LoginPage.Initialize() calling LoadEmployeesAsync()");
             _ = LoadEmployeesAsync();
             DebugLogger.Log("LoginPage.Initialize() complete");
@@ -203,7 +203,7 @@ namespace TagAndTrack.Pages
                 string? name = newEmployeeEntry?.textbox?.Text?.Trim();
                 DebugLogger.Log($"Entry text value: '{name ?? "(null)"}'");
 
-                // Prefer typed name over picker selection
+                // Give precedence to a name inscribed by hand over one chosen from the picker
                 if (string.IsNullOrWhiteSpace(name) && employeePicker?.SelectedItem != null)
                 {
                     name = employeePicker.SelectedItem.ToString();
@@ -220,7 +220,7 @@ namespace TagAndTrack.Pages
                 DebugLogger.Log($"Looking for existing employee with name: '{name}'");
                 DebugLogger.Log($"Current employees list has {employees.Count} items");
 
-                // Check if employee exists
+                // Inquire whether this employee doth already exist
                 var existing = employees.FirstOrDefault(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
                 Employee employee;
 

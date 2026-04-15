@@ -57,6 +57,12 @@
 		<CodesignProvision>Automatic</CodesignProvision>
 	</PropertyGroup>
 
+	<!-- Disable AOT in Debug to avoid missing mono-aot-cross binary (AOT is only needed for Release) -->
+	<PropertyGroup Condition="'$(TargetFramework)' == 'net10.0-ios' and '$(Configuration)' == 'Debug'">
+		<RunAOTCompilation>false</RunAOTCompilation>
+		<MtouchInterpreter>all</MtouchInterpreter>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />

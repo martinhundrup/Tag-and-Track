@@ -28,7 +28,7 @@ namespace TagAndTrack.Pages.SupportPages
 
         protected override void Initialize()
         {
-            // Apply theme background and react to theme changes
+            // Don the theme's raiment and heed its every transformation
             Background = CurrentTheme.Instance.Theme.Background;
 
             PropertyChangedEventHandler themeChangedHandler = (s, e) =>
@@ -127,7 +127,7 @@ namespace TagAndTrack.Pages.SupportPages
             CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
             themeChangeHandlers.Add(themeChangedHandler);
 
-            // Signature pad for borrower handwritten signature
+            // A pad whereupon the borrower may inscribe their mark by hand
             var signatureLabel = new Label
             {
                 Text = "Borrower Signature (sign below):",
@@ -265,7 +265,7 @@ namespace TagAndTrack.Pages.SupportPages
                 .Append("<th>Description</th>")
                 .Append("</tr>");
 
-            // Split rows by line breaks
+            // Cleave the rows asunder at each line's end
             var rows = csv.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var row in rows)
@@ -301,7 +301,7 @@ namespace TagAndTrack.Pages.SupportPages
                 return;
             }
 
-            // Capture signature as JSON stroke bytes (optional)
+            // Seize the signature as JSON stroke bytes, if Providence so wills
             byte[]? signatureBytes = null;
             try
             {
@@ -313,7 +313,7 @@ namespace TagAndTrack.Pages.SupportPages
                 await Shell.Current.DisplayAlertAsync("DEBUG: Signature Capture Error", ex.ToString(), "OK");
             }
 
-            // Build the email body BEFORE persisting to DB
+            // Compose the body of the missive ere committing aught unto the ledger
             var dueDate = dueDatePicker.Date ?? DateTime.Today.AddDays(30);
 
             var sb = new StringBuilder();
@@ -329,7 +329,7 @@ namespace TagAndTrack.Pages.SupportPages
             var htmlTable = CsvToHtmlTable(CreateDTCSV());
             var body = sb.ToString() + "<br>" + htmlTable;
 
-            // Send email FIRST — only finalize to DB on success
+            // Dispatch the missive first — only upon triumph shall we inscribe it in the ledger
             var (emailSuccess, emailError) = Emailer.Email(
                 clientEmailEntry.textbox.Text,
                 $"Tag and Track Loan Confirmed",
@@ -342,7 +342,7 @@ namespace TagAndTrack.Pages.SupportPages
                 return;
             }
 
-            // Email succeeded — now persist to DB
+            // The missive hath found its mark — now let us commit the record to the ledger
             var loan = await LoanCreator.FinalizeLoanAsync(
                 loanNameEntry.textbox.Text,
                 loanDescriptionEntry.textbox.Text,

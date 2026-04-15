@@ -61,7 +61,7 @@ namespace TagAndTrack.Backend.Utils
         {
             var loan = new LoanItem(loanName, loanDescription);
 
-            // add and checkout specimens – persist each checkout to the database
+            // Add and check out the specimens — inscribe each departure in the database
             foreach (var item in LoanItems)
             {
                 loan.AddSpecimen(item);
@@ -75,7 +75,7 @@ namespace TagAndTrack.Backend.Utils
             loan.DateDue = dueDate;
             loan.SetSignature(signatureBytes);
 
-            // Persist loan + join rows to database
+            // Commit the loan and its joining rows unto the database
             await DbService.AddLoanAsync(loan);
 
             return loan;

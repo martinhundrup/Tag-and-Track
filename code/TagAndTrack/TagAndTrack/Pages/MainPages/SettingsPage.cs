@@ -50,7 +50,7 @@ namespace TagAndTrack.Pages
                 var exportFilePath = await CsvService.ExportDatabaseAsync();
 
 #if WINDOWS
-                // Windows: prompt user to pick a save location
+                // Upon Windows: beseech the user to choose a place of saving
                 var savePicker = new Windows.Storage.Pickers.FileSavePicker();
                 savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
                 savePicker.FileTypeChoices.Add("CSV File", new List<string> { ".csv" });
@@ -65,7 +65,7 @@ namespace TagAndTrack.Pages
                 File.Copy(exportFilePath, file.Path, overwrite: true);
                 await DisplayAlert("Done", $"CSV saved to:\n{file.Path}", "OK");
 #else
-                // iOS/Mac: use Share sheet (has built-in Save to Files)
+                // Upon iOS or Mac: employ the Share sheet, which doth offer Save to Files
                 await Share.Default.RequestAsync(new ShareFileRequest
                 {
                     Title = "Export Tag & Track Database",
@@ -108,7 +108,7 @@ namespace TagAndTrack.Pages
 
                 if (result == null) return;
 
-                // Copy picked file to a temp location so CsvService can read it
+                // Copy the chosen file to a temporary dwelling, that CsvService might read it
                 var importPath = Path.Combine(FileSystem.CacheDirectory, "tagandtrack_import.csv");
                 using (var source = await result.OpenReadAsync())
                 using (var dest = File.Create(importPath))

@@ -23,14 +23,14 @@ namespace TagAndTrack.Components
             _filteredItems = new ObservableCollection<T>(items);
             _showSearchBar = showSearchBar;
 
-            // Build columns
+            // Erect the columns
             var builder = new DataTableColumnBuilder<T>();
             config(builder);
             columns = builder.Columns;
 
             if (_showSearchBar)
             {
-                // Search bar
+                // The instrument of inquiry
                 searchBar = new SearchBar
                 {
                     Placeholder = "Search...",
@@ -50,11 +50,11 @@ namespace TagAndTrack.Components
                     Content = searchBar
                 };
 
-                // Theme updates
+                // Attend to the theme's transformations
                 CurrentTheme.Instance.PropertyChanged += ThemeChanged;
             }
 
-            // Header
+            // The header, crowning the table
             var header = new Grid
             {
                 BackgroundColor = Colors.LightGray,
@@ -79,7 +79,7 @@ namespace TagAndTrack.Components
                 }, i, 0);
             }
 
-            // Table
+            // The table itself, bearer of all records
             var table = new CollectionView
             {
                 ItemsSource = _filteredItems,
@@ -197,7 +197,7 @@ namespace TagAndTrack.Components
                 })
             };
 
-            // Layout
+            // The arrangement of all within
             int row = 0;
             var layout = new Grid();
 

@@ -120,7 +120,7 @@ namespace TagAndTrack.Pages
                 return;
             }
 
-            // Filter buttons
+            // Buttons for the art of filtering
             _allButton = new Button { Text = "All", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Crimson, CornerRadius = 8 };
             _checkedInButton = new Button { Text = "Checked In", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };
             _checkedOutButton = new Button { Text = "Checked Out", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };
@@ -138,7 +138,7 @@ namespace TagAndTrack.Pages
                 Children = { _allButton, _checkedInButton, _checkedOutButton }
             };
 
-            // Create a simple data table
+            // Fashion a modest table of data
             DebugLogger.Log($"AllSpecimensPage: Creating DataTableTemplate with {_allSpecimens.Count} specimens");
             _dataTable = new DataTable<SpecimenItem>(_allSpecimens, columns =>
             {

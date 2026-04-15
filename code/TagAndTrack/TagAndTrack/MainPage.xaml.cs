@@ -39,7 +39,7 @@ namespace TagAndTrack
 
             CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
 
-            // Build header with logged-in user info
+            // Construct the header bearing the name of the logged-in soul
             var employeeName = EmployeeManager.ActiveEmployee?.Name ?? "Unknown";
             var headerText = $"Home";
 
@@ -84,7 +84,7 @@ namespace TagAndTrack
                 Grid.SetColumn(buttons[i], col);
             }
 
-            // Welcome message
+            // A message of welcome
             var welcomeLabel = new Label
             {
                 Text = $"Logged in as: {employeeName}",

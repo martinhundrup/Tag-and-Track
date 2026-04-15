@@ -40,7 +40,7 @@ namespace TagAndTrack.Pages
 
             var addButton = new TagAndTrackButton("Add Container", new Command(async () => await AddContainerAsync()), "plus.png");
 
-            // Loading indicator - shown initially
+            // The loading herald — displayed upon first arrival
             loadingIndicator = new ActivityIndicator
             {
                 IsRunning = true,
@@ -52,7 +52,7 @@ namespace TagAndTrack.Pages
                 WidthRequest = 50
             };
 
-            // Status label for empty state or errors
+            // A label to proclaim emptiness or misfortune
             statusLabel = new Label
             {
                 Text = "Loading containers...",
@@ -72,7 +72,7 @@ namespace TagAndTrack.Pages
             CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
             themeChangeHandlers.Add(themeChangedHandler);
 
-            // CollectionView for containers - handles scrolling properly on all platforms
+            // A CollectionView for the containers — it governeth scrolling with grace upon all platforms
             containerCollection = new CollectionView
             {
                 ItemsSource = containers,
@@ -85,7 +85,7 @@ namespace TagAndTrack.Pages
                 Margin = new Thickness(20, 10)
             };
 
-            // Use Grid layout (same pattern as AllSpecimensPage which works)
+            // Employ the Grid arrangement, mirroring AllSpecimensPage whose ways have proven true
             var pageLayout = new Grid
             {
                 RowDefinitions =
@@ -97,7 +97,7 @@ namespace TagAndTrack.Pages
                 Padding = new Thickness(0)
             };
 
-            // Content area with loading indicator, status label, and collection
+            // The realm of content: the loading herald, the status proclamation, and the collection
             var contentArea = new Grid
             {
                 Children = { loadingIndicator, statusLabel, containerCollection }
@@ -135,7 +135,7 @@ namespace TagAndTrack.Pages
 
             try
             {
-                // Show loading state on UI thread
+                // Reveal the loading state upon the thread of the interface
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     if (loadingIndicator != null) loadingIndicator.IsVisible = true;
@@ -149,11 +149,11 @@ namespace TagAndTrack.Pages
                     if (containerCollection != null) containerCollection.IsVisible = false;
                 });
 
-                // Fetch data from database
+                // Summon forth the data from the depths of the database
                 var containerList = await DbService.GetAllContainersAsync();
                 DebugLogger.Log($"AllContainersPage: Retrieved {containerList.Count} containers from DB");
 
-                // Update UI on main thread
+                // Refresh the visage upon the main thread
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     containers.Clear();
@@ -335,7 +335,7 @@ namespace TagAndTrack.Pages
             themeChangeHandlers.Clear();
         }
 
-        // Converter to display specimen count
+        // A converter to render the tally of specimens
         private class SpecimenCountConverter : IValueConverter
         {
             public object? Convert(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
