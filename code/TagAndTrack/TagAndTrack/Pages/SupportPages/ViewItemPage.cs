@@ -101,7 +101,7 @@ namespace TagAndTrack.Pages
             CurrentTheme.Instance.PropertyChanged += handler;
             themeChangeHandlers.Add(handler);
 
-            // Placeholder for async-loaded sections
+            // A vacant dwelling, awaiting the arrival of asynchronous tidings
             var containersSection = new VerticalStackLayout { Spacing = 8 };
             var loanHistorySection = new VerticalStackLayout { Spacing = 8 };
 
@@ -121,7 +121,7 @@ namespace TagAndTrack.Pages
                 Content = root
             };
 
-            // Load containers and loan history asynchronously
+            // Summon the containers and loan chronicles by asynchronous means
             _ = LoadSpecimenDetailsAsync(specimen, containersSection, loanHistorySection);
         }
 
@@ -136,7 +136,7 @@ namespace TagAndTrack.Pages
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
-                // --- Containers section ---
+                // --- The Containers, here assembled ---
                 var containerHeader = new Label
                 {
                     Text = "Containers:",
@@ -186,7 +186,7 @@ namespace TagAndTrack.Pages
                     }
                 }
 
-                // --- Loan history section ---
+                // --- The Chronicle of Loans past ---
                 var loanHeader = new Label
                 {
                     Text = "Loan History:",
@@ -304,7 +304,7 @@ namespace TagAndTrack.Pages
                 TextColor = CurrentTheme.Instance.Theme.Text
             };
 
-            // Page layout: info at top, list below. Let the CollectionView own scrolling.
+            // The page's arrangement: knowledge above, the list beneath. Let the CollectionView govern the scrolling.
             var root = new Grid
             {
                 RowSpacing = 16,
@@ -357,6 +357,22 @@ namespace TagAndTrack.Pages
             {
                 columns.Add("ID", s => s.ID, 60);
                 columns.Add("Name", s => s.Name);
+                columns.Add("Return Date", s =>
+                {
+                    var returnDate = loan.GetSpecimenReturnDate(s.ID);
+                    return returnDate?.ToString("yyyy-MM-dd HH:mm") ?? "On Loan";
+                }, width: 140);
+
+                if (!loan.Status) // only show check-in buttons if loan is active
+                {
+                    columns.AddButton("Check In",
+                    s =>
+                    {
+                        if (loan.GetSpecimenReturnDate(s.ID) != null) return; // already returned
+                        _ = CheckInSpecimenAsync(s);
+                    },
+                    "check.png", 80);
+                }
 
                 columns.AddButton("View Specimen",
                 s =>
@@ -387,29 +403,77 @@ namespace TagAndTrack.Pages
             };
         }
 
-        private async Task CheckInLoan()
+        private async Task CheckInSpecimenAsync(SpecimenItem specimen)
         {
             if (loanItem == null) return;
-            
-            // Update in-memory state
-            loanItem.Checkin();
+            if (loanItem.GetSpecimenReturnDate(specimen.ID) != null) return; // already returned
 
-            // Persist loan to database (cast ulong ID to int for DB)
-            await DbService.UpdateLoanAsync((int)loanItem.ID, true);
+            var now = DateTime.Now;
 
-            // Persist all specimens to database
-            foreach (var specimen in loanItem.Specimens)
+            // Amend the state held in memory
+            loanItem.CheckinSpecimen(specimen.ID, now);
+
+            // Inscribe the date of return upon the joining table
+            await DbService.CheckInLoanSpecimenAsync((int)loanItem.ID, (int)specimen.ID, now);
+
+            // Mark the specimen as present only if it dwelleth not within another active loan
+            bool inOtherLoan = await DbService.IsSpecimenInAnyActiveLoanAsync((int)specimen.ID, (int)loanItem.ID);
+            if (!inOtherLoan)
             {
+                specimen.Checkin();
                 await DbService.UpdateSpecimenAsync((int)specimen.ID, true);
+            }
+
+            // Should every specimen now be returned, declare the loan fulfilled
+            if (loanItem.Status)
+            {
+                await DbService.UpdateLoanAsync((int)loanItem.ID, true);
             }
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await Shell.Current.DisplayAlert("Loan Checked In", $"The loan and all its items have been checked in!", "OK");
+                string msg = loanItem.Status
+                    ? "All items returned — loan is now fully checked in!"
+                    : $"{specimen.Name} has been checked in.";
+                await Shell.Current.DisplayAlert("Specimen Checked In", msg, "OK");
             });
 
-                Initialize();
+            Initialize();
+        }
 
+        private async Task CheckInLoan()
+        {
+            if (loanItem == null) return;
+
+            var now = DateTime.Now;
+
+            // Restore each specimen that hath not yet been returned for this very loan
+            foreach (var specimen in loanItem.Specimens)
+            {
+                if (loanItem.GetSpecimenReturnDate(specimen.ID) != null)
+                    continue; // already returned for this loan — make haste past it
+
+                loanItem.CheckinSpecimen(specimen.ID, now);
+                await DbService.CheckInLoanSpecimenAsync((int)loanItem.ID, (int)specimen.ID, now);
+
+                // Mark the specimen as present only if it resideth not in another active loan
+                bool inOtherLoan = await DbService.IsSpecimenInAnyActiveLoanAsync((int)specimen.ID, (int)loanItem.ID);
+                if (!inOtherLoan)
+                {
+                    specimen.Checkin();
+                    await DbService.UpdateSpecimenAsync((int)specimen.ID, true);
+                }
+            }
+
+            // Proclaim the loan returned in full
+            await DbService.UpdateLoanAsync((int)loanItem.ID, true);
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await Shell.Current.DisplayAlert("Loan Checked In", "The loan and all its items have been checked in!", "OK");
+            });
+
+            Initialize();
         }
 
         private async Task DeleteSpecimenAsync(SpecimenItem specimen)

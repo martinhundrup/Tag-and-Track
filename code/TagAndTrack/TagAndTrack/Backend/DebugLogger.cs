@@ -14,7 +14,7 @@ namespace TagAndTrack.Backend
         {
             try
             {
-                // Clear the existing log file (or create if missing)
+                // Purge the existing log parchment, or bring one into being should none exist
                 File.WriteAllText(logFilePath, $"=== Log initialized at {DateTime.Now} ==={Environment.NewLine}");
             }
             catch (Exception ex)

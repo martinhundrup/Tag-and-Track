@@ -23,18 +23,18 @@ namespace TagAndTrack.Components
             _filteredItems = new ObservableCollection<T>(items);
             _showSearchBar = showSearchBar;
 
-            // Build columns
+            // Erect the columns
             var builder = new DataTableColumnBuilder<T>();
             config(builder);
             columns = builder.Columns;
 
             if (_showSearchBar)
             {
-                // Search bar
+                // The instrument of inquiry
                 searchBar = new SearchBar
                 {
                     Placeholder = "Search...",
-                    BackgroundColor = Colors.Transparent,
+                    BackgroundColor = CurrentTheme.Instance.Theme.Background,
                     TextColor = CurrentTheme.Instance.Theme.Text
                 };
                 _searchHandler = (s, e) => ApplyFilter(e.NewTextValue);
@@ -50,11 +50,11 @@ namespace TagAndTrack.Components
                     Content = searchBar
                 };
 
-                // Theme updates
+                // Attend to the theme's transformations
                 CurrentTheme.Instance.PropertyChanged += ThemeChanged;
             }
 
-            // Header
+            // The header, crowning the table
             var header = new Grid
             {
                 BackgroundColor = Colors.LightGray,
@@ -79,7 +79,7 @@ namespace TagAndTrack.Components
                 }, i, 0);
             }
 
-            // Table
+            // The table itself, bearer of all records
             var table = new CollectionView
             {
                 ItemsSource = _filteredItems,
@@ -157,7 +157,8 @@ namespace TagAndTrack.Components
                             var cb = new CheckBox
                             {
                                 HorizontalOptions = LayoutOptions.Center,
-                                VerticalOptions = LayoutOptions.Center
+                                VerticalOptions = LayoutOptions.Center,
+                                Color = Colors.Crimson
                             };
 
                             if (col.CheckboxInitialValue != null)
@@ -196,7 +197,7 @@ namespace TagAndTrack.Components
                 })
             };
 
-            // Layout
+            // The arrangement of all within
             int row = 0;
             var layout = new Grid();
 
@@ -231,9 +232,10 @@ namespace TagAndTrack.Components
         {
             if (e.PropertyName == nameof(CurrentTheme.Theme))
             {
-                searchBar?.TextColor = CurrentTheme.Instance.Theme.Text;
-                searchBorder?.Stroke = CurrentTheme.Instance.Theme.Borders;
-                searchBorder?.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                if (searchBar != null) searchBar.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                if (searchBar != null) searchBar.TextColor = CurrentTheme.Instance.Theme.Text;
+                if (searchBorder != null) searchBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
+                if (searchBorder != null) searchBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
             }
         }
 

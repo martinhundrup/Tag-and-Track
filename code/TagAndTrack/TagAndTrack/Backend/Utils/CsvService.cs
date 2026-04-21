@@ -6,7 +6,7 @@ namespace TagAndTrack.Backend.Utils
 {
     public static class CsvService
     {
-        // ===== EXPORT =====
+        // ===== THE GRAND EXPORT =====
 
         public static async Task<string> ExportDatabaseAsync()
         {
@@ -19,10 +19,11 @@ namespace TagAndTrack.Backend.Utils
 
             var specimens = await DbService.GetAllSpecimenEntitiesAsync();
             var loans = await DbService.GetAllLoanEntitiesAsync();
+            var loanSpecimens = await DbService.GetAllLoanSpecimenEntitiesAsync();
             var containers = await DbService.GetAllContainerEntitiesAsync();
             var employees = await DbService.GetAllEmployeeEntitiesAsync();
 
-            var content = BuildExportCsv(specimens, loans, containers, employees);
+            var content = BuildExportCsv(specimens, loans, loanSpecimens, containers, employees);
             await File.WriteAllTextAsync(filePath, content);
 
             return filePath;
@@ -31,6 +32,7 @@ namespace TagAndTrack.Backend.Utils
         internal static string BuildExportCsv(
             IEnumerable<SpecimenEntity> specimens,
             IEnumerable<LoanEntity> loans,
+            IEnumerable<LoanSpecimenEntity> loanSpecimens,
             IEnumerable<ContainerEntity> containers,
             IEnumerable<EmployeeEntity> employees)
         {
@@ -49,6 +51,14 @@ namespace TagAndTrack.Backend.Utils
                 sb.AppendLine($"{l.Id},{CsvEscape(l.ArctosId)},{CsvEscape(l.Name)},{CsvEscape(l.Description)},{CsvEscape(l.Borrower)},{CsvEscape(l.Email)},{l.DateCheckedOut:O},{l.DateDue:O},{l.IsReturned},{CsvEscape(l.SpecimenIds)},{CsvEscape(sig)}");
             }
 
+            sb.AppendLine("[LoanSpecimens]");
+            sb.AppendLine("Id,LoanId,SpecimenId,ReturnDate");
+            foreach (var ls in loanSpecimens)
+            {
+                string returnDate = ls.ReturnDate.HasValue ? ls.ReturnDate.Value.ToString("O") : "";
+                sb.AppendLine($"{ls.Id},{ls.LoanId},{ls.SpecimenId},{returnDate}");
+            }
+
             sb.AppendLine("[Containers]");
             sb.AppendLine("Id,Name,Description,SpecimenIds");
             foreach (var c in containers)
@@ -65,7 +75,7 @@ namespace TagAndTrack.Backend.Utils
             return sb.ToString();
         }
 
-        // ===== IMPORT =====
+        // ===== THE GRAND IMPORT =====
 
         public static async Task ImportDatabaseAsync(string filePath)
         {
@@ -78,6 +88,8 @@ namespace TagAndTrack.Backend.Utils
                 await ImportSpecimenLines(specLines);
             if (sections.TryGetValue("Loans", out var loanLines))
                 await ImportLoanLines(loanLines);
+            if (sections.TryGetValue("LoanSpecimens", out var loanSpecimenLines))
+                await ImportLoanSpecimenLines(loanSpecimenLines);
             if (sections.TryGetValue("Containers", out var containerLines))
                 await ImportContainerLines(containerLines);
             if (sections.TryGetValue("Employees", out var employeeLines))
@@ -127,6 +139,23 @@ namespace TagAndTrack.Backend.Utils
             }
         }
 
+        private static async Task ImportLoanSpecimenLines(List<string> lines)
+        {
+            foreach (var line in lines.Skip(1)) // skip header
+            {
+                var fields = ParseCsvLine(line);
+                if (fields.Length < 4) continue;
+                var entity = new LoanSpecimenEntity
+                {
+                    LoanId = int.TryParse(fields[1], out int lid) ? lid : 0,
+                    SpecimenId = int.TryParse(fields[2], out int sid) ? sid : 0,
+                    ReturnDate = DateTime.TryParse(fields[3], out var rd) ? rd : null
+                };
+                if (entity.LoanId > 0 && entity.SpecimenId > 0)
+                    await DbService.InsertRawEntityAsync(entity);
+            }
+        }
+
         private static async Task ImportContainerLines(List<string> lines)
         {
             foreach (var line in lines.Skip(1))
@@ -158,7 +187,7 @@ namespace TagAndTrack.Backend.Utils
             }
         }
 
-        // ===== CSV HELPERS =====
+        // ===== FAITHFUL CSV HELPERS =====
 
         internal static string CsvEscape(string? value) => CsvHelper.Escape(value);
 

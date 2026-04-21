@@ -1,4 +1,4 @@
-﻿// ScanView.cs
+﻿// ScanView, the keeper of the scanning eye
 using System;
 using System.Linq;
 using Microsoft.Maui.Controls;
@@ -20,7 +20,7 @@ namespace TagAndTrack.Components
     {
         public event EventHandler<ScanCapturedEventArgs>? ScanCaptured;
 
-        // Keep a reference so we can control it outside the ctor
+        // Retain a reference, that we might command it beyond the constructor's bounds
         private readonly CameraBarcodeReaderView _scanner;
         private Page? _parentPage;
 
@@ -54,14 +54,14 @@ namespace TagAndTrack.Components
         {
             base.OnParentSet();
 
-            // Unhook from old page if any
+            // Sever ties with the former page, if such a bond didst exist
             if (_parentPage != null)
             {
                 _parentPage.Appearing -= OnPageAppearing;
                 _parentPage.Disappearing -= OnPageDisappearing;
             }
 
-            // Find the new parent page
+            // Seek out the new parent page
             _parentPage = FindParentPage();
 
             if (_parentPage != null)
@@ -83,13 +83,13 @@ namespace TagAndTrack.Components
 
         private void OnPageAppearing(object? sender, EventArgs e)
         {
-            // Turn scanning back on when the page becomes visible
+            // Rouse the scanning forth anew when the page doth reveal itself
             _scanner.IsDetecting = true;
         }
 
         private void OnPageDisappearing(object? sender, EventArgs e)
         {
-            // Stop scanning when the page disappears or is popped
+            // Cease the scanning when the page doth vanish or is cast away
             _scanner.IsDetecting = false;
         }
     }

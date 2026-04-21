@@ -10,7 +10,7 @@ namespace TagAndTrack.Pages
         private readonly int _containerId;
         private ContainerItem? _container;
 
-        // Persistent UI elements updated by LoadContainerAsync
+        // Enduring elements of the interface, shaped anew by LoadContainerAsync
         private HeaderTemplate? _header;
         private Label? _descriptionLabel;
         private QrCodeView? _qrCode;
@@ -145,43 +145,47 @@ namespace TagAndTrack.Pages
 
                 DebugLogger.Log($"ViewContainerPage: Building UI for container '{_container.Name}' with {_container.Specimens.Count} specimens");
 
-                // All UI updates on the main thread
+                // All changes to the visage must occur upon the main thread
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    // Hide loading, show content
+                    // Conceal the loading herald, reveal the content
                     if (_loadingIndicator != null)
                     {
                         _loadingIndicator.IsRunning = false;
                         _loadingIndicator.IsVisible = false;
                     }
 
-                    // Update header - replace with new one showing container name
-                    if (_header != null && Content is ScrollView sv && sv.Content is VerticalStackLayout vsl)
+                    // Refresh the header — supplant it with one bearing the container's name
+                    if (_header != null && Content is Grid pageGrid)
                     {
-                        var idx = vsl.Children.IndexOf(_header);
-                        if (idx >= 0)
+                        // The topSection doth sit as firstborn child of the page grid
+                        if (pageGrid.Children[0] is VerticalStackLayout topSection)
                         {
-                            var newHeader = new HeaderTemplate(_container.Name ?? "Container");
-                            vsl.Children[idx] = newHeader;
-                            _header = newHeader;
+                            var idx = topSection.Children.IndexOf(_header);
+                            if (idx >= 0)
+                            {
+                                var newHeader = new HeaderTemplate(_container.Name ?? "Container");
+                                topSection.Children[idx] = newHeader;
+                                _header = newHeader;
+                            }
                         }
                     }
 
-                    // Update description
+                    // Renew the description
                     if (_descriptionLabel != null)
                     {
                         _descriptionLabel.Text = _container.Description ?? "";
                         _descriptionLabel.IsVisible = true;
                     }
 
-                    // Update QR code
+                    // Renew the QR cipher
                     if (_qrCode != null)
                     {
                         _qrCode.Value = _container.QRID ?? "";
                         _qrCode.IsVisible = true;
                     }
 
-                    // Add button
+                    // Furnish the button
                     if (_addButtonContainer != null)
                     {
                         _addButtonContainer.Children.Clear();
@@ -191,7 +195,7 @@ namespace TagAndTrack.Pages
                         _addButtonContainer.IsVisible = true;
                     }
 
-                    // Specimens title
+                    // The title for the specimens
                     if (_specimensContainer != null)
                     {
                         _specimensContainer.Children.Clear();
@@ -282,10 +286,10 @@ namespace TagAndTrack.Pages
 
         private async Task AddSpecimenAsync()
         {
-            // Get all specimens from DB
+            // Retrieve every specimen from the great ledger
             var allSpecimens = await DbService.GetAllSpecimensAsync();
 
-            // Filter out specimens already in container
+            // Cast aside those specimens already dwelling within the container
             var existingIds = _container?.Specimens.Select(s => s.ID).ToHashSet() ?? new HashSet<ulong>();
             var available = allSpecimens.Where(s => !existingIds.Contains(s.ID)).ToList();
 

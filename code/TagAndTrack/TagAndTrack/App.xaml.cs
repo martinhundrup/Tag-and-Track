@@ -9,13 +9,13 @@ namespace TagAndTrack
         {
             InitializeComponent();
 
-            // Initialize logger FIRST so we can track everything
+            // Awaken the logger ere all else, that we may chronicle every happening
             DebugLogger.Init();
             DebugLogger.Log("=== APP CONSTRUCTOR STARTED ===");
 
             try
             {
-                // Initialize database synchronously at startup
+                // Summon the database in lockstep upon the hour of awakening
                 DebugLogger.Log("Starting database initialization...");
                 Task.Run(async () =>
                 {

@@ -24,12 +24,12 @@ namespace TagAndTrack.Pages
         {
             base.OnAppearing();
 
-            // subscribe/start scanning when visible
+            // Subscribe and set the scanning forth when this page doth appear
             if (scanView != null && !_listening)
             {
                 scanView.ScanCaptured += ScanCaptured;
 
-                // if your ScanView supports control flags:
+                // Should thy ScanView bear the banner of control flags:
                 // scanView.IsScanning = true;
                 _listening = true;
             }
@@ -39,12 +39,12 @@ namespace TagAndTrack.Pages
         {
             base.OnDisappearing();
 
-            // unsubscribe/stop scanning when hidden
+            // Unsubscribe and still the scanning when this page doth retreat from sight
             if (scanView != null && _listening)
             {
                 scanView.ScanCaptured -= ScanCaptured;
 
-                // if supported:
+                // If such be supported:
                 // scanView.IsScanning = false;
                 _listening = false;
             }
@@ -69,7 +69,7 @@ namespace TagAndTrack.Pages
 
             var header = new HeaderTemplate(titleText);
 
-            // See if this change affects anything
+            // Observe whether this alteration doth bear any consequence
             scanView = new ScanView
             {
                 WidthRequest = 600,
@@ -100,7 +100,7 @@ namespace TagAndTrack.Pages
                 }
             };
 
-            // Scanner + buttons side-by-side so buttons stay visible in landscape
+            // The scanner and buttons, arrayed side by side, that the buttons remain visible upon a wider stage
             var scannerRow = new Grid
             {
                 ColumnDefinitions =
@@ -219,7 +219,7 @@ namespace TagAndTrack.Pages
         {
             var allSpecimens = await DbService.GetAllSpecimensAsync();
 
-            // Show all checked-in specimens; items already in loan will be pre-checked
+            // Present all checked-in specimens; those already bound to the loan shall be marked beforehand
             var existingIds = LoanCreator.LoanItems.Select(s => s.ID).ToHashSet();
             var available = allSpecimens.Where(s => s.Status || existingIds.Contains(s.ID)).ToList();
 
@@ -235,8 +235,8 @@ namespace TagAndTrack.Pages
 
             var selected = await tcs.Task;
 
-            // Sync loan items to match the final selection:
-            // remove unchecked items, add newly checked items
+            // Harmonize the loan's contents with the final selection:
+            // cast out the unchecked, welcome the newly chosen
             var selectedIds = selected.Select(s => s.ID).ToHashSet();
             var toRemove = LoanCreator.LoanItems.Where(s => !selectedIds.Contains(s.ID)).ToList();
             foreach (var specimen in toRemove)

@@ -70,6 +70,7 @@ namespace TagAndTrack.Pages
         {
             DebugLogger.Log("AllSpecimensPage.OnAppearing() called");
             base.OnAppearing();
+            _ = LoadSpecimensAsync();
         }
 
         private void ApplyStatusFilter(string filter)
@@ -89,7 +90,7 @@ namespace TagAndTrack.Pages
 
         private void UpdateFilterButtonStyles()
         {
-            var activeColor = Colors.CornflowerBlue;
+            var activeColor = Colors.Crimson;
             var inactiveColor = Colors.Gray;
 
             if (_allButton != null) _allButton.BackgroundColor = _currentFilter == "All" ? activeColor : inactiveColor;
@@ -119,10 +120,10 @@ namespace TagAndTrack.Pages
                 return;
             }
 
-            // Filter buttons
-            _allButton = new Button { Text = "All", TextColor = Colors.White, Padding = new Thickness(10, 5) };
-            _checkedInButton = new Button { Text = "Checked In", TextColor = Colors.White, Padding = new Thickness(10, 5) };
-            _checkedOutButton = new Button { Text = "Checked Out", TextColor = Colors.White, Padding = new Thickness(10, 5) };
+            // Buttons for the art of filtering
+            _allButton = new Button { Text = "All", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Crimson, CornerRadius = 8 };
+            _checkedInButton = new Button { Text = "Checked In", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };
+            _checkedOutButton = new Button { Text = "Checked Out", TextColor = Colors.White, Padding = new Thickness(10, 5), BackgroundColor = Colors.Gray, CornerRadius = 8 };
 
             _allButton.Clicked += (s, e) => ApplyStatusFilter("All");
             _checkedInButton.Clicked += (s, e) => ApplyStatusFilter("Checked In");
@@ -137,7 +138,7 @@ namespace TagAndTrack.Pages
                 Children = { _allButton, _checkedInButton, _checkedOutButton }
             };
 
-            // Create a simple data table
+            // Fashion a modest table of data
             DebugLogger.Log($"AllSpecimensPage: Creating DataTableTemplate with {_allSpecimens.Count} specimens");
             _dataTable = new DataTable<SpecimenItem>(_allSpecimens, columns =>
             {

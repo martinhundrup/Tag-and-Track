@@ -100,7 +100,12 @@ namespace TagAndTrack.Pages
 
             var specimen = new SpecimenItem($"ARC-{id:D6}", specimenNameEntry.textbox.Text, specimenDescriptionEntry.textbox.Text);
 
-            //TO DO: Look into where we want to check for duplicate ARC ID's (they may need to keep this functionality)
+            if (await DbService.ArctosIdExistsAsync(specimen.ArctosID))
+            {
+                await Shell.Current.DisplayAlert("Error", "A specimen with this Arctos ID already exists.", "OK");
+                return;
+            }
+
             await DbService.AddSpecimenAsync(specimen);
 
             await Shell.Current.DisplayAlert("Success!", "Specimen added to database!", "OK");

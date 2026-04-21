@@ -7,8 +7,8 @@ using SkiaSharp;
 
 namespace TagAndTrack.Backend.Utils
 {
-    // responsible for sending emails to the user's email
-    public static class Emailer
+    // Charged with the solemn duty of dispatching missives unto the recipient
+    public static class Emailer // Emailer? I hardly know her!
     {
         /// <summary>⁄
         /// Sends an HTML-formatted email. If signatureData is provided,
@@ -22,14 +22,14 @@ namespace TagAndTrack.Backend.Utils
                 DebugLogger.Log($"attempting to send email to {email}");
 
                 const string fromEmail = "TagAndTrackWSU@gmail.com"; // must match the Gmail account the app password is for
-                // ⚠️ SET THIS BEFORE BUILDING — intentionally blank in git for security
+                // ⚠️ SET THIS ERE THOU BUILD — left barren in git for the safeguarding of secrets
                 const string appPassword = "";        // 16-char Google app password, no spaces
 
                 var finalBody = body;
                 byte[]? signaturePng = null;
                 string? signatureContentId = null;
 
-                // Embed signature as CID-linked PNG in HTML
+                // Weave the signature into the HTML as a CID-linked PNG portrait
                 if (signatureData != null && signatureData.Length > 0)
                 {
                     signaturePng = StrokesToPng(signatureData);
@@ -75,7 +75,7 @@ namespace TagAndTrack.Backend.Utils
                         smtpClient.EnableSsl = true;
                         smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-                        // critical bits for Gmail auth
+                        // The vital particulars for Gmail's authentication
                         smtpClient.UseDefaultCredentials = false;
                         smtpClient.Credentials = new NetworkCredential(fromEmail, appPassword);
 
@@ -123,7 +123,7 @@ namespace TagAndTrack.Backend.Utils
                 var strokes = JsonSerializer.Deserialize<float[][][]>(json);
                 if (strokes == null || strokes.Length == 0) return null;
 
-                // Find bounding box
+                // Discover the bounding box that containeth all
                 float minX = float.MaxValue, minY = float.MaxValue;
                 float maxX = float.MinValue, maxY = float.MinValue;
                 var pointCount = 0;

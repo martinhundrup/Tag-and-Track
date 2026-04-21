@@ -28,7 +28,7 @@ namespace TagAndTrack.Pages.SupportPages
 
         protected override void Initialize()
         {
-            // Apply theme background and react to theme changes
+            // Don the theme's raiment and heed its every transformation
             Background = CurrentTheme.Instance.Theme.Background;
 
             PropertyChangedEventHandler themeChangedHandler = (s, e) =>
@@ -79,12 +79,39 @@ namespace TagAndTrack.Pages.SupportPages
                 MinimumDate = DateTime.Today.AddDays(1),
                 Date = DateTime.Today.AddDays(30),
                 Format = "yyyy-MM-dd",
-                HorizontalOptions = LayoutOptions.Center,
-                Margin = new Thickness(24, 4, 24, 12),
+                HorizontalOptions = LayoutOptions.Fill,
                 TextColor = CurrentTheme.Instance.Theme.Text,
-                BackgroundColor = CurrentTheme.Instance.Theme.Background,
-                WidthRequest = 250,
+                BackgroundColor = Colors.Transparent,
                 HeightRequest = 40
+            };
+
+            var calendarIcon = new Label
+            {
+                Text = "📅",
+                FontSize = 24,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Start
+            };
+
+            var datePickerRow = new HorizontalStackLayout
+            {
+                Spacing = 10,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                Children = { calendarIcon, dueDatePicker }
+            };
+
+            var datePickerBorder = new Border
+            {
+                Stroke = CurrentTheme.Instance.Theme.Borders,
+                StrokeThickness = 1,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 8 },
+                Padding = new Thickness(12, 4),
+                Margin = new Thickness(24, 4, 24, 12),
+                HorizontalOptions = LayoutOptions.Center,
+                BackgroundColor = CurrentTheme.Instance.Theme.Background,
+                MinimumWidthRequest = 250,
+                Content = datePickerRow
             };
 
             themeChangedHandler = (s, e) =>
@@ -92,14 +119,15 @@ namespace TagAndTrack.Pages.SupportPages
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     dueDatePicker.TextColor = CurrentTheme.Instance.Theme.Text;
-                    dueDatePicker.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                    datePickerBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
+                    datePickerBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                 }
             };
 
             CurrentTheme.Instance.PropertyChanged += themeChangedHandler;
             themeChangeHandlers.Add(themeChangedHandler);
 
-            // Signature pad for borrower handwritten signature
+            // A pad whereupon the borrower may inscribe their mark by hand
             var signatureLabel = new Label
             {
                 Text = "Borrower Signature (sign below):",
@@ -143,10 +171,11 @@ namespace TagAndTrack.Pages.SupportPages
             var clearSignatureButton = new Button
             {
                 Text = "Clear Signature",
-                BackgroundColor = Colors.Gray,
+                BackgroundColor = Colors.Crimson,
                 TextColor = Colors.White,
                 HorizontalOptions = LayoutOptions.Center,
-                Margin = new Thickness(0, 4, 0, 12)
+                Margin = new Thickness(0, 4, 0, 12),
+                CornerRadius = 8
             };
             clearSignatureButton.Clicked += (s, e) => signaturePad.Clear();
 
@@ -185,7 +214,7 @@ namespace TagAndTrack.Pages.SupportPages
                         clientNameEntry,
                         clientEmailEntry,
                         dueDateLabel,
-                        dueDatePicker,
+                        datePickerBorder,
                         signatureLabel,
                         signatureBorder,
                         clearSignatureButton,
@@ -236,7 +265,7 @@ namespace TagAndTrack.Pages.SupportPages
                 .Append("<th>Description</th>")
                 .Append("</tr>");
 
-            // Split rows by line breaks
+            // Cleave the rows asunder at each line's end
             var rows = csv.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var row in rows)
@@ -272,7 +301,7 @@ namespace TagAndTrack.Pages.SupportPages
                 return;
             }
 
-            // Capture signature as JSON stroke bytes (optional)
+            // Seize the signature as JSON stroke bytes, if Providence so wills
             byte[]? signatureBytes = null;
             try
             {
@@ -284,7 +313,7 @@ namespace TagAndTrack.Pages.SupportPages
                 await Shell.Current.DisplayAlertAsync("DEBUG: Signature Capture Error", ex.ToString(), "OK");
             }
 
-            // Build the email body BEFORE persisting to DB
+            // Compose the body of the missive ere committing aught unto the ledger
             var dueDate = dueDatePicker.Date ?? DateTime.Today.AddDays(30);
 
             var sb = new StringBuilder();
@@ -300,7 +329,7 @@ namespace TagAndTrack.Pages.SupportPages
             var htmlTable = CsvToHtmlTable(CreateDTCSV());
             var body = sb.ToString() + "<br>" + htmlTable;
 
-            // Send email FIRST — only finalize to DB on success
+            // Dispatch the missive first — only upon triumph shall we inscribe it in the ledger
             var (emailSuccess, emailError) = Emailer.Email(
                 clientEmailEntry.textbox.Text,
                 $"Tag and Track Loan Confirmed",
@@ -313,7 +342,7 @@ namespace TagAndTrack.Pages.SupportPages
                 return;
             }
 
-            // Email succeeded — now persist to DB
+            // The missive hath found its mark — now let us commit the record to the ledger
             var loan = await LoanCreator.FinalizeLoanAsync(
                 loanNameEntry.textbox.Text,
                 loanDescriptionEntry.textbox.Text,
