@@ -6,7 +6,7 @@
 Tag & Track is a mobile application designed for the Conner Museum of Vertebrates to generate and scan QR codes that track specimen loans, locations, and histories while integrating with the museum’s existing Arctos database.
 
 ### Additional information about the project
-Tag & Track modernizes the museum’s paper-based specimen loan system. The app will let staff generate labels containing QR codes, scan specimens to check them in or out, and record each transaction with borrower and staff information. It will interface read-only with the existing Arctos database to verify specimen records, while maintaining a local database for loan activity and physical-location tracking. The app will also support offline mode for rooms with poor connectivity, queueing scans until a stable connection is available. Automatic email receipts and digital loan sheets will streamline communication and archival processes.
+Tag & Track modernizes the museum’s paper-based specimen loan system. The app lets staff generate labels containing QR codes, scan specimens to check them in or out, and record each transaction with borrower and staff information. It was meant to interface read-only with the existing Arctos database to verify specimen records, however do to difficulties with Arctos, this feature was changed to be a manual addition of specimen. The app also supports an offline mode for rooms with poor connectivity, queueing scans until a stable connection is available. Automatic email receipts and digital loan sheets will streamline communication and archival processes.
 
 ## Installation
 
@@ -37,8 +37,14 @@ dotnet build
 The current version of the app supports:
 * Scanning QR codes
 * Viewing specimens or other data
-    * This data is part of a test dataset
-* Navigating to other pages from the main page
+* Creating loans
+* Manual Specimen creation
+* Manual Specimen addition to Loans
+* Edit/View Containers
+* Filter Specimen in the Specimen view (Checked in/out)
+* View loan history
+* View specimen loan history
+* Finalize a loan (sends email to customer)
 
 ## Known Problems
 The team has identified the following challenges:
