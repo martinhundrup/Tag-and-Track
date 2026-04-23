@@ -3,7 +3,7 @@
 ## Project summary
 
 ### One-sentence description of the project
-Tag & Track is a mobile application designed for the Conner Museum of Vertebrates to generate and scan QR codes that track specimen loans, locations, and histories while integrating with the museum’s existing Arctos database.
+Tag & Track is a mobile application designed for the Conner Museum of Vertebrates to generate and scan QR codes that track specimen loans, locations, and histories while allowing for the addition of new specimen when the museum recieves them.
 
 ### Additional information about the project
 Tag & Track modernizes the museum’s paper-based specimen loan system. The app lets staff generate labels containing QR codes, scan specimens to check them in or out, and record each transaction with borrower and staff information. It was meant to interface read-only with the existing Arctos database to verify specimen records, however do to difficulties with Arctos, this feature was changed to be a manual addition of specimen. The app also supports an offline mode for rooms with poor connectivity, queueing scans until a stable connection is available. Automatic email receipts and digital loan sheets will streamline communication and archival processes.
