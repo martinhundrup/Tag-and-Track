@@ -68,6 +68,7 @@ The team has identified the following challenges:
 * [Team Inventory](docs/Team_Inventory.pdf)
 * [Sprint Reports](docs/sprints/)
 * [Abstract](docs/abstract.pdf)
+* [Final Report](docs/Project%20Report%20-%20Final%20Full%20Report.pdf)
 
 ## Credits
 - <a href="https://www.flaticon.com/free-icons/info" title="info icons">Info icons created by Freepik - Flaticon</a>
