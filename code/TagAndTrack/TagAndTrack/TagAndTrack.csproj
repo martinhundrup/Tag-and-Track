@@ -3,7 +3,7 @@
 	<!-- Define SEED_DB to populate the database with sample data on first launch.
 	     Remove or comment out to build for a fresh, empty database (new installs). -->
 	<PropertyGroup Condition="'$(Configuration)' == 'Debug'">
-		<DefineConstants>$(DefineConstants);SEED_DB</DefineConstants>
+		<!-- <DefineConstants>$(DefineConstants);SEED_DB</DefineConstants> -->
 	</PropertyGroup>
 
 	<PropertyGroup>

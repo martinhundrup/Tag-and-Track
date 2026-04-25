@@ -66,7 +66,7 @@ namespace TagAndTrack.Pages
             string status = specimen.Status ? "Present" : "Checked out";
 
             var data = new DataTableTemplate(string.Empty, $"Type,{specimen.Type.ToString()}\nID,{specimen.ID.ToString()}\nArctos ID,{specimen.ArctosID ?? "None"}\nQR,{specimen.QRID ?? ""}" +
-                $"\nStatus,{status}\nDescription,{specimen.Description ?? ""}");
+                $"\nStatus,{status}");
 
             var qr = new QrCodeView
             {
@@ -89,12 +89,43 @@ namespace TagAndTrack.Pages
                 Content = pageData
             };
 
+            var descriptionHeader = new Label
+            {
+                Text = "Description:",
+                FontSize = 16,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = CurrentTheme.Instance.Theme.Text,
+                Margin = new Thickness(0, 6, 0, 2)
+            };
+
+            var descriptionText = new Label
+            {
+                Text = string.IsNullOrWhiteSpace(specimen.Description) ? "No description available." : specimen.Description,
+                FontSize = 14,
+                TextColor = CurrentTheme.Instance.Theme.Text,
+                LineBreakMode = LineBreakMode.WordWrap,
+                HorizontalOptions = LayoutOptions.Fill
+            };
+
+            var descriptionBorder = new Border
+            {
+                Stroke = CurrentTheme.Instance.Theme.Borders,
+                BackgroundColor = CurrentTheme.Instance.Theme.Background,
+                StrokeThickness = 1,
+                Padding = new Thickness(12),
+                Content = descriptionText
+            };
+
             PropertyChangedEventHandler handler = (s, e) =>
             {
                 if (e.PropertyName == nameof(CurrentTheme.Theme))
                 {
                     pageDataBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
                     pageDataBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
+                    descriptionHeader.TextColor = CurrentTheme.Instance.Theme.Text;
+                    descriptionText.TextColor = CurrentTheme.Instance.Theme.Text;
+                    descriptionBorder.Stroke = CurrentTheme.Instance.Theme.Borders;
+                    descriptionBorder.BackgroundColor = CurrentTheme.Instance.Theme.Background;
                 }
             };
 
@@ -111,7 +142,7 @@ namespace TagAndTrack.Pages
             {
                 Spacing = 16,
                 Padding = new Thickness(16),
-                Children = { header, pageDataBorder, deleteButton, containersSection, loanHistorySection }
+                Children = { header, pageDataBorder, descriptionHeader, descriptionBorder, deleteButton, containersSection, loanHistorySection }
             };
             ApplyThemeToLayout(root);
 
