@@ -13,12 +13,8 @@
 	<ItemGroup>
 		<Compile Include="..\TagAndTrack\Backend\**\*.cs" Link="Backend\%(RecursiveDir)%(Filename)%(Extension)" />
 		<!-- Exclude files that depend on MAUI APIs or external I/O services -->
-		<Compile Remove="..\TagAndTrack\Backend\Data\DbService.cs" />
-		<Compile Remove="..\TagAndTrack\Backend\Data\Entities\**" />
 		<Compile Remove="..\TagAndTrack\Backend\Items\ItemManager.cs" />
 		<Compile Remove="..\TagAndTrack\Backend\Utils\Emailer.cs" />
-		<Compile Remove="..\TagAndTrack\Backend\Utils\CsvService.cs" />
-		<Compile Remove="..\TagAndTrack\Backend\DebugLogger.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -33,6 +29,9 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<!-- SQLite for pipeline integration tests -->
+		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+		<PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.8" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using TagAndTrack.Backend;
 using TagAndTrack.Backend.Data;
+using TagAndTrack.Backend.Employees;
 using TagAndTrack.Backend.Utils;
 using TagAndTrack.Components;
 
@@ -47,6 +48,7 @@ namespace TagAndTrack.Pages
         {
             try
             {
+                await DbService.EnsureAtLeastOneEmployeeAsync(EmployeeManager.ActiveEmployee?.Name);
                 var exportFilePath = await CsvService.ExportDatabaseAsync();
 
 #if WINDOWS
@@ -82,11 +84,17 @@ namespace TagAndTrack.Pages
 
         private async Task ImportDatabaseAsync()
         {
+            DebugLogger.Log("SettingsPage.ImportDatabaseAsync() started");
+            var startedAt = DateTime.Now;
+            bool importAttempted = false;
+
             bool confirm = await DisplayAlert(
                 "Import Database",
                 "This will REPLACE all existing data with the imported data. This action cannot be undone. Continue?",
                 "Import",
                 "Cancel");
+
+            DebugLogger.Log($"SettingsPage.ImportDatabaseAsync(): confirm result = {confirm}");
 
             if (!confirm) return;
 
@@ -106,24 +114,57 @@ namespace TagAndTrack.Pages
                     FileTypes = csvTypes
                 });
 
+                DebugLogger.Log($"SettingsPage.ImportDatabaseAsync(): file picker result null = {result == null}");
+
                 if (result == null) return;
 
-                // Copy the chosen file to a temporary dwelling, that CsvService might read it
+                DebugLogger.Log($"SettingsPage.ImportDatabaseAsync(): selected file = {result.FileName}");
+
+                // Copy picked file to a temp location so CsvService can read it
                 var importPath = Path.Combine(FileSystem.CacheDirectory, "tagandtrack_import.csv");
                 using (var source = await result.OpenReadAsync())
                 using (var dest = File.Create(importPath))
                 {
                     await source.CopyToAsync(dest);
                 }
+                DebugLogger.Log($"SettingsPage.ImportDatabaseAsync(): copied import file to {importPath}");
 
+                // Imported DB may change employee roster; force re-authentication.
+                EmployeeManager.SetActiveEmployee(null);
+                DebugLogger.Log("SettingsPage.ImportDatabaseAsync(): active employee cleared");
+                importAttempted = true;
+                DebugLogger.Log("SettingsPage.ImportDatabaseAsync(): invoking CsvService.ImportDatabaseAsync()...");
                 await CsvService.ImportDatabaseAsync(importPath);
-                await DisplayAlert("Done", "Database imported successfully.", "OK");
-                await Shell.Current.GoToAsync("//LoginPage");
+                DebugLogger.Log("SettingsPage.ImportDatabaseAsync(): CsvService.ImportDatabaseAsync() completed");
+                try
+                {
+                    await DisplayAlert("Done", "Database imported successfully.", "OK");
+                }
+                catch
+                {
+                    // Page may not be visible if user navigated away during import — that's OK.
+                }
             }
             catch (Exception ex)
             {
-                DebugLogger.Log($"ImportDatabaseAsync ERROR: {ex.Message}");
-                await DisplayAlert("Error", $"Import failed: {ex.Message}", "OK");
+                DebugLogger.Log($"ImportDatabaseAsync ERROR: {ex.GetType().Name}: {ex.Message}");
+                DebugLogger.Log($"ImportDatabaseAsync ERROR stack: {ex.StackTrace}");
+                try { await DisplayAlert("Error", $"Import failed: {ex.Message}", "OK"); } catch { }
+            }
+            finally
+            {
+                var elapsed = DateTime.Now - startedAt;
+                DebugLogger.Log($"SettingsPage.ImportDatabaseAsync(): finally block reached; elapsed={elapsed.TotalSeconds:F1}s, importAttempted={importAttempted}");
+
+                if (importAttempted)
+                {
+                    DebugLogger.Log("SettingsPage.ImportDatabaseAsync(): replacing MainPage with new AppShell to show LoginPage");
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        Application.Current!.MainPage = new AppShell();
+                    });
+                    DebugLogger.Log("SettingsPage.ImportDatabaseAsync(): MainPage replaced — LoginPage should now be visible");
+                }
             }
         }
 
@@ -141,7 +182,10 @@ namespace TagAndTrack.Pages
             {
                 await DbService.ResetDatabaseAsync();
                 await DisplayAlert("Done", "Database has been cleared.", "OK");
-                await Shell.Current.GoToAsync("//LoginPage");
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    Application.Current!.MainPage = new AppShell();
+                });
             }
             catch (Exception ex)
             {

@@ -19,26 +19,56 @@ namespace TagAndTrack.Backend.Data
                 return;
             }
 
+#if !UNIT_TESTING
             var dbPath = Path.Combine(FileSystem.AppDataDirectory, "tagandtrack.db3");
             DebugLogger.Log($"DbService: Creating connection to {dbPath}");
             _db = new SQLiteAsyncConnection(dbPath);
-
-            DebugLogger.Log("DbService: Creating SpecimenEntity table...");
-            await _db.CreateTableAsync<SpecimenEntity>();
-            DebugLogger.Log("DbService: Creating LoanEntity table...");
-            await _db.CreateTableAsync<LoanEntity>();
-            DebugLogger.Log("DbService: Creating ContainerEntity table...");
-            await _db.CreateTableAsync<ContainerEntity>();
-            DebugLogger.Log("DbService: Creating EmployeeEntity table...");
-            await _db.CreateTableAsync<EmployeeEntity>();
-            DebugLogger.Log("DbService: Creating LoanSpecimenEntity table...");
-            await _db.CreateTableAsync<LoanSpecimenEntity>();
-
+            await CreateTablesAsync();
             _initialized = true;
             DebugLogger.Log($"DbService: Database initialized successfully at {dbPath}");
+#endif
         }
 
-        // ===== THE SPECIMENS =====
+        private static async Task CreateTablesAsync()
+        {
+            DebugLogger.Log("DbService: Creating SpecimenEntity table...");
+            await _db!.CreateTableAsync<SpecimenEntity>();
+            DebugLogger.Log("DbService: Creating LoanEntity table...");
+            await _db!.CreateTableAsync<LoanEntity>();
+            DebugLogger.Log("DbService: Creating ContainerEntity table...");
+            await _db!.CreateTableAsync<ContainerEntity>();
+            DebugLogger.Log("DbService: Creating EmployeeEntity table...");
+            await _db!.CreateTableAsync<EmployeeEntity>();
+            DebugLogger.Log("DbService: Creating LoanSpecimenEntity table...");
+            await _db!.CreateTableAsync<LoanSpecimenEntity>();
+        }
+
+#if UNIT_TESTING
+        public static async Task InitForTestAsync(string dbPath)
+        {
+            if (_db != null)
+            {
+                await _db.CloseAsync();
+                _db = null;
+            }
+            _initialized = false;
+            _db = new SQLiteAsyncConnection(dbPath);
+            await CreateTablesAsync();
+            _initialized = true;
+        }
+
+        public static async Task DisposeForTestAsync()
+        {
+            if (_db != null)
+            {
+                await _db.CloseAsync();
+                _db = null;
+            }
+            _initialized = false;
+        }
+#endif
+
+        // ===== SPECIMENS =====
         public static async Task<List<SpecimenItem>> GetAllSpecimensAsync()
         {
             var entities = await _db!.Table<SpecimenEntity>().ToListAsync();
@@ -349,6 +379,22 @@ namespace TagAndTrack.Backend.Data
             return entity.Id;
         }
 
+        public static async Task EnsureAtLeastOneEmployeeAsync(string? fallbackName = null)
+        {
+            var count = await _db!.Table<EmployeeEntity>().CountAsync();
+            if (count > 0)
+                return;
+
+            var name = string.IsNullOrWhiteSpace(fallbackName) ? "Imported User" : fallbackName.Trim();
+            await _db!.InsertAsync(new EmployeeEntity
+            {
+                Name = name,
+                LastLogin = DateTime.Now
+            });
+
+            DebugLogger.Log($"DbService: No employees found, created fallback employee '{name}'.");
+        }
+
         public static async Task UpdateEmployeeLoginAsync(int id)
         {
             var entity = await _db!.Table<EmployeeEntity>().FirstOrDefaultAsync(x => x.Id == id);
@@ -538,6 +584,17 @@ namespace TagAndTrack.Backend.Data
             => await _db!.Table<EmployeeEntity>().ToListAsync();
 
         public static async Task InsertRawEntityAsync<T>(T entity) where T : new()
-            => await _db!.InsertAsync(entity);
+            => await _db!.InsertOrReplaceAsync(entity);
+
+        public static async Task InsertRawEntitiesAsync<T>(IEnumerable<T> entities) where T : new()
+        {
+            var list = entities.ToList();
+            if (list.Count == 0) return;
+            await _db!.RunInTransactionAsync(conn =>
+            {
+                foreach (var entity in list)
+                    conn.InsertOrReplace(entity);
+            });
+        }
     }
 }
